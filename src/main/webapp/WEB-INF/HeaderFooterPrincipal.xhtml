@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -13,18 +14,19 @@
 
     <h:body>
 
-        <div id="top">
-            <ui:insert name="top">ESTO pertenece a mi encabezado</ui:insert>
+        <div id="top" class="logo">
+            <ui:insert name="top">UNIDAD DE POSGRADO</ui:insert>
+            
         </div>
 
         <div id="content" class="center_content">
             <ui:insert name="content">Content</ui:insert>
         </div>
-
-        <div id="bottom">
-            <ui:insert name="bottom">Esto es mi pie de pagina</ui:insert>
+        <!-- comment -->
+        <div id="bottom" class="pie-pagina">
+            <ui:insert name="bottom">SISTEMA DE CONTROL DE HORARIOS</ui:insert>
         </div>
-
+        
     </h:body>
 
 </html>

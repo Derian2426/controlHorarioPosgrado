@@ -1,5 +1,5 @@
 #top {
-    position: relative;
+    position: fixed;
     background-color: seagreen;
     color: white;
     padding: 25px;
@@ -32,7 +32,6 @@
 }
 
 .center_content {
-    position: relative;
     background-color: white;
     padding: 5px;
 }

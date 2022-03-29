@@ -25,9 +25,9 @@ public class Conexion implements Serializable {
     private String mensaje;
 
     //Credenciales para la conexion
-    private String url = "jdbc:postgresql://ec2-54-160-109-68.compute-1.amazonaws.com:5432/d4imipru6i80g7";
-    private String usuario = "oaosnxoeczzppu";
-    private String clave = "cd8eef146910739d7d78971cfe1385f9d430d3168594a9fbb6b4cc32a141ac9c";
+    private String url = "jdbc:postgresql://ec2-52-73-155-171.compute-1.amazonaws.com:5432/den7jr6ljf2a50";
+    private String usuario = "yrhofcfdicsqcs";
+    private String clave = "225e5c1761e1d504e5725d164430bc9b755aafadd05cd519921290d8797e8370";
     String classForName = "org.postgresql.Driver";
 
     public Conexion() {

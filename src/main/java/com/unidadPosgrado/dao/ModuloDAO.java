@@ -6,7 +6,7 @@
 package com.unidadPosgrado.dao;
 
 import com.global.config.Conexion;
-import com.unidadPosgrado.modelo.Maestria;
+import com.unidadPosgrado.modelo.Modulo;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,23 +16,23 @@ import java.util.List;
  *
  * @author HP
  */
-public class MaestriaDAO {
+public class ModuloDAO {
 
     Conexion conexion;
     String sentencia;
     ResultSet resultSet;
 
-    public MaestriaDAO() {
+    public ModuloDAO() {
         conexion = new Conexion();
     }
 
-    public List<Maestria> getListaMaestria() {
-        List<Maestria> listadoMaestria = new ArrayList<>();
-        sentencia = String.format("select * from public.\"getListaMaestrias\"()");
+    public List<Modulo> getListaModulo() {
+        List<Modulo> listadoMaestria = new ArrayList<>();
+        sentencia = String.format("SELECT * from public.\"getListaModulo\"()");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                listadoMaestria.add(new Maestria(resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"), resultSet.getString("_descripcion")));
+                listadoMaestria.add(new Modulo(resultSet.getInt("_id_materia"), resultSet.getString("_nombre_materia"), resultSet.getString("_descripcion"),resultSet.getFloat("_hora")));
             }
             return listadoMaestria;
         } catch (SQLException e) {
@@ -42,16 +42,17 @@ public class MaestriaDAO {
         }
     }
 
-    public int registrarMaestria(Maestria maestria) {
+    public int registrarModulo(Modulo modulo) {
         int mensaje = 0;
-        sentencia = String.format("SELECT public.\"registrarMaestria\"(\n"
-                + "	'" + maestria.getNombre().trim() + "', \n"
-                + "	'" + maestria.getDescripcion().trim() + "'\n"
+        sentencia = String.format("SELECT public.\"registrarModulo\"(\n"
+                + "	'" + modulo.getNombreMateria() + "', \n"
+                + "	'" + modulo.getDescripcion() + "', \n"
+                + "	" + modulo.getHora_materia() + "\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                mensaje = Integer.parseInt(resultSet.getString("registrarMaestria"));
+                mensaje = resultSet.getInt("registrarModulo");
             }
             return mensaje;
         } catch (SQLException e) {
@@ -61,17 +62,18 @@ public class MaestriaDAO {
         }
     }
 
-    public int editarMaestria(Maestria maestria) {
+    public int editarModulo(Modulo modulo) {
         int mensaje = 0;
-        sentencia = String.format("SELECT public.\"actualizarMaestria\"(\n"
-                + "	"+maestria.getIdMaestria()+", \n"
-                + "	'"+maestria.getNombre()+"', \n"
-                + "	'"+maestria.getDescripcion()+"'\n"
+        sentencia = String.format("SELECT public.\"actualizarModulo\"(\n"
+                + "	"+modulo.getIdMateria()+", \n"
+                + "	'"+modulo.getNombreMateria()+"', \n"
+                + "	'"+modulo.getDescripcion()+"', \n"
+                + "	"+modulo.getHora_materia()+"\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                mensaje = Integer.parseInt(resultSet.getString("actualizarMaestria"));
+                mensaje = resultSet.getInt("actualizarModulo");
             }
             return mensaje;
         } catch (SQLException e) {
@@ -80,5 +82,4 @@ public class MaestriaDAO {
             conexion.desconectar();
         }
     }
-
 }

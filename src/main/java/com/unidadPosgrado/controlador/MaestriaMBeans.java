@@ -8,8 +8,10 @@ package com.unidadPosgrado.controlador;
 import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Maestria;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import org.primefaces.event.RowEditEvent;
 
 /**
  *
@@ -18,12 +20,18 @@ import javax.faces.context.FacesContext;
 public class MaestriaMBeans {
 
     private Maestria maestria;
+    private Maestria integracionMaestria;
     MaestriaDAO maestriaDAO;
     private List<Maestria> listaMaestria;
 
     public MaestriaMBeans() {
         maestria = new Maestria();
         maestriaDAO = new MaestriaDAO();
+        integracionMaestria = new Maestria();
+    }
+
+    @PostConstruct
+    public void init() {
         listaMaestria = maestriaDAO.getListaMaestria();
     }
 
@@ -43,18 +51,58 @@ public class MaestriaMBeans {
         this.listaMaestria = listaMaestria;
     }
 
+    public Maestria getIntegracionMaestria() {
+        return integracionMaestria;
+    }
+
+    public void setIntegracionMaestria(Maestria integracionMaestria) {
+        this.integracionMaestria = integracionMaestria;
+    }
+
     public void registrarMaestria() {
         try {
-            int resultadoRegistro=maestriaDAO.registrarMaestria(maestria);
-            if(resultadoRegistro>0){
-                showInfo(maestria.getNombre().trim().replace(".", ",")+" registrada con éxito.");
-            }else{
-                showWarn(maestria.getNombre().trim().replace(".", ",")+" ya se encuentra registrada.");
+            int resultadoRegistro = maestriaDAO.registrarMaestria(maestria);
+            if (resultadoRegistro > 0) {
+                showInfo(maestria.getNombre().trim().replace(".", ",") + " registrada con éxito.");
+                listaMaestria = maestriaDAO.getListaMaestria();
+            } else {
+                showWarn(maestria.getNombre().trim().replace(".", ",") + " ya se encuentra registrada.");
             }
-            maestria= new Maestria();
+            maestria = new Maestria();
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+    }
+
+    public void onRowEdit(RowEditEvent<Maestria> event) {
+        try {
+            Maestria editMaestria = new Maestria(event.getObject().getIdMaestria(),
+                    event.getObject().getNombre(), event.getObject().getDescripcion());
+            int resultadoRegistro = maestriaDAO.editarMaestria(editMaestria);
+            if (resultadoRegistro > 0) {
+                showInfo("Se actualizo con éxito, " + editMaestria.getNombre().trim());
+            } else {
+                showWarn(editMaestria.getNombre().trim().replace(".", ",") + " no se pudo actualizar por que el registro ya se encuentra registrado."
+                        + " Solo se actualiza la descripción si el registro a editar es el mismo.");
+                listaMaestria = maestriaDAO.getListaMaestria();
+            }
+        } catch (Exception e) {
+            showWarn(e.getMessage());
+        }
+    }
+
+    public void onRowCancel(RowEditEvent<Maestria> event) {
+        try {
+            showWarn("Editar la " + event.getObject().getNombre() + " fue cancelada.");
+        } catch (Exception e) {
+            showWarn(e.getMessage());
+        }
+    }
+
+    public void llenaMaestria(Maestria maestria) {
+        integracionMaestria.setIdMaestria(maestria.getIdMaestria());
+        integracionMaestria.setNombre(maestria.getNombre());
+        integracionMaestria.setDescripcion(maestria.getDescripcion());
     }
 
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
@@ -73,8 +121,4 @@ public class MaestriaMBeans {
     public void showError(String message) {
         addMessage(FacesMessage.SEVERITY_WARN, "Error", message);
     }
-    public void vaciarCampos(){
-        
-    }
-
 }

@@ -15,16 +15,16 @@
                     <p:toolbarGroup>
                         <div class="p-d-flex p-jc-between p-ai-center">
                             <p:commandButton value="Nueva Maestría" type="button" icon="pi pi-plus" onclick="PF('dlgMaestria').show()"  style="margin-right: 6px;"/>
-                            <p:commandButton value="Listado de Maestrías" type="button" icon="pi pi-list" onclick="PF('listadoMaestria').show()" style="margin-right: 6px;"/>
-                            <p:commandButton value="Nuevo Módulo" type="button" icon="pi pi-plus" onclick="PF('listadoMaestria').show()" style="margin-right: 6px;"/>
-                            <p:commandButton value="Listado de Módulos" type="button" icon="pi pi-list" onclick="PF('listadoMaestria').show()" style="margin-right: 6px;"/>
-                            <p:commandButton value="Integración de Módulos" type="button" icon="pi pi-list" onclick="PF('listadoMaestria').show()" style="margin-right: 6px;"/>
+                            <p:commandButton value="Listado de Maestrías" type="button" icon="pi pi-list" onclick="PF('listadoMaestria').show()" style="margin-right: 6px;" update=":form_maestria:dtMaestrias"/>
+                            <p:commandButton value="Nuevo Módulo" type="button" icon="pi pi-plus" onclick="PF('dlgModulo').show()" style="margin-right: 6px;"/>
+                            <p:commandButton value="Listado de Módulos" type="button" icon="pi pi-list" onclick="PF('listadoModulo').show()" style="margin-right: 6px;"/>
+                            <p:commandButton value="Integración de Módulos" type="button" icon="pi pi-list" onclick="PF('listadoModuloMaestria').show()" style="margin-right: 6px;"/>
                         </div>
                     </p:toolbarGroup>
 
                 </p:toolbar>
 
-               
+
                 <p:dialog header="Registro de Maestría" widgetVar="dlgMaestria" minHeight="100" width="550" showEffect="fade" modal="true">
                     <p:outputPanel id="nuevaMaestria" class="ui-fluid">
                         <div class="ui-fluid p-formgrid p-grid">
@@ -38,7 +38,7 @@
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{maestriaMB.registrarMaestria()}"
-                                                 process="nuevaMaestria" update=":form_maestria:dtMaestrias,:form_maestria:msgs,nuevaMaestria" onclick="PF('dlgMaestria').hide()"/>
+                                                 update=":form_maestria:dtMaestrias,:form_maestria:msgs,nuevaMaestria" onclick="PF('dlgMaestria').hide()"/>
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgMaestria').hide()"/>
@@ -46,10 +46,10 @@
                         </div>
                     </p:outputPanel>
                 </p:dialog>
-                <p:dialog header="Registro de Maestría" widgetVar="listadoMaestria" minHeight="100" width="550" showEffect="fade" modal="true">
+                <p:dialog header="Listado de Maestrías" widgetVar="listadoMaestria" minHeight="300" width="1000" showEffect="fade" modal="true">
                     <div class="card">
                         <p:dataTable id="dtMaestrias" var="maestrias" value="#{maestriaMB.listaMaestria}" editable="true" paginatorPosition="bottom"
-                                     style="margin-bottom:20px" reflow="true" rows="2" paginator="true"
+                                     style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
                                      emptyMessage="No se encontro la maestría">
                             <f:facet name="header">
                                 <div class="p-d-flex p-jc-end">
@@ -58,10 +58,10 @@
                                 </div>
                             </f:facet>
 
-                            <p:ajax event="rowEdit" listener="#{dtEditView.onRowEdit}" update=":form_maestria:msgs"/>
-                            <p:ajax event="rowEditCancel" listener="#{dtEditView.onRowCancel}" update=":form_maestria:msgs"/>
+                            <p:ajax event="rowEdit" listener="#{maestriaMB.onRowEdit}" update=":form_maestria:msgs,:form_maestria:dtMaestrias"/>
+                            <p:ajax event="rowEditCancel" listener="#{maestriaMB.onRowCancel}" update=":form_maestria:msgs,:form_maestria:dtMaestrias"/>
 
-                            <p:column headerText="Nombre Maestría">
+                            <p:column headerText="Nombre Maestría" style="text-align: justify">
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText value="#{maestrias.nombre}"/>
@@ -72,7 +72,7 @@
                                 </p:cellEditor>
                             </p:column>
 
-                            <p:column headerText="Descripción">
+                            <p:column headerText="Descripción" style="text-align: justify">
                                 <p:cellEditor>
                                     <f:facet name="output">
                                         <h:outputText value="#{maestrias.descripcion}"/>
@@ -88,6 +88,138 @@
                         </p:dataTable>
                     </div>
                 </p:dialog>
+                <p:dialog header="Registro de Módulo" widgetVar="dlgModulo" minHeight="100" width="550" showEffect="fade" modal="true">
+                    <p:outputPanel id="nuevoModulo" class="ui-fluid">
+                        <div class="ui-fluid p-formgrid p-grid">
+                            <div class="p-field p-col-12 p-md-12">
+                                <p:outputLabel value="Nombre Módulo:"/>
+                                <p:inputText maxlength="100" value="#{moduloMB.modulo.nombreMateria}"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-12">
+                                <p:outputLabel value="Descripción:"/>
+                                <p:inputTextarea maxlength="100" rows="5" cols="6" value="#{moduloMB.modulo.descripcion}"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-12">
+                                <p:outputLabel value="Número de horas:"/>
+                                <p:inputNumber maxlength="10" value="#{moduloMB.modulo.hora_materia}"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{moduloMB.registrarModulo()}"
+                                                 update=":form_maestria:msgs,nuevoModulo,:form_maestria:dtModulo" onclick="PF('dlgModulo').hide()"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgModulo').hide()"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:dialog header="Listado de Modulos" widgetVar="listadoModulo" minHeight="300" width="1000" showEffect="fade" modal="true">
+                    <div class="card">
+                        <p:dataTable id="dtModulo" var="modulo" value="#{moduloMB.listaModulo}" editable="true" paginatorPosition="bottom"
+                                     style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                     emptyMessage="No se encontro el módulo">
+                            <f:facet name="header">
+                                <div class="p-d-flex p-jc-end">
+                                    <p:inputText id="globalFilter" onkeyup="PF('customersTable3').filter()" style="width:300px"
+                                                 placeholder="Buscar Módulo" />
+                                </div>
+                            </f:facet>
+
+                            <p:ajax event="rowEdit" listener="#{moduloMB.onRowEdit}" update=":form_maestria:msgs,:form_maestria:dtModulo"/>
+                            <p:ajax event="rowEditCancel" listener="#{moduloMB.onRowCancel}" update=":form_maestria:msgs,:form_maestria:dtModulo"/>
+
+                            <p:column headerText="Nombre Módulo" style="text-align: justify">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{modulo.nombreMateria}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{modulo.nombreMateria}" style="width:100%"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Descripción" style="text-align: justify">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{modulo.descripcion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{modulo.descripcion}" style="width:100%" label="Name"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Tiempo" style="text-align: justify">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{modulo.hora_materia}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{modulo.hora_materia}" style="width:100%" label="Name"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Acciones" style="width:6rem">
+                                <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </p:dialog>
+                <p:dialog header="Integración Módulos" widgetVar="listadoModuloMaestria" minHeight="300" width="1000" showEffect="fade" modal="true">
+                    <p:outputPanel id="nuevaIntegracionModulo" class="ui-fluid">
+                        <div class="card">
+                            <div class="ui-fluid p-formgrid p-grid">
+                                <div class="p-field p-col-12 p-md-7">
+                                    <p:outputLabel value="Nombre Mastría:"/>
+                                    <p:inputText maxlength="100" value="#{maestriaMB.integracionMaestria.nombre}" readonly="true"/>
+                                </div>
+                                <div class="p-field p-col-12 p-md-2">
+                                    <p:outputLabel value="Tiempo Mastría:"/>
+                                    <p:inputText maxlength="100" value="#" readonly="true"/>
+                                </div>
+                                <div class="p-field p-col-12 p-md-3">
+                                    <p:outputLabel value="." style="color: white" />
+                                    <p:commandButton style="margin-right: 6px;" value="Buscar" 
+                                                     styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestria').show()">
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:dialog header="Seleccione una de las  Maestrías" widgetVar="listMaestria" minHeight="300" width="800" showEffect="fade" modal="true">
+                    <div class="card">
+                        <p:dataTable id="dtSeleccionMaestria" var="maestrias" value="#{maestriaMB.listaMaestria}" editable="true" paginatorPosition="bottom"
+                                     style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                     emptyMessage="No se encontro la maestría">
+                            <f:facet name="header">
+                                <div class="p-d-flex p-jc-end">
+                                    <p:inputText onkeyup="PF('customersTable3').filter()"
+                                                 placeholder="Buscar Maestrías" />
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Acciones" style="width:6rem">
+                                <p:commandButton
+                                    class="rounded-button"
+                                    icon="pi pi-check">
+                                    <p:ajax listener="#{maestriaMB.llenaMaestria(maestrias)}" 
+                                            update=":form_maestria:nuevaIntegracionModulo"
+                                            oncomplete="PF('listMaestria').hide()"/>
+
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="Nombre Maestría" style="text-align: justify">
+                                <h:outputText value="#{maestrias.nombre}"/>
+                            </p:column>
+
+                            <p:column headerText="Descripción" style="text-align: justify">
+                                <h:outputText value="#{maestrias.descripcion}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </p:dialog>
+
+
             </h:form>
         </div>
 

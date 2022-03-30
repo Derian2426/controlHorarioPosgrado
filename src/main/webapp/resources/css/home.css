@@ -9,22 +9,6 @@ body{
     margin: auto;
     padding-top: 2rem;
 }
- #top {
-    position: fixed;
-    background-color: seagreen;
-    color: white;
-    padding: 20px;
-    left: 0;
-    top: 0;
-    right: 0;
-}
-
-.img{
-    width: 40px;
-    height: 40px;
-    vertical-align: middle;
-    margin-top: -4px;
-}
 
 #bottom {
     width: 100%;
@@ -53,12 +37,12 @@ body{
     padding: 2px 10px 0 3px;
 }
 .card-box h3 {
-    font-size: 27px;
+    font-size: 24px;
     font-weight: bold;
     margin: 0 0 8px 0;
     white-space: nowrap;
     padding: 0;
-    text-align: left;
+    text-align: center;
 }
 
 .card-box .card-box-footer {
@@ -72,6 +56,13 @@ body{
     width: 100%;
     text-decoration: none;
     top: 90px;
+}
+.card-box .logo-modulo{
+    align-items: center;
+    height: 80px;
+    padding-right: 10px;
+    margin:10px auto;
+    display:block;
 }
 
 .card-box:hover .card-box-footer {
@@ -102,15 +93,6 @@ body{
     background-color: #D85CE6 !important;
 }
 
-.logo{
-    font-size: 27px;
-    font-weight: bold;
-    margin: 0 0 8px 0;
-    white-space: nowrap;
-    padding: 0;
-    text-align: left;
-}
-
 .pie-pagina{
     font-size: 20px;
     font-weight: bold;
@@ -125,9 +107,7 @@ body{
     }
 }
 
-a{
-    text-decoration: none;
-}
+
 header{
     left: 0;
     top: 0;
@@ -195,6 +175,6 @@ ul{
 }
 @media (max-width:700px){
     header{
-        flex-direction: column;
+        flex-direction: var;
     }
 }

@@ -32,12 +32,14 @@ public class UsuarioDAO {
     }
 
     public int insertUsuario() {
-        sentencia = "INSERT INTO public.usuario(nombre, apellido, correo, nombre_usuario, password, estado)\n"
-                + "	VALUES ('Victor', 'Chun', 'victorelianchun14@gmail.com', 'Eliereme', 'HolaMundo', true);";
+        sentencia = String.format("INSERT INTO public.usuario(nombre, apellido, correo, nombre_usuario, password, estado)\n"
+                + "	VALUES ('Victor', 'Chun', 'victorelianchun14@gmail.com', 'Eliereme', 'HolaMundo', true);");
         try {
-            return conexion.insertar(sentencia);
+            return 1;
         } catch (Exception e) {
             return -1;
+        }finally{
+            conexion.desconectar();
         }
     }
 

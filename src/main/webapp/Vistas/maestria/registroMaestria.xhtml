@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/HeaderFooterPrincipal.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <div class="card">
+            <h:form id="form_maestria">
+                <p:growl id="msgs" showDetail="true"/>
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            <p:commandButton value="Nueva Maestría" type="button" icon="pi pi-plus" onclick="PF('dlgMaestria').show()"  style="margin-right: 6px;"/>
+                            <p:commandButton value="Listado de Maestrías" type="button" icon="pi pi-list" onclick="PF('listadoMaestria').show()" style="margin-right: 6px;"/>
+                            <p:commandButton value="Nuevo Módulo" type="button" icon="pi pi-plus" onclick="PF('listadoMaestria').show()" style="margin-right: 6px;"/>
+                            <p:commandButton value="Listado de Módulos" type="button" icon="pi pi-list" onclick="PF('listadoMaestria').show()" style="margin-right: 6px;"/>
+                            <p:commandButton value="Integración de Módulos" type="button" icon="pi pi-list" onclick="PF('listadoMaestria').show()" style="margin-right: 6px;"/>
+                        </div>
+                    </p:toolbarGroup>
+
+                </p:toolbar>
+
+               
+                <p:dialog header="Registro de Maestría" widgetVar="dlgMaestria" minHeight="100" width="550" showEffect="fade" modal="true">
+                    <p:outputPanel id="nuevaMaestria" class="ui-fluid">
+                        <div class="ui-fluid p-formgrid p-grid">
+                            <div class="p-field p-col-12 p-md-12">
+                                <p:outputLabel value="Nombre Maestría:"/>
+                                <p:inputText maxlength="150" value="#{maestriaMB.maestria.nombre}"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-12">
+                                <p:outputLabel value="Descripción:"/>
+                                <p:inputTextarea maxlength="200" rows="5" cols="6" value="#{maestriaMB.maestria.descripcion}"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{maestriaMB.registrarMaestria()}"
+                                                 process="nuevaMaestria" update=":form_maestria:dtMaestrias,:form_maestria:msgs,nuevaMaestria" onclick="PF('dlgMaestria').hide()"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgMaestria').hide()"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:dialog header="Registro de Maestría" widgetVar="listadoMaestria" minHeight="100" width="550" showEffect="fade" modal="true">
+                    <div class="card">
+                        <p:dataTable id="dtMaestrias" var="maestrias" value="#{maestriaMB.listaMaestria}" editable="true" paginatorPosition="bottom"
+                                     style="margin-bottom:20px" reflow="true" rows="2" paginator="true"
+                                     emptyMessage="No se encontro la maestría">
+                            <f:facet name="header">
+                                <div class="p-d-flex p-jc-end">
+                                    <p:inputText id="globalFilter" onkeyup="PF('customersTable3').filter()" style="width:300px"
+                                                 placeholder="Buscar Maestrías" />
+                                </div>
+                            </f:facet>
+
+                            <p:ajax event="rowEdit" listener="#{dtEditView.onRowEdit}" update=":form_maestria:msgs"/>
+                            <p:ajax event="rowEditCancel" listener="#{dtEditView.onRowCancel}" update=":form_maestria:msgs"/>
+
+                            <p:column headerText="Nombre Maestría">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{maestrias.nombre}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{maestrias.nombre}" style="width:100%"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Descripción">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{maestrias.descripcion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{maestrias.descripcion}" style="width:100%" label="Name"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Acciones" style="width:6rem">
+                                <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </p:dialog>
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

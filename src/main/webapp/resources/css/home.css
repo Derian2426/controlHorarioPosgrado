@@ -1,18 +1,45 @@
+body{
+    background:white;
+    margin: 0;
+    padding-top: 5rem;
+}
+
 .container {
     width: 95%;
     margin: auto;
     padding-top: 2rem;
 }
+ #top {
+    position: fixed;
+    background-color: seagreen;
+    color: white;
+    padding: 20px;
+    left: 0;
+    top: 0;
+    right: 0;
+}
 
-body{
-    background:white;
-    margin: 0;
+.img{
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+    margin-top: -4px;
+}
+
+#bottom {
+    width: 100%;
+    height: 50px;
+    bottom: 0;
+    position: fixed;
+    background-color: seagreen;
+    padding: 20px;
+    color: white;
 }
 
 .card-box {
-    position: relative;
+    position: initial;
     color: #fff;
-    padding: 20px 10px 40px;
+    padding: 20px 10px 10px;
     margin: 20px 0px;
     
 }
@@ -23,7 +50,7 @@ body{
 }
 
 .card-box .inner {
-    padding: 5px 10px 0 10px;
+    padding: 2px 10px 0 3px;
 }
 .card-box h3 {
     font-size: 27px;
@@ -35,7 +62,7 @@ body{
 }
 
 .card-box .card-box-footer {
-    position: absolute;
+    position: inherit;
     left: 0px;
     bottom: 0px;
     text-align: center;
@@ -44,10 +71,9 @@ body{
     background: rgba(0, 0, 0, 0.1);
     width: 100%;
     text-decoration: none;
+    top: 90px;
 }
-.card-box .card-box-footer i{
-    padding-left: 2px;
-}
+
 .card-box:hover .card-box-footer {
     background: rgba(0, 0, 0, 0.3);
 }
@@ -96,5 +122,79 @@ body{
 @media (max-width: 800px) {
     .container {
         margin-top: 6%;
+    }
+}
+
+a{
+    text-decoration: none;
+}
+header{
+    left: 0;
+    top: 0;
+    right: 0;
+    position: fixed;
+    display: flex;
+    min-height: 70px;
+    background-color: seagreen;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.logoP{
+    display: flex;
+    align-items: center;
+}
+.logoS{
+    display: flex;
+    align-items: center;
+}
+.logo-prin{
+    height: 50px;
+    margin-right: 10px;
+}
+.logo-sesion{
+    height: 45px;
+    padding-right: 10px;
+}
+.logo-nombre{
+    color: white;
+    font-size: 20px;
+}
+.user{
+    color: black;
+    font-size: 13px;
+    font-weight: bold;
+}
+ul{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.nav li a{
+    background-color: cadetblue;
+    color: white;
+    text-decoration: none;
+    padding: 5px 35px;
+    display: block;
+    border-radius: 5px;
+}
+.nav li a:hover{
+    background-color: turquoise;
+}
+.nav > li{
+    float: left;
+}
+.nav li ul{
+    display: none;
+    position: absolute;
+    min-width: 90px;
+}
+.nav li:hover > ul{
+    display: block;
+}
+@media (max-width:700px){
+    header{
+        flex-direction: column;
     }
 }

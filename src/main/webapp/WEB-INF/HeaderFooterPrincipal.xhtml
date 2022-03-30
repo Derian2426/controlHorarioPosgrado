@@ -3,31 +3,60 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+      xmlns:p="http://primefaces.org/ui">
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <h:outputStylesheet name="./css/default.css"/>
         <h:outputStylesheet name="./css/cssLayout.css"/>
+        <link href="../resources/css/home.css" rel="stylesheet" type="text/css"/>
         <title>Facelets Template</title>
     </h:head>
 
     <h:body>
-
+        <!-- MENU DE SESION 
         <div id="top" class="logo">
+            <a href=""  >
+                <h:graphicImage name="IconoPrin.png" library="imagenes"
+                                style="width: 55px; height: 55px;
+                                vertical-align: middle; margin-top: -12px"/>
+            </a>
             <ui:insert name="top">UNIDAD DE POSGRADO</ui:insert>
             
-        </div>
+
+            <h:graphicImage class="img" name="sesion.png" library="imagenes"/>
+            <span class="user">  <h:outputText value="User" style="font-size: 18px;"/></span>
+
+        </div>-->
+
+        <header>
+            <a href="#" class="logoP">
+                <h:graphicImage name="IconoPrin.png" library="imagenes" class="logo-prin"/>
+                <h2 class="logo-nombre">UNIDAD DE POSGRADO</h2>
+            </a>
+            <div class="logoS">
+                <h:graphicImage name="sesion.png" library="imagenes" class="logo-sesion"/>
+                <ul class="nav user">
+                    
+                    <li><a >User</a>
+                        <ul>
+                            <li><a href="">Perfil</a></li>
+                            <li><a href="">Salir</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </header>
 
         <div id="content" class="center_content">
             <ui:insert name="content">Content</ui:insert>
         </div>
         <!-- comment -->
         <div id="bottom" class="pie-pagina">
-            
+
             <ui:insert name="bottom">SISTEMA DE CONTROL DE HORARIOS</ui:insert>
         </div>
-        
+
     </h:body>
 
 </html>

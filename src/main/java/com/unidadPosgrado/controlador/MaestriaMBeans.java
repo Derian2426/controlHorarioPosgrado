@@ -20,12 +20,14 @@ import org.primefaces.event.RowEditEvent;
 public class MaestriaMBeans {
 
     private Maestria maestria;
+    private Maestria integracionMaestria;
     MaestriaDAO maestriaDAO;
     private List<Maestria> listaMaestria;
 
     public MaestriaMBeans() {
         maestria = new Maestria();
         maestriaDAO = new MaestriaDAO();
+        integracionMaestria = new Maestria();
     }
 
     @PostConstruct
@@ -47,6 +49,14 @@ public class MaestriaMBeans {
 
     public void setListaMaestria(List<Maestria> listaMaestria) {
         this.listaMaestria = listaMaestria;
+    }
+
+    public Maestria getIntegracionMaestria() {
+        return integracionMaestria;
+    }
+
+    public void setIntegracionMaestria(Maestria integracionMaestria) {
+        this.integracionMaestria = integracionMaestria;
     }
 
     public void registrarMaestria() {
@@ -87,6 +97,12 @@ public class MaestriaMBeans {
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+    }
+
+    public void llenaMaestria(Maestria maestria) {
+        integracionMaestria.setIdMaestria(maestria.getIdMaestria());
+        integracionMaestria.setNombre(maestria.getNombre());
+        integracionMaestria.setDescripcion(maestria.getDescripcion());
     }
 
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {

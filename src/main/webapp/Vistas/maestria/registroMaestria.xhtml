@@ -25,7 +25,7 @@
                 </p:toolbar>
 
 
-                <p:dialog header="Registro de Maestría" widgetVar="dlgMaestria" minHeight="100" width="550" showEffect="fade" modal="true">
+                <p:dialog header="Registro de Maestría" widgetVar="dlgMaestria" minHeight="100" width="550" showEffect="fade" modal="true" responsive="true">
                     <p:outputPanel id="nuevaMaestria" class="ui-fluid">
                         <div class="ui-fluid p-formgrid p-grid">
                             <div class="p-field p-col-12 p-md-12">
@@ -46,7 +46,7 @@
                         </div>
                     </p:outputPanel>
                 </p:dialog>
-                <p:dialog header="Listado de Maestrías" widgetVar="listadoMaestria" minHeight="300" width="1000" showEffect="fade" modal="true">
+                <p:dialog header="Listado de Maestrías" widgetVar="listadoMaestria" minHeight="300" width="1000" showEffect="fade" modal="true" responsive="true">
                     <div class="card">
                         <p:dataTable id="dtMaestrias" var="maestrias" value="#{maestriaMB.listaMaestria}" editable="true" paginatorPosition="bottom"
                                      style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
@@ -88,7 +88,7 @@
                         </p:dataTable>
                     </div>
                 </p:dialog>
-                <p:dialog header="Registro de Módulo" widgetVar="dlgModulo" minHeight="100" width="550" showEffect="fade" modal="true">
+                <p:dialog header="Registro de Módulo" widgetVar="dlgModulo" minHeight="100" width="550" showEffect="fade" modal="true" responsive="true">
                     <p:outputPanel id="nuevoModulo" class="ui-fluid">
                         <div class="ui-fluid p-formgrid p-grid">
                             <div class="p-field p-col-12 p-md-12">
@@ -113,7 +113,7 @@
                         </div>
                     </p:outputPanel>
                 </p:dialog>
-                <p:dialog header="Listado de Modulos" widgetVar="listadoModulo" minHeight="300" width="1000" showEffect="fade" modal="true">
+                <p:dialog header="Listado de Modulos" widgetVar="listadoModulo" minHeight="300" width="1000" showEffect="fade" modal="true" responsive="true">
                     <div class="card">
                         <p:dataTable id="dtModulo" var="modulo" value="#{moduloMB.listaModulo}" editable="true" paginatorPosition="bottom"
                                      style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
@@ -165,7 +165,7 @@
                         </p:dataTable>
                     </div>
                 </p:dialog>
-                <p:dialog header="Integración Módulos" widgetVar="listadoModuloMaestria" minHeight="300" width="1000" showEffect="fade" modal="true">
+                <p:dialog header="Integración Módulos" widgetVar="listadoModuloMaestria" height="500" width="1000" showEffect="fade" modal="true" responsive="true">
                     <p:outputPanel id="nuevaIntegracionModulo" class="ui-fluid">
                         <div class="card">
                             <div class="ui-fluid p-formgrid p-grid">
@@ -175,19 +175,58 @@
                                 </div>
                                 <div class="p-field p-col-12 p-md-2">
                                     <p:outputLabel value="Tiempo Mastría:"/>
-                                    <p:inputText maxlength="100" value="#" readonly="true"/>
+                                    <p:inputText maxlength="100" value="#{maestriaMB.integracionMaestria.tiempoMaestria}" readonly="true"/>
                                 </div>
                                 <div class="p-field p-col-12 p-md-3">
                                     <p:outputLabel value="." style="color: white" />
-                                    <p:commandButton style="margin-right: 6px;" value="Buscar" 
+                                    <p:commandButton style="margin-right: 6px;" value="Buscar Maestría" 
                                                      styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestria').show()">
                                     </p:commandButton>
                                 </div>
+                                <div class="p-field p-col-12 p-md-3">
+                                    <p:commandButton style="margin-right: 6px;" value="Buscar Módulos" 
+                                                     styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listModulosSeleccion').show()">
+                                    </p:commandButton>
+                                </div>
                             </div>
+                            <p:dataTable id="dtlistaModulosSeleccionado" var="modulocheck" value="#{maestriaMB.listaModulos}" editable="true" paginatorPosition="bottom"
+                                         style="margin-bottom:20px" reflow="true" rows="3" paginator="true">
+                                <p:column headerText="Nombre Módulo" style="text-align: justify">
+                                    <h:outputText value="#{modulocheck.nombreMateria}"/>
+                                </p:column>
+                                <p:column headerText="Descripción" style="text-align: justify">
+                                    <h:outputText value="#{modulocheck.descripcion}"/>
+                                </p:column>
+                                <p:column headerText="Tiempo" style="text-align: justify">
+                                    <h:outputText value="#{modulocheck.hora_materia}"/>
+                                </p:column>
+                                <!-- comment 
+                                <p:column headerText="Acciones" style="text-align: justify">
+                                    <p:commandButton icon="pi pi-trash" actionListener="#{maestriaMB.deleteFila(modulocheck)}"
+                                                     styleClass="edit-button rounded-button ui-button-danger"
+                                                     process="@this" update=":form_maestria:dtlistaModulosSeleccionado">
+
+                                    </p:commandButton>
+                                </p:column>-->
+                            </p:dataTable>
                         </div>
                     </p:outputPanel>
+                    <div class="p-grid p-justify-end">
+                        <p:commandButton value="Guardar"  
+                                         icon="pi pi-check"
+                                         styleClass="ui-button-primary"
+                                         oncomplete="PF('listadoModuloMaestria').hide()" style="margin-right: 6px;"
+                                         action="#{moduloMB.actualizaModulo()}"
+                                         actionListener="#{maestriaMB.registarIntegracionModulo()}"
+                                         update=":form_maestria:nuevaIntegracionModulo,:form_maestria:dtSeleccionModulo,:form_maestria:msgs"/>
+                        <p:commandButton value="Cancelar" icon="pi pi-times"
+                                         styleClass="ui-button-danger" actionListener="#{maestriaMB.vaciarCamposIntegracionModulo()}" action="#{moduloMB.actualizaModulo()}"
+                                         oncomplete="PF('listadoModuloMaestria').hide()" 
+                                         update=":form_maestria:nuevaIntegracionModulo,:form_maestria:dtSeleccionModulo,:form_maestria:msgs" 
+                                         style="margin-right: 6px;"/>
+                    </div>
                 </p:dialog>
-                <p:dialog header="Seleccione una de las  Maestrías" widgetVar="listMaestria" minHeight="300" width="800" showEffect="fade" modal="true">
+                <p:dialog header="Seleccione una de las  Maestrías" widgetVar="listMaestria" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
                     <div class="card">
                         <p:dataTable id="dtSeleccionMaestria" var="maestrias" value="#{maestriaMB.listaMaestria}" editable="true" paginatorPosition="bottom"
                                      style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
@@ -218,8 +257,33 @@
                         </p:dataTable>
                     </div>
                 </p:dialog>
+                <p:dialog header="Seleccione los Módulos" widgetVar="listModulosSeleccion" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
+                    <p:dataTable id="dtSeleccionModulo" var="modulo" value="#{moduloMB.listaModulo}" editable="true" paginatorPosition="bottom"
+                                 style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                 emptyMessage="No se encontro la maestría">
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-end">
+                                <p:inputText onkeyup="PF('customersTable3').filter()"
+                                             placeholder="Buscar Maestrías" />
+                            </div>
+                        </f:facet>
+                        <p:column headerText="Acciones" style="width:6rem">
+                            <p:selectBooleanCheckbox value="#{modulo.verifica}">
+                                <p:ajax listener="#{maestriaMB.addModulos(modulo)}" update=":form_maestria:dtlistaModulosSeleccionado,:form_maestria:nuevaIntegracionModulo"/>
+                            </p:selectBooleanCheckbox>
+                        </p:column>
+                        <p:column headerText="Nombre Maestría" style="text-align: justify">
+                            <h:outputText value="#{modulo.nombreMateria}"/>
+                        </p:column>
 
-
+                        <p:column headerText="Descripción" style="text-align: justify">
+                            <h:outputText value="#{modulo.descripcion}"/>
+                        </p:column>
+                        <p:column headerText="Tiempo" style="text-align: justify">
+                            <h:outputText value="#{modulo.hora_materia}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:dialog>
             </h:form>
         </div>
 

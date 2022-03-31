@@ -11,6 +11,7 @@ package com.unidadPosgrado.modelo;
  */
 public class Modulo {
 
+    private boolean verifica;
     private int idMateria;
     private String nombreMateria;
     private String descripcion;
@@ -56,6 +57,14 @@ public class Modulo {
 
     public void setHora_materia(float hora_materia) {
         this.hora_materia = hora_materia;
+    }
+
+    public boolean isVerifica() {
+        return verifica;
+    }
+
+    public void setVerifica(boolean verifica) {
+        this.verifica = verifica;
     }
 
 }

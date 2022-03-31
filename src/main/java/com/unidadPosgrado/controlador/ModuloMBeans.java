@@ -82,10 +82,13 @@ public class ModuloMBeans {
 
     public void onRowCancel(RowEditEvent<Modulo> event) {
         try {
-            showWarn("L edición del módulo de " + event.getObject().getNombreMateria()+ " fue cancelada.");
+            showWarn("La edición del módulo de " + event.getObject().getNombreMateria()+ " fue cancelada.");
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+    }
+    public void actualizaModulo(){
+        listaModulo = moduloDAO.getListaModulo();
     }
 
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {

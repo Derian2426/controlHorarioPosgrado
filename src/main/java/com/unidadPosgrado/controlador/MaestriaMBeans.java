@@ -7,6 +7,8 @@ package com.unidadPosgrado.controlador;
 
 import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Maestria;
+import com.unidadPosgrado.modelo.Modulo;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -23,11 +25,13 @@ public class MaestriaMBeans {
     private Maestria integracionMaestria;
     MaestriaDAO maestriaDAO;
     private List<Maestria> listaMaestria;
+    private List<Modulo> listaModulos;
 
     public MaestriaMBeans() {
         maestria = new Maestria();
         maestriaDAO = new MaestriaDAO();
         integracionMaestria = new Maestria();
+        listaModulos = new ArrayList<>();
     }
 
     @PostConstruct
@@ -57,6 +61,14 @@ public class MaestriaMBeans {
 
     public void setIntegracionMaestria(Maestria integracionMaestria) {
         this.integracionMaestria = integracionMaestria;
+    }
+
+    public List<Modulo> getListaModulos() {
+        return listaModulos;
+    }
+
+    public void setListaModulos(List<Modulo> listaModulos) {
+        this.listaModulos = listaModulos;
     }
 
     public void registrarMaestria() {
@@ -120,5 +132,55 @@ public class MaestriaMBeans {
 
     public void showError(String message) {
         addMessage(FacesMessage.SEVERITY_WARN, "Error", message);
+    }
+
+    public void deleteFila(Modulo modulo) {
+        listaModulos.remove(modulo);
+    }
+
+    public void addModulos(Modulo modulo) {
+        try {
+            if (modulo.isVerifica() && verificaModulo(modulo.getIdMateria())) {
+                listaModulos.add(modulo);
+                integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() + modulo.getHora_materia());
+            } else {
+                listaModulos.remove(modulo);
+                integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() - modulo.getHora_materia());
+            }
+        } catch (Exception e) {
+            showWarn("Error" + e.getMessage());
+        }
+
+    }
+
+    public boolean verificaModulo(int idModulo) {
+        boolean verifica = true;
+        for (Modulo modulo : listaModulos) {
+            if (modulo.getIdMateria() == idModulo) {
+                verifica = false;
+                break;
+            }
+        }
+        return verifica;
+    }
+
+    public void vaciarCamposIntegracionModulo() {
+        integracionMaestria = new Maestria();
+        listaModulos = new ArrayList<>();
+        showWarn("El registro se Cancelo.");
+    }
+
+    public void registarIntegracionModulo() {
+        try {
+            if (maestriaDAO.registrarIntegracionModulo(integracionMaestria, listaModulos) > 0) {
+                showInfo("Integración de Módulos registrado con éxito.");
+                integracionMaestria = new Maestria();
+                listaModulos = new ArrayList<>();
+            } else {
+                showWarn("Transacción fallida.");
+            }
+        } catch (Exception e) {
+            showWarn("Error" + e.getMessage());
+        }
     }
 }

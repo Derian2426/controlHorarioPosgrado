@@ -7,6 +7,7 @@ package com.unidadPosgrado.dao;
 
 import com.global.config.Conexion;
 import com.unidadPosgrado.modelo.Maestria;
+import com.unidadPosgrado.modelo.Modulo;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -64,9 +65,9 @@ public class MaestriaDAO {
     public int editarMaestria(Maestria maestria) {
         int mensaje = 0;
         sentencia = String.format("SELECT public.\"actualizarMaestria\"(\n"
-                + "	"+maestria.getIdMaestria()+", \n"
-                + "	'"+maestria.getNombre()+"', \n"
-                + "	'"+maestria.getDescripcion()+"'\n"
+                + "	" + maestria.getIdMaestria() + ", \n"
+                + "	'" + maestria.getNombre() + "', \n"
+                + "	'" + maestria.getDescripcion() + "'\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
@@ -75,6 +76,34 @@ public class MaestriaDAO {
             }
             return mensaje;
         } catch (SQLException e) {
+            return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public int registrarIntegracionModulo(Maestria integracionMaestria, List<Modulo> listaModulos) {
+        int mensaje = 0;
+        String consulta;
+        try {
+            sentencia = "[";
+            for (Modulo modulo : listaModulos) {
+                sentencia += "{\n"
+                        + "  \"idMatera\": " + modulo.getIdMateria() + ",\n"
+                        + "  \"idMaestria\": " + integracionMaestria.getIdMaestria() + "\n"
+                        + "},";
+            }
+            sentencia = sentencia.substring(0, sentencia.length() - 1);
+            sentencia += "]";
+            consulta = "SELECT public.\"registrarIntegracion\"(\n"
+                    + "	'" + sentencia + "'\n"
+                    + ")";
+            resultSet = conexion.ejecutarSql(consulta);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("registrarIntegracion"));
+            }
+            return mensaje;
+        } catch (NumberFormatException | SQLException e) {
             return mensaje;
         } finally {
             conexion.desconectar();

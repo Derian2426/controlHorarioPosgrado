@@ -14,6 +14,7 @@ public class Maestria {
     private int idMaestria;
     private String nombre;
     private String descripcion;
+    private float tiempoMaestria;
 
     public Maestria() {
     }
@@ -46,6 +47,14 @@ public class Maestria {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public float getTiempoMaestria() {
+        return tiempoMaestria;
+    }
+
+    public void setTiempoMaestria(float tiempoMaestria) {
+        this.tiempoMaestria = tiempoMaestria;
     }
 
 }

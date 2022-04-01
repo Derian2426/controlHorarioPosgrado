@@ -14,6 +14,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
 
 /**
  *
@@ -25,18 +27,27 @@ public class MaestriaMBeans {
     private Maestria integracionMaestria;
     MaestriaDAO maestriaDAO;
     private List<Maestria> listaMaestria;
+    List<Maestria> listaMaestriaxModulo;
     private List<Modulo> listaModulos;
+    private TreeNode rootIntegracion;
+    TreeNode maestriaTree;
+    TreeNode moduloNode;
+    List<Modulo> listaModulosNode;
 
     public MaestriaMBeans() {
         maestria = new Maestria();
         maestriaDAO = new MaestriaDAO();
         integracionMaestria = new Maestria();
         listaModulos = new ArrayList<>();
+        listaMaestriaxModulo = new ArrayList<>();
+        rootIntegracion = new DefaultTreeNode("Root Node", null);
     }
 
     @PostConstruct
     public void init() {
         listaMaestria = maestriaDAO.getListaMaestria();
+        listaMaestriaxModulo = maestriaDAO.getListaMaestriaxModulo();
+        llenarLista();
     }
 
     public Maestria getMaestria() {
@@ -71,16 +82,30 @@ public class MaestriaMBeans {
         this.listaModulos = listaModulos;
     }
 
+    public TreeNode getRootIntegracion() {
+        return rootIntegracion;
+    }
+
+    public void setRootIntegracion(TreeNode rootIntegracion) {
+        this.rootIntegracion = rootIntegracion;
+    }
+
     public void registrarMaestria() {
         try {
-            int resultadoRegistro = maestriaDAO.registrarMaestria(maestria);
-            if (resultadoRegistro > 0) {
-                showInfo(maestria.getNombre().trim().replace(".", ",") + " registrada con éxito.");
-                listaMaestria = maestriaDAO.getListaMaestria();
+            if ("".equals(maestria.getNombre())) {
+                showWarn("Debe ingresar un nombre a la maestría.");
+            } else if ("".equals(maestria.getDescripcion())) {
+                showWarn("Debe ingresar una descripción a la maestría.");
             } else {
-                showWarn(maestria.getNombre().trim().replace(".", ",") + " ya se encuentra registrada.");
+                int resultadoRegistro = maestriaDAO.registrarMaestria(maestria);
+                if (resultadoRegistro > 0) {
+                    showInfo(maestria.getNombre().trim().replace(".", ",") + " registrada con éxito.");
+                    listaMaestria = maestriaDAO.getListaMaestria();
+                } else {
+                    showWarn(maestria.getNombre().trim().replace(".", ",") + " ya se encuentra registrada.");
+                }
+                maestria = new Maestria();
             }
-            maestria = new Maestria();
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
@@ -88,16 +113,23 @@ public class MaestriaMBeans {
 
     public void onRowEdit(RowEditEvent<Maestria> event) {
         try {
-            Maestria editMaestria = new Maestria(event.getObject().getIdMaestria(),
-                    event.getObject().getNombre(), event.getObject().getDescripcion());
-            int resultadoRegistro = maestriaDAO.editarMaestria(editMaestria);
-            if (resultadoRegistro > 0) {
-                showInfo("Se actualizo con éxito, " + editMaestria.getNombre().trim());
+            if ("".equals(event.getObject().getNombre())) {
+                showWarn("No se puede modificar el registro porque el campo esta vacio.");
+            } else if ("".equals(event.getObject().getDescripcion())) {
+                showWarn("No se puede modificar el registro porque el campo esta vacio.");
             } else {
-                showWarn(editMaestria.getNombre().trim().replace(".", ",") + " no se pudo actualizar por que el registro ya se encuentra registrado."
-                        + " Solo se actualiza la descripción si el registro a editar es el mismo.");
-                listaMaestria = maestriaDAO.getListaMaestria();
+                Maestria editMaestria = new Maestria(event.getObject().getIdMaestria(),
+                        event.getObject().getNombre(), event.getObject().getDescripcion());
+                int resultadoRegistro = maestriaDAO.editarMaestria(editMaestria);
+                if (resultadoRegistro > 0) {
+                    showInfo("Se actualizo con éxito, " + editMaestria.getNombre().trim());
+                } else {
+                    showWarn(editMaestria.getNombre().trim().replace(".", ",") + " no se pudo actualizar por que el registro ya se encuentra registrado."
+                            + " Solo se actualiza la descripción si el registro a editar es el mismo.");
+                }
             }
+            listaMaestria = new ArrayList<>();
+            listaMaestria = maestriaDAO.getListaMaestria();
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
@@ -176,6 +208,12 @@ public class MaestriaMBeans {
                 showInfo("Integración de Módulos registrado con éxito.");
                 integracionMaestria = new Maestria();
                 listaModulos = new ArrayList<>();
+                listaMaestria = new ArrayList<>();
+                rootIntegracion = new DefaultTreeNode("Root Node", null);
+                listaMaestriaxModulo = new ArrayList<>();
+                listaMaestria = maestriaDAO.getListaMaestria();
+                listaMaestriaxModulo = maestriaDAO.getListaMaestriaxModulo();
+                llenarLista();
             } else {
                 showWarn("Transacción fallida.");
             }
@@ -183,4 +221,16 @@ public class MaestriaMBeans {
             showWarn("Error" + e.getMessage());
         }
     }
+
+    public void llenarLista() {
+        for (Maestria maestriaT : listaMaestriaxModulo) {
+            maestriaTree = new DefaultTreeNode(new Maestria(maestriaT.getIdMaestria(),
+                    maestriaT.getNombre(), maestriaT.getDescripcion(), maestriaT.getTiempoMaestria()), this.rootIntegracion);
+            listaModulosNode = maestriaDAO.getListaModulo(maestriaT.getIdMaestria());
+            for (Modulo moduloN : listaModulosNode) {
+                moduloNode = new DefaultTreeNode(new Maestria(moduloN.getIdMateria(), moduloN.getNombreMateria(), moduloN.getDescripcion(), moduloN.getHora_materia()), maestriaTree);
+            }
+        }
+    }
+
 }

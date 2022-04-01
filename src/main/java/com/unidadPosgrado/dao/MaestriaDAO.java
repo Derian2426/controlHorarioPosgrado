@@ -43,6 +43,22 @@ public class MaestriaDAO {
         }
     }
 
+    public List<Maestria> getListaMaestriaxModulo() {
+        List<Maestria> listadoMaestria = new ArrayList<>();
+        sentencia = String.format("SELECT * from public.\"tiempoMaestria\"()");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoMaestria.add(new Maestria(resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"), resultSet.getString("_descripcion"),resultSet.getFloat("_hora")));
+            }
+            return listadoMaestria;
+        } catch (SQLException e) {
+            return listadoMaestria;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
     public int registrarMaestria(Maestria maestria) {
         int mensaje = 0;
         sentencia = String.format("SELECT public.\"registrarMaestria\"(\n"
@@ -105,6 +121,24 @@ public class MaestriaDAO {
             return mensaje;
         } catch (NumberFormatException | SQLException e) {
             return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public List<Modulo> getListaModulo(int idModulo) {
+        List<Modulo> listadoModulo = new ArrayList<>();
+        sentencia = String.format("SELECT * from public.\"listaModuloxMaestria\"(\n"
+                + "	" + idModulo + "\n"
+                + ")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoModulo.add(new Modulo(resultSet.getInt("_id_materia"), resultSet.getString("_nombre_materia"), resultSet.getString("_descripcion"), resultSet.getFloat("_hora")));
+            }
+            return listadoModulo;
+        } catch (SQLException e) {
+            return listadoModulo;
         } finally {
             conexion.desconectar();
         }

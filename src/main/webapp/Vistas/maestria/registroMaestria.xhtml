@@ -23,6 +23,29 @@
                     </p:toolbarGroup>
 
                 </p:toolbar>
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <div class="card">
+                            <p:treeTable id="integracionModulo" value="#{maestriaMB.rootIntegracion}" var="document" paginator="true" rows="5" 
+                                         scrollable="true" paginatorPosition="bottom" scrollHeight="250" size="small"
+                                         selectionMode="single">
+                                <f:facet name="header">
+                                    Programas de maestría
+                                </f:facet>
+
+                                <p:column headerText="Maestría" style="text-align: justify">
+                                    <h:outputText value="#{document.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Descrición">
+                                    <h:outputText value="#{document.descripcion}"/>
+                                </p:column>
+                                <p:column headerText="Tiempo" style="text-align: center">
+                                    <h:outputText value="#{document.tiempoMaestria}"/>
+                                </p:column>
+                            </p:treeTable>
+                        </div>
+                    </p:toolbarGroup>
+                </p:toolbar>
 
 
                 <p:dialog header="Registro de Maestría" widgetVar="dlgMaestria" minHeight="100" width="550" showEffect="fade" modal="true" responsive="true">
@@ -38,7 +61,7 @@
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{maestriaMB.registrarMaestria()}"
-                                                 update=":form_maestria:dtMaestrias,:form_maestria:msgs,nuevaMaestria" onclick="PF('dlgMaestria').hide()"/>
+                                                 update=":form_maestria:dtMaestrias,:form_maestria:msgs,nuevaMaestria,:form_maestria:dtSeleccionMaestria" onclick="PF('dlgMaestria').hide()"/>
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgMaestria').hide()"/>
@@ -218,7 +241,7 @@
                                          oncomplete="PF('listadoModuloMaestria').hide()" style="margin-right: 6px;"
                                          action="#{moduloMB.actualizaModulo()}"
                                          actionListener="#{maestriaMB.registarIntegracionModulo()}"
-                                         update=":form_maestria:nuevaIntegracionModulo,:form_maestria:dtSeleccionModulo,:form_maestria:msgs"/>
+                                         update=":form_maestria:nuevaIntegracionModulo,:form_maestria:dtSeleccionModulo,:form_maestria:msgs,:form_maestria:integracionModulo,:form_maestria:dtMaestrias"/>
                         <p:commandButton value="Cancelar" icon="pi pi-times"
                                          styleClass="ui-button-danger" actionListener="#{maestriaMB.vaciarCamposIntegracionModulo()}" action="#{moduloMB.actualizaModulo()}"
                                          oncomplete="PF('listadoModuloMaestria').hide()" 

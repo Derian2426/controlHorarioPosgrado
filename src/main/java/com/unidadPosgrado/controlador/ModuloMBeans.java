@@ -7,6 +7,7 @@ package com.unidadPosgrado.controlador;
 
 import com.unidadPosgrado.dao.ModuloDAO;
 import com.unidadPosgrado.modelo.Modulo;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -51,30 +52,49 @@ public class ModuloMBeans {
 
     public void registrarModulo() {
         try {
-            int resultadoRegistro = moduloDAO.registrarModulo(modulo);
-            if (resultadoRegistro > 0) {
-                showInfo(modulo.getNombreMateria().trim().replace(".", ",") + " registrado con éxito.");
-                listaModulo = moduloDAO.getListaModulo();
+            if ("".equals(modulo.getNombreMateria())) {
+                showWarn("Ingrese un nombre al módulo");
+            } else if ("".equals(modulo.getDescripcion())) {
+                showWarn("Ingrese una descripción al módulo");
+            } else if (modulo.getHora_materia() < 1) {
+                showWarn("Ingrese el tiempo que tardara el módulo en terminar.");
             } else {
-                showWarn(modulo.getNombreMateria().trim().replace(".", ",") + " ya se encuentra registrado.");
+                int resultadoRegistro = moduloDAO.registrarModulo(modulo);
+                if (resultadoRegistro > 0) {
+                    showInfo(modulo.getNombreMateria().trim().replace(".", ",") + " registrado con éxito.");
+                    listaModulo = moduloDAO.getListaModulo();
+                } else {
+                    showWarn(modulo.getNombreMateria().trim().replace(".", ",") + " ya se encuentra registrado.");
+                }
+                modulo = new Modulo();
             }
-            modulo = new Modulo();
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
     }
+
     public void onRowEdit(RowEditEvent<Modulo> event) {
         try {
-            Modulo editModulo = new Modulo(event.getObject().getIdMateria(),
-                    event.getObject().getNombreMateria(), event.getObject().getDescripcion(),event.getObject().getHora_materia());
-            int resultadoRegistro = moduloDAO.editarModulo(editModulo);
-            if (resultadoRegistro > 0) {
-                showInfo("Se actualizo con éxito, " + editModulo.getNombreMateria().trim());
+
+            if ("".equals(event.getObject().getNombreMateria())) {
+                showWarn("No se puede modificar el registro porque el campo esta vacio.");
+            } else if ("".equals(event.getObject().getDescripcion())) {
+                showWarn("No se puede modificar el registro porque el campo esta vacio.");
+            } else if (event.getObject().getHora_materia() < 1) {
+                showWarn("No se puede modificar el registro porque el campo esta vacio o es un número negativo.");
             } else {
-                showWarn(editModulo.getNombreMateria().trim().replace(".", ",") + " no se pudo actualizar por que el registro ya se encuentra registrado."
-                        + " Solo se actualiza la descripción si el registro a editar es el mismo.");
-                listaModulo = moduloDAO.getListaModulo();
+                Modulo editModulo = new Modulo(event.getObject().getIdMateria(),
+                        event.getObject().getNombreMateria(), event.getObject().getDescripcion(), event.getObject().getHora_materia());
+                int resultadoRegistro = moduloDAO.editarModulo(editModulo);
+                if (resultadoRegistro > 0) {
+                    showInfo("Se actualizo con éxito, " + editModulo.getNombreMateria().trim());
+                } else {
+                    showWarn(editModulo.getNombreMateria().trim().replace(".", ",") + " no se pudo actualizar por que el registro ya se encuentra registrado."
+                            + " Solo se actualiza la descripción si el registro a editar es el mismo.");
+                }
             }
+            listaModulo= new ArrayList<>();
+            listaModulo = moduloDAO.getListaModulo();
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
@@ -82,12 +102,13 @@ public class ModuloMBeans {
 
     public void onRowCancel(RowEditEvent<Modulo> event) {
         try {
-            showWarn("La edición del módulo de " + event.getObject().getNombreMateria()+ " fue cancelada.");
+            showWarn("La edición del módulo de " + event.getObject().getNombreMateria() + " fue cancelada.");
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
     }
-    public void actualizaModulo(){
+
+    public void actualizaModulo() {
         listaModulo = moduloDAO.getListaModulo();
     }
 

@@ -21,14 +21,19 @@
             <div class="logoS">
                 <h:graphicImage name="sesion.png" library="imagenes" class="logo-sesion"/>
                 <ul class="nav user">
-
-                    <li><a >User</a>
-                        <ul>
-                            <li><a href="" style="text-decoration: none">Perfil</a></li>
-                            <li><a href="" style="text-decoration: none">Salir</a></li>
-                        </ul>
-                    </li>
+                    <a>User</a>
                 </ul>
+                <div class="menu">
+                    <a class="flecha" href="#" style="text-decoration: none">
+                        <i class="pi pi-angle-down"></i>
+                    </a>
+                    <a class="perfil" href="#" style="text-decoration: none">
+                        <i class="pi pi-user"></i>
+                    </a>
+                    <a class="salir" href="#" style="text-decoration: none">
+                        <i class="pi pi-sign-out"></i>
+                    </a>
+                </div>
             </div>
         </header>
 
@@ -36,10 +41,10 @@
             <ui:insert name="content">Content</ui:insert>
         </div>
         <!-- comment -->
-        <div id="bottom" class="pie-pagina">
+        <footer>
+            <h2 class="nombre-final">SISTEMA DE CONTROL DE HORARIOS</h2>
+        </footer>
 
-            <ui:insert name="bottom">SISTEMA DE CONTROL DE HORARIOS</ui:insert>
-        </div>
         <h:outputStylesheet name="home.css" library="css"/>
         <h:outputStylesheet name="primeflex.min.css" library="css"/>
 

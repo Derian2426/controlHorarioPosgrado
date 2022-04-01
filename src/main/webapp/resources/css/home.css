@@ -1,16 +1,15 @@
+/*CUADROS DE MODULOS*/
 body{
     background:white;
     margin: 0;
     padding-top: 5rem;
 }
-
 .container {
     width: 95%;
     margin: auto;
     padding-top: 1rem;
     padding-bottom: 2rem;
 }
-
 #bottom {
     width: 100%;
     height: 50px;
@@ -20,20 +19,16 @@ body{
     padding: 20px;
     color: white;
 }
-
 .card-box {
     position: initial;
     color: #fff;
     padding: 5px 10px 10px;
     margin: 20px 0px;
-    
 }
-
 .card-box:hover {
     text-decoration: none;
     color: #f1f1f1;
 }
-
 .card-box .inner {
     padding: 2px 10px 0 3px;
 }
@@ -45,7 +40,6 @@ body{
     padding: 0;
     text-align: center;
 }
-
 .card-box .card-box-footer {
     position: inherit;
     left: 0px;
@@ -65,7 +59,6 @@ body{
     margin:10px auto;
     display:block;
 }
-
 .card-box:hover .card-box-footer {
     background: rgba(0, 0, 0, 0.3);
 }
@@ -93,22 +86,27 @@ body{
 .bg-yellow {
     background-color: #D85CE6 !important;
 }
-
-.pie-pagina{
-    font-size: 20px;
-    font-weight: bold;
-    white-space: nowrap;
-    padding: 0;
-    text-align: left;
-}
-
 @media (max-width: 800px) {
     .container {
         margin-top: 6%;
     }
 }
+/*PIE DE PAGINA*/
+footer{
+    width: 100%;
+    height: 50px;
+    bottom: 0;
+    position: fixed;
+    display: flex;
+    min-height: 50px;
+    background-color: seagreen;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    color: white;
+}
 
-
+/*CABECERA*/
 header{
     left: 0;
     top: 0;
@@ -121,7 +119,6 @@ header{
     align-items: center;
     padding: 10px;
 }
-
 .logoP{
     display: flex;
     align-items: center;
@@ -135,7 +132,7 @@ header{
     margin-right: 10px;
 }
 .logo-sesion{
-    height: 45px;
+    height: 40px;
     padding-right: 10px;
 }
 .logo-nombre{
@@ -146,36 +143,98 @@ header{
     color: black;
     font-size: 13px;
     font-weight: bold;
-}
-ul{
+    margin-right: 95px;
     padding: 0;
-    margin: 0;
-    list-style: none;
-}
-.nav li a{
-    background-color: cadetblue;
-    color: white;
-    text-decoration: none;
-    padding: 5px 35px;
-    display: block;
-    border-radius: 5px;
-}
-.nav li a:hover{
-    background-color: turquoise;
-}
-.nav > li{
-    float: left;
-}
-.nav li ul{
-    display: none;
-    position: absolute;
-    min-width: 90px;
-}
-.nav li:hover > ul{
-    display: block;
 }
 @media (max-width:700px){
     header{
         flex-direction: var;
     }
+}
+
+/*MENU DE SESION*/
+.menu{
+    position: absolute;
+    background-color: white;
+    padding: 5px;
+    top: 17%;
+    left: 95%;
+    transform: translate(-50%, -5%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    border-radius: 40px;
+}
+.flecha{
+    background-color: #aaa;
+    border-radius: 50%;
+    width: 33px;
+    height: 33px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1px 0px;
+    transform: rotate(90deg);
+    transition: .5s;
+}
+.flecha i{
+    color: white;
+    font-size: 14px;
+}
+.perfil i{
+    color: white;
+    font-size: 14px;
+}
+.salir i{
+    color: white;
+    font-size: 14px;
+}
+.perfil {
+    color: transparent;
+    background-color: #A556E6;
+    border-radius: 50%;
+    width: 0px;
+    height: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 3px 0px;
+    transition: .5s;
+}
+.salir{
+    color: transparent;
+    background-color: #900;
+    border-radius: 50%;
+    width: 0px;
+    height: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 3px 0px;
+    transition: .5s;
+}
+.menu:hover > .flecha{
+    background-color: #4BB0E6;
+    transform: rotate(0deg);
+}
+.menu:hover > .perfil{
+    width: 30px;
+    height: 30px;
+    color: white;
+}
+.menu:hover > .salir{
+    width: 30px;
+    height: 30px;
+    color: white;
+}
+.menu:hover > .center_content{
+    padding-top: 10rem;
+}
+.perfil:hover{
+    background-color: deepskyblue;
+}
+.salir:hover{
+    background-color: deepskyblue;
 }

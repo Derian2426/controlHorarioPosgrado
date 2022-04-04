@@ -29,7 +29,7 @@
                 <p:toolbar>
                     <p:toolbarGroup>
                         <div class="card">
-                            <p:treeTable id="integracionModulo" value="#{maestriaMB.rootIntegracion}" var="document" paginator="true" rows="5" 
+                            <p:treeTable id="integracionModulo" value="#{maestriaMB.rootIntegracion}" var="document" paginator="true" rows="4" 
                                          scrollable="true" paginatorPosition="bottom" scrollHeight="250" size="small"
                                          selectionMode="single">
                                 <f:facet name="header">
@@ -268,7 +268,7 @@
                                     class="rounded-button"
                                     icon="pi pi-check">
                                     <p:ajax listener="#{maestriaMB.llenaMaestria(maestrias)}" 
-                                            update=":form_maestria:nuevaIntegracionModulo"
+                                            update=":form_maestria:nuevaIntegracionModulo,:form_maestria:msgs"
                                             oncomplete="PF('listMaestria').hide()"/>
 
                                 </p:commandButton>
@@ -295,7 +295,7 @@
                         </f:facet>
                         <p:column headerText="Acciones" style="width:6rem">
                             <p:selectBooleanCheckbox value="#{modulo.verifica}">
-                                <p:ajax listener="#{maestriaMB.addModulos(modulo)}" update=":form_maestria:dtlistaModulosSeleccionado,:form_maestria:nuevaIntegracionModulo"/>
+                                <p:ajax listener="#{maestriaMB.addModulos(modulo)}" update=":form_maestria:dtlistaModulosSeleccionado,:form_maestria:nuevaIntegracionModulo,:form_maestria:msgs,:form_maestria:dtSeleccionModulo"/>
                             </p:selectBooleanCheckbox>
                         </p:column>
                         <p:column headerText="Nombre Maestría" style="text-align: justify">

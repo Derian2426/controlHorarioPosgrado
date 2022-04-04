@@ -33,6 +33,7 @@ public class MaestriaMBeans {
     TreeNode maestriaTree;
     TreeNode moduloNode;
     List<Modulo> listaModulosNode;
+    List<Modulo> listaModulosVerificacion;
 
     public MaestriaMBeans() {
         maestria = new Maestria();
@@ -40,6 +41,7 @@ public class MaestriaMBeans {
         integracionMaestria = new Maestria();
         listaModulos = new ArrayList<>();
         listaMaestriaxModulo = new ArrayList<>();
+        listaModulosVerificacion = new ArrayList<>();
         rootIntegracion = new DefaultTreeNode("Root Node", null);
     }
 
@@ -146,6 +148,11 @@ public class MaestriaMBeans {
         integracionMaestria.setIdMaestria(maestria.getIdMaestria());
         integracionMaestria.setNombre(maestria.getNombre());
         integracionMaestria.setDescripcion(maestria.getDescripcion());
+        listaModulosVerificacion = maestriaDAO.getListaModulo(maestria.getIdMaestria());
+        if (listaModulosVerificacion.size() > 0) {
+            showWarn("La maestria Seleccionada ya se encuetra con módulos Integrados, se agregaran solo "
+                    + "los módulos que no se encuentren en el registro.");
+        }
     }
 
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
@@ -171,17 +178,34 @@ public class MaestriaMBeans {
 
     public void addModulos(Modulo modulo) {
         try {
-            if (modulo.isVerifica() && verificaModulo(modulo.getIdMateria())) {
-                listaModulos.add(modulo);
-                integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() + modulo.getHora_materia());
-            } else {
-                listaModulos.remove(modulo);
-                integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() - modulo.getHora_materia());
+            if (!verfifiaIntegracio(modulo.getIdMateria())) {
+                if (modulo.isVerifica() && verificaModulo(modulo.getIdMateria())) {
+                    listaModulos.add(modulo);
+                    integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() + modulo.getHora_materia());
+                } else {
+                    listaModulos.remove(modulo);
+                    integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() - modulo.getHora_materia());
+                }
+            }else{
+                showWarn(modulo.getNombreMateria().replace(".", ",")+" ya se encuentra registrada, seleccione otro módulo.");
+                modulo.setVerifica(false);
             }
+
         } catch (Exception e) {
             showWarn("Error" + e.getMessage());
         }
 
+    }
+
+    public boolean verfifiaIntegracio(int idModulo) {
+        boolean verifica = false;
+        for (Modulo modulo : listaModulosVerificacion) {
+            if (modulo.getIdMateria() == idModulo) {
+                verifica = true;
+                break;
+            }
+        }
+        return verifica;
     }
 
     public boolean verificaModulo(int idModulo) {

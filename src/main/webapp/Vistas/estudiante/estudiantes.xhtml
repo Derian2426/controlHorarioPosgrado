@@ -6,7 +6,7 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
+
     <ui:define name="titulo">
         Estudiantes
     </ui:define>
@@ -18,7 +18,8 @@
                 <p:toolbar>
                     <p:toolbarGroup>
                         <div class="p-d-flex p-jc-between p-ai-center">
-                            <p:commandButton value="Nuevo Estudiante" icon="pi pi-plus" type="button" onclick="PF('dlgEstudiante').show()"/>
+                            <div class="ui-inputgroup-addon"><i class="pi pi-shopping-cart"/></div>
+                            <p:commandButton value="Nuevo Estudiante" style="position: initial"  onclick="PF('dlgEstudiante').show()"/>
                         </div>
                     </p:toolbarGroup>
                 </p:toolbar>
@@ -111,38 +112,45 @@
                     </p:dataTable>
                 </div>
                 <!-- DIALOGO REGISTRAR ESTUDIANTES -->
-                <p:dialog header="Registro de Estudiante" widgetVar="dlgEstudiante" minHeight="100" width="550" showEffect="fade" modal="true" responsive="true">
+                <p:dialog header="Registro de Estudiante" widgetVar="dlgEstudiante"  width="850" showEffect="fade" modal="true" responsive="true">
                     <p:outputPanel id="nuevoEstudiante" class="ui-fluid">
                         <div class="ui-fluid p-formgrid p-grid">
-                            <div class="p-field p-col-12 p-md-12">
+                            <div class="p-field p-col-12 p-md-6">
                                 <p:outputLabel value="Nombre:"/>
                                 <p:inputText maxlength="30" value="#{estudianteMB.estudiante.nombre_estudiante}"/>
                             </div>
-                            <div class="p-field p-col-12 p-md-12">
+                            <div class="p-field p-col-12 p-md-6">
                                 <p:outputLabel value="Apelido:"/>
                                 <p:inputText maxlength="30" value="#{estudianteMB.estudiante.apellido_estudiante}"/>
                             </div>
-                            <div class="p-field p-col-12 p-md-12">
+                            <div class="p-field p-col-12 p-md-6">
                                 <p:outputLabel value="Teléfono:"/>
                                 <p:inputText maxlength="15" value="#{estudianteMB.estudiante.telefono_estudiante}"/>
                             </div>
-                            <div class="p-field p-col-12 p-md-12">
+                            <div class="p-field p-col-12 p-md-6">
                                 <p:outputLabel value="Cédula:"/>
                                 <p:inputText maxlength="15" value="#{estudianteMB.estudiante.cedula_estudiante}"/>
                             </div>
-                            <div class="p-field p-col-12 p-md-12">
+                            <div class="p-field p-col-12 p-md-6">
                                 <p:outputLabel value="Género:"/>
-                                <p:inputText maxlength="20" value="#{estudianteMB.estudiante.sexo}"/>
+                                <p:selectOneMenu id="genero" value="#{estudianteMB.estudiante.sexo}">
+                                    <p:ajax update="@this" process="@this"/>
+                                    <f:selectItem itemLabel="Masculino" itemValue="Masculino"/>
+                                    <f:selectItem itemLabel="Femenino" itemValue="Femenino"/>
+                                    <f:selectItem itemLabel="Otro" itemValue="Otro"/>
+                                </p:selectOneMenu>
                             </div>
-                            <div class="p-field p-col-12 p-md-12">
+                            <div class="p-field p-col-12 p-md-6">
                                 <p:outputLabel value="Correo:"/>
                                 <p:inputText maxlength="120" value="#{estudianteMB.estudiante.correo_estudiante}"/>
                             </div>
-                            <div class="p-field p-col-12 p-md-6">
+                        </div>
+                        <div class="p-grid p-justify-end">
+                            <div class="p-col-4">
                                 <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{estudianteMB.registrarEstudiante()}"
                                                  update=":form_estudiante:msgs,nuevoEstudiante,:form_estudiante:dtEstudiante" onclick="PF('dlgEstudiante').hide()"/>
                             </div>
-                            <div class="p-field p-col-12 p-md-6">
+                            <div class="p-field p-col-12 p-md-4">
                                 <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgEstudiante').hide()"/>
                             </div>
                         </div>

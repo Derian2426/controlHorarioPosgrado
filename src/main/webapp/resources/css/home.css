@@ -239,3 +239,14 @@ header{
 .salir:hover{
     background-color: deepskyblue;
 }
+
+.ui-inputgroup-addon {
+    background-color: #2494f4 !important;
+    color: #eff9fc !important;
+    height: 40px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    display: flex;
+    flex-direction: column;
+    
+}

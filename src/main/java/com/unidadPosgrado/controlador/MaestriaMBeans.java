@@ -124,8 +124,7 @@ public class MaestriaMBeans {
                 if (resultadoRegistro > 0) {
                     showInfo("Se actualizo con éxito, " + editMaestria.getNombre().trim());
                 } else {
-                    showWarn(editMaestria.getNombre().trim().replace(".", ",") + " no se pudo actualizar por que el registro ya se encuentra registrado."
-                            + " Solo se actualiza la descripción si el registro a editar es el mismo.");
+                    showWarn(editMaestria.getNombre().trim().replace(".", ",") + " se actualizo el registro con exito.");
                 }
             }
             listaMaestria = new ArrayList<>();

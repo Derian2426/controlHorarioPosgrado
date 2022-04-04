@@ -239,3 +239,15 @@ header{
 .salir:hover{
     background-color: deepskyblue;
 }
+
+#contenedor-carga{
+    
+}
+#carga{
+    border: 15px solid #ccc;
+    border-top-color: #F5786E;
+    border-top-style: groove;
+    height: 100px;
+    width: 100px;
+    border-radius: 100%;
+}

@@ -7,9 +7,14 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="icon" type="image/png" href="https://www.uteq.edu.ec/images/page/4/logoUTEQoriginal1.png"/>
         <h:outputStylesheet name="./css/default.css"/>
         <h:outputStylesheet name="./css/cssLayout.css"/>
-        <title>Facelets Template</title>
+        <title>
+            <ui:insert name="titulo">
+                Inicio
+            </ui:insert>
+        </title>
     </h:head>
 
     <h:body>

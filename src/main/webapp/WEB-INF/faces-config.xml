@@ -38,4 +38,19 @@
         <managed-bean-class>com.unidadPosgrado.controlador.ModuloMBeans</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>estudianteMB</managed-bean-name>
+        <managed-bean-class>com.unidadPosgrado.controlador.EstudianteMBeans</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>estudiante</managed-bean-name>
+        <managed-bean-class>com.unidadPosgrado.modelo.Estudiante</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>estudianteDAO</managed-bean-name>
+        <managed-bean-class>com.unidadPosgrado.dao.EstudianteDAO</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
 </faces-config>

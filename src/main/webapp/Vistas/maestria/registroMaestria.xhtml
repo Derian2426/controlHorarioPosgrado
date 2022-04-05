@@ -48,10 +48,10 @@
                             </p:treeTable>
                         </div>
                     </p:toolbarGroup>
-                </p:toolbar>
+                </p:toolbar>               
 
 
-                <p:dialog header="Registro de Maestría" widgetVar="dlgMaestria" minHeight="100" width="550" showEffect="fade" modal="true" responsive="true">
+                <p:dialog header="Registro de Maestría" widgetVar="dlgMaestria" minHeight="100" width="550" showEffect="fade" modal="true" responsive="true" position="center">
                     <p:outputPanel id="nuevaMaestria" class="ui-fluid">
                         <div class="ui-fluid p-formgrid p-grid">
                             <div class="p-field p-col-12 p-md-12">
@@ -64,7 +64,7 @@
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{maestriaMB.registrarMaestria()}"
-                                                 update=":form_maestria:dtMaestrias,:form_maestria:msgs,nuevaMaestria,:form_maestria:dtSeleccionMaestria" onclick="PF('dlgMaestria').hide()"/>
+                                                 update=":form_maestria:dtMaestrias,:form_maestria:msgs,nuevaMaestria,:form_maestria:dtSeleccionMaestria"/>
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgMaestria').hide()"/>
@@ -72,7 +72,7 @@
                         </div>
                     </p:outputPanel>
                 </p:dialog>
-                <p:dialog header="Listado de Maestrías" widgetVar="listadoMaestria" minHeight="300" width="1000" showEffect="fade" modal="true" responsive="true">
+                <p:dialog header="Listado de Maestrías" widgetVar="listadoMaestria" height="400" width="900" showEffect="fade" modal="true" responsive="true">
                     <div class="card">
                         <p:dataTable id="dtMaestrias" var="maestrias" value="#{maestriaMB.listaMaestria}" editable="true" paginatorPosition="bottom"
                                      style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
@@ -131,7 +131,7 @@
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{moduloMB.registrarModulo()}"
-                                                 update=":form_maestria:msgs,nuevoModulo,:form_maestria:dtModulo" onclick="PF('dlgModulo').hide()"/>
+                                                 update=":form_maestria:msgs,nuevoModulo,:form_maestria:dtModulo"/>
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgModulo').hide()"/>
@@ -211,7 +211,8 @@
                                 </div>
                                 <div class="p-field p-col-12 p-md-3">
                                     <p:commandButton style="margin-right: 6px;" value="Buscar Módulos" 
-                                                     styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listModulosSeleccion').show()">
+                                                     styleClass="ui-button-secondary" icon="pi pi-search"
+                                                     actionListener="#{maestriaMB.verificaCampos()}" update=":form_maestria:msgs">
                                     </p:commandButton>
                                 </div>
                             </div>
@@ -241,7 +242,7 @@
                         <p:commandButton value="Guardar"  
                                          icon="pi pi-check"
                                          styleClass="ui-button-primary"
-                                         oncomplete="PF('listadoModuloMaestria').hide()" style="margin-right: 6px;"
+                                         style="margin-right: 6px;"
                                          action="#{moduloMB.actualizaModulo()}"
                                          actionListener="#{maestriaMB.registarIntegracionModulo()}"
                                          update=":form_maestria:nuevaIntegracionModulo,:form_maestria:dtSeleccionModulo,:form_maestria:msgs,:form_maestria:integracionModulo,:form_maestria:dtMaestrias"/>

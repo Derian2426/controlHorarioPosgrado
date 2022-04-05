@@ -13,6 +13,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -102,6 +103,7 @@ public class MaestriaMBeans {
                 int resultadoRegistro = maestriaDAO.registrarMaestria(maestria);
                 if (resultadoRegistro > 0) {
                     showInfo(maestria.getNombre().trim().replace(".", ",") + " registrada con éxito.");
+                    PrimeFaces.current().executeScript("PF('dlgMaestria').hide()");
                     listaMaestria = maestriaDAO.getListaMaestria();
                 } else {
                     showWarn(maestria.getNombre().trim().replace(".", ",") + " ya se encuentra registrada.");
@@ -115,9 +117,9 @@ public class MaestriaMBeans {
 
     public void onRowEdit(RowEditEvent<Maestria> event) {
         try {
-            if ("".equals(event.getObject().getNombre())) {
+            if ("".equals(event.getObject().getNombre().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            } else if ("".equals(event.getObject().getDescripcion())) {
+            } else if ("".equals(event.getObject().getDescripcion().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
             } else {
                 Maestria editMaestria = new Maestria(event.getObject().getIdMaestria(),
@@ -186,8 +188,8 @@ public class MaestriaMBeans {
                     listaModulos.remove(modulo);
                     integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() - modulo.getHora_materia());
                 }
-            }else{
-                showWarn(modulo.getNombreMateria().replace(".", ",")+" ya se encuentra registrada, seleccione otro módulo.");
+            } else {
+                showWarn(modulo.getNombreMateria().replace(".", ",") + " ya se encuentra registrada, seleccione otro módulo.");
                 modulo.setVerifica(false);
             }
 
@@ -227,6 +229,11 @@ public class MaestriaMBeans {
 
     public void registarIntegracionModulo() {
         try {
+            if (integracionMaestria.getNombre() == null && integracionMaestria.getIdMaestria() == 0) {
+                showWarn("Seleccione una Maestría.");
+            } else if (listaModulos.size() < 1) {
+                showWarn("Seleccione al menos un módulo.");
+            }
             if (maestriaDAO.registrarIntegracionModulo(integracionMaestria, listaModulos) > 0) {
                 showInfo("Integración de Módulos registrado con éxito.");
                 integracionMaestria = new Maestria();
@@ -236,6 +243,7 @@ public class MaestriaMBeans {
                 listaMaestriaxModulo = new ArrayList<>();
                 listaMaestria = maestriaDAO.getListaMaestria();
                 listaMaestriaxModulo = maestriaDAO.getListaMaestriaxModulo();
+                PrimeFaces.current().executeScript("PF('listadoModuloMaestria').hide()");
                 llenarLista();
             } else {
                 showWarn("Transacción fallida.");
@@ -253,6 +261,14 @@ public class MaestriaMBeans {
             for (Modulo moduloN : listaModulosNode) {
                 moduloNode = new DefaultTreeNode(new Maestria(moduloN.getIdMateria(), moduloN.getNombreMateria(), moduloN.getDescripcion(), moduloN.getHora_materia()), maestriaTree);
             }
+        }
+    }
+
+    public void verificaCampos() {
+        if (integracionMaestria.getNombre() == null && integracionMaestria.getIdMaestria() == 0) {
+            showWarn("Seleccione una Maestría.");
+        } else {
+            PrimeFaces.current().executeScript("PF('listModulosSeleccion').show()");
         }
     }
 

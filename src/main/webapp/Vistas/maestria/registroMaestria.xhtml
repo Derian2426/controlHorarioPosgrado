@@ -84,7 +84,7 @@
                                      emptyMessage="No se encontro la maestría">
                             <f:facet name="header">
                                 <span class="ui-input-icon-left">
-                                    <p:inputText placeholder="Buscar Maestría" value="#{maestriaMB.maestria.nombre}" style="margin-right: 6px">
+                                    <p:inputText placeholder="Buscar Maestría" value="#{maestriaMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
                                         <p:ajax event="blur" listener="#{maestriaMB.buscarMaestria()}" update=":form_maestria:dtMaestrias"></p:ajax>
                                     </p:inputText>
                                     <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
@@ -153,7 +153,7 @@
                                      emptyMessage="No se encontro el módulo">
                             <f:facet name="header">
                                 <span class="ui-input-icon-left">
-                                    <p:inputText placeholder="Buscar Módulo" value="#{moduloMB.modulo.nombreMateria}" style="margin-right: 6px">
+                                    <p:inputText placeholder="Buscar Módulo" value="#{moduloMB.moduloBusqueda.nombreMateria}" style="margin-right: 6px">
                                         <p:ajax event="blur" listener="#{moduloMB.buscarModulo()}" update=":form_maestria:dtModulo"></p:ajax>
                                     </p:inputText>
                                     <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
@@ -269,7 +269,7 @@
                                      emptyMessage="No se encontro la maestría">
                             <f:facet name="header">
                                 <span class="ui-input-icon-left">
-                                    <p:inputText placeholder="Buscar Maestría" value="#{maestriaMB.maestria.nombre}" style="margin-right: 6px">
+                                    <p:inputText placeholder="Buscar Maestría" value="#{maestriaMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
                                         <p:ajax event="blur" listener="#{maestriaMB.buscarMaestria()}" update=":form_maestria:dtSeleccionMaestria"></p:ajax>
                                     </p:inputText>
                                     <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
@@ -301,8 +301,8 @@
                                  emptyMessage="No se encontro la maestría">
                         <f:facet name="header">
                             <span class="ui-input-icon-left">
-                                <p:inputText placeholder="Buscar Maestría" value="#{moduloMB.modulo.nombreMateria}" style="margin-right: 6px">
-                                    <p:ajax event="keypress" listener="#{moduloMB.buscarModulo()}" update=":form_maestria:dtSeleccionModulo"></p:ajax>
+                                <p:inputText placeholder="Buscar Maestría" value="#{moduloMB.moduloBusqueda.nombreMateria}" style="margin-right: 6px">
+                                    <p:ajax event="blur" listener="#{moduloMB.buscarModulo()}" update=":form_maestria:dtSeleccionModulo"></p:ajax>
                                 </p:inputText>
                                 <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
                             </span>

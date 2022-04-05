@@ -25,6 +25,7 @@ import org.primefaces.model.TreeNode;
 public class MaestriaMBeans {
 
     private Maestria maestria;
+    private Maestria maestriaBusqueda;
     private Maestria integracionMaestria;
     MaestriaDAO maestriaDAO;
     private List<Maestria> listaMaestria;
@@ -39,6 +40,7 @@ public class MaestriaMBeans {
 
     public MaestriaMBeans() {
         maestria = new Maestria();
+        maestriaBusqueda = new Maestria();
         maestriaDAO = new MaestriaDAO();
         integracionMaestria = new Maestria();
         busquedaMaestria = new ArrayList<>();
@@ -95,6 +97,14 @@ public class MaestriaMBeans {
         this.rootIntegracion = rootIntegracion;
     }
 
+    public Maestria getMaestriaBusqueda() {
+        return maestriaBusqueda;
+    }
+
+    public void setMaestriaBusqueda(Maestria maestriaBusqueda) {
+        this.maestriaBusqueda = maestriaBusqueda;
+    }
+
     public void registrarMaestria() {
         try {
             if ("".equals(maestria.getNombre().trim())) {
@@ -105,6 +115,7 @@ public class MaestriaMBeans {
                 int resultadoRegistro = maestriaDAO.registrarMaestria(maestria);
                 if (resultadoRegistro > 0) {
                     showInfo(maestria.getNombre().trim().replace(".", ",") + " registrada con éxito.");
+                    maestria = new Maestria();
                     PrimeFaces.current().executeScript("PF('dlgMaestria').hide()");
                     listaMaestria = maestriaDAO.getListaMaestria();
                 } else {
@@ -226,7 +237,7 @@ public class MaestriaMBeans {
 
     public void vaciarCamposIntegracionModulo() {
         integracionMaestria = new Maestria();
-        maestria= new Maestria();
+        maestria = new Maestria();
         listaModulos = new ArrayList<>();
         showWarn("El registro se Cancelo.");
     }
@@ -245,6 +256,7 @@ public class MaestriaMBeans {
                 listaMaestria = new ArrayList<>();
                 rootIntegracion = new DefaultTreeNode("Root Node", null);
                 listaMaestriaxModulo = new ArrayList<>();
+                maestriaBusqueda = new Maestria();
                 listaMaestria = maestriaDAO.getListaMaestria();
                 listaMaestriaxModulo = maestriaDAO.getListaMaestriaxModulo();
                 PrimeFaces.current().executeScript("PF('listadoModuloMaestria').hide()");
@@ -277,17 +289,18 @@ public class MaestriaMBeans {
     }
 
     public void buscarMaestria() {
-        if (maestria.getNombre() == null || "".equals(maestria.getNombre())) {
+        if (maestriaBusqueda.getNombre() == null || "".equals(maestriaBusqueda.getNombre())) {
             listaMaestria = maestriaDAO.getListaMaestria();
         } else {
             listaMaestria = maestriaDAO.getListaMaestria();
             for (Maestria busqueda : listaMaestria) {
-                if (busqueda.getNombre().toUpperCase().contains(maestria.getNombre().toUpperCase())) {
+                if (busqueda.getNombre().toUpperCase().contains(maestriaBusqueda.getNombre().toUpperCase())) {
                     busquedaMaestria.add(busqueda);
                 }
             }
             listaMaestria = busquedaMaestria;
             busquedaMaestria = new ArrayList<>();
+            maestriaBusqueda = new Maestria();
         }
 
     }

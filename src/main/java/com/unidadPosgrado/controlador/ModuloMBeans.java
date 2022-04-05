@@ -98,6 +98,7 @@ public class ModuloMBeans {
                 }
             }
             listaModulo = new ArrayList<>();
+            modulo= new Modulo();
             listaModulo = moduloDAO.getListaModulo();
         } catch (Exception e) {
             showWarn(e.getMessage());
@@ -116,12 +117,14 @@ public class ModuloMBeans {
         if (modulo.getNombreMateria() == null || "".equals(modulo.getNombreMateria())) {
             listaModulo = moduloDAO.getListaModulo();
         } else {
+            listaModulo = moduloDAO.getListaModulo();
             for (Modulo busqueda : listaModulo) {
                 if (busqueda.getNombreMateria().toUpperCase().contains(modulo.getNombreMateria().toUpperCase())) {
                     busquedaModulo.add(busqueda);
                 }
             }
             listaModulo = busquedaModulo;
+            busquedaModulo = new ArrayList<>();
         }
     }
 

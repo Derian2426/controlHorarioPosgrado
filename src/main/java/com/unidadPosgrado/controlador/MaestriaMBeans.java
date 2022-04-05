@@ -134,6 +134,7 @@ public class MaestriaMBeans {
                 }
             }
             listaMaestria = new ArrayList<>();
+            maestria = new Maestria();
             listaMaestria = maestriaDAO.getListaMaestria();
         } catch (Exception e) {
             showWarn(e.getMessage());
@@ -225,6 +226,7 @@ public class MaestriaMBeans {
 
     public void vaciarCamposIntegracionModulo() {
         integracionMaestria = new Maestria();
+        maestria= new Maestria();
         listaModulos = new ArrayList<>();
         showWarn("El registro se Cancelo.");
     }
@@ -278,12 +280,14 @@ public class MaestriaMBeans {
         if (maestria.getNombre() == null || "".equals(maestria.getNombre())) {
             listaMaestria = maestriaDAO.getListaMaestria();
         } else {
+            listaMaestria = maestriaDAO.getListaMaestria();
             for (Maestria busqueda : listaMaestria) {
                 if (busqueda.getNombre().toUpperCase().contains(maestria.getNombre().toUpperCase())) {
                     busquedaMaestria.add(busqueda);
                 }
             }
             listaMaestria = busquedaMaestria;
+            busquedaMaestria = new ArrayList<>();
         }
 
     }

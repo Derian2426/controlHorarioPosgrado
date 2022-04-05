@@ -11,44 +11,49 @@
         Maestrías
     </ui:define>
     <ui:define name="content">
-        <div class="card container">
+        <div class="card ">
             <h:form id="form_maestria">
                 <p:growl id="msgs" showDetail="true"/>
                 <p:toolbar>
                     <p:toolbarGroup>
                         <div class="p-d-flex p-jc-between p-ai-center">
-                            <p:commandButton value="Nueva Maestría" type="button" icon="pi pi-plus" onclick="PF('dlgMaestria').show()"  style="margin-right: 6px;"/>
-                            <p:commandButton value="Listado de Maestrías" type="button" icon="pi pi-list" onclick="PF('listadoMaestria').show()" style="margin-right: 6px;" update=":form_maestria:dtMaestrias"/>
-                            <p:commandButton value="Nuevo Módulo" type="button" icon="pi pi-plus" onclick="PF('dlgModulo').show()" style="margin-right: 6px;"/>
-                            <p:commandButton value="Listado de Módulos" type="button" icon="pi pi-list" onclick="PF('listadoModulo').show()" style="margin-right: 6px;"/>
-                            <p:commandButton value="Integración de Módulos" type="button" icon="pi pi-list" onclick="PF('listadoModuloMaestria').show()" style="margin-right: 6px;"/>
+                            <p:commandButton value="Nueva Maestría" type="button" onclick="PF('dlgMaestria').show()"  style="margin-right: 6px;position: initial"/>
+                            <p:commandButton value="Listado de Maestrías" type="button" onclick="PF('listadoMaestria').show()" style="margin-right: 6px;position: initial" update=":form_maestria:dtMaestrias"/>
+                            <p:commandButton value="Nuevo Módulo" type="button" onclick="PF('dlgModulo').show()" style="margin-right: 6px;position: initial"/>
+                            <p:commandButton value="Listado de Módulos" type="button"  onclick="PF('listadoModulo').show()" style="margin-right: 6px;position: initial"/>
+                            <p:commandButton value="Integración de Módulos" type="button" onclick="PF('listadoModuloMaestria').show()" style="margin-right: 6px;position: initial"/>
                         </div>
                     </p:toolbarGroup>
 
                 </p:toolbar>
-                <p:toolbar>
-                    <p:toolbarGroup>
-                        <div class="card">
-                            <p:treeTable id="integracionModulo" value="#{maestriaMB.rootIntegracion}" var="document" paginator="true" rows="4" 
-                                         scrollable="true" paginatorPosition="bottom" scrollHeight="250" size="small"
-                                         selectionMode="single">
-                                <f:facet name="header">
-                                    Programas de maestría
-                                </f:facet>
+                <div class="card">
+                    <p:toolbar>
+                        <p:toolbarGroup>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                <span style="font-weight: bold; margin-right: 6px; 
+                                      font-size: 24px">Programas de maestría</span>
+                            </div>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                    <p:treeTable id="integracionModulo" 
+                                 value="#{maestriaMB.rootIntegracion}" 
+                                 var="document" paginator="true" rows="2" 
+                                 scrollable="true" paginatorPosition="bottom" 
+                                 scrollHeight="250" 
+                                 size="small"
+                                 selectionMode="single">
 
-                                <p:column headerText="Maestría" style="text-align: justify">
-                                    <h:outputText value="#{document.nombre}"/>
-                                </p:column>
-                                <p:column headerText="Descrición">
-                                    <h:outputText value="#{document.descripcion}"/>
-                                </p:column>
-                                <p:column headerText="Tiempo" style="text-align: center">
-                                    <h:outputText value="#{document.tiempoMaestria}"/>
-                                </p:column>
-                            </p:treeTable>
-                        </div>
-                    </p:toolbarGroup>
-                </p:toolbar>               
+                        <p:column headerText="Maestría" style="text-align: justify">
+                            <h:outputText value="#{document.nombre}"/>
+                        </p:column>
+                        <p:column headerText="Descrición">
+                            <h:outputText value="#{document.descripcion}"/>
+                        </p:column>
+                        <p:column headerText="Tiempo" style="text-align: center">
+                            <h:outputText value="#{document.tiempoMaestria}"/>
+                        </p:column>
+                    </p:treeTable>
+                </div>              
 
 
                 <p:dialog header="Registro de Maestría" widgetVar="dlgMaestria" minHeight="100" width="550" showEffect="fade" modal="true" responsive="true" position="center">

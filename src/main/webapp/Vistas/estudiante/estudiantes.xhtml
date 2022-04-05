@@ -25,21 +25,17 @@
                 </p:toolbar>
                 <!-- TABLA DE DATOS -->
                 <div class="card">
-                    
+
                     <p:dataTable id="dtEstudiante" var="estudiante" value="#{estudianteMB.listaEstudiante}" editable="true" paginatorPosition="bottom"
                                  style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
                                  emptyMessage="No se encontro el estudiante">
                         <f:facet name="header">
-                            <div class="p-d-flex p-jc-between p-ai-center">
-                                <span style="font-weight: bold; margin-right: 6px; 
-                                      font-size: 24px">Listado de Estudiantes</span>
-                                <span class="filter-container ui-input-icon-left" style="position: initial">
-                                    <p:inputText 
-                                        id="globalFilter"
-                                        onkeyup=""
-                                        placeholder="Buscar Estudiante"/>
-                                </span>
-                            </div>
+                            <span class="ui-input-icon-left">
+                                <p:inputText placeholder="Buscar Estudiante" value="#{estudianteMB.estudianteBusqueda.nombre_estudiante}" style="margin-right: 6px">
+                                    <p:ajax event="blur" listener="#{estudianteMB.buscarEstudiante()}" update="dtEstudiante"></p:ajax>
+                                </p:inputText>
+                                <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
+                            </span>
                         </f:facet>
 
                         <p:ajax event="rowEdit" listener="#{estudianteMB.onRowEdit}" update=":form_estudiante:msgs,:form_estudiante:dtEstudiante"/>

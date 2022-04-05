@@ -94,9 +94,9 @@ public class MaestriaMBeans {
 
     public void registrarMaestria() {
         try {
-            if ("".equals(maestria.getNombre())) {
+            if ("".equals(maestria.getNombre().trim())) {
                 showWarn("Debe ingresar un nombre a la maestría.");
-            } else if ("".equals(maestria.getDescripcion())) {
+            } else if ("".equals(maestria.getDescripcion().trim())) {
                 showWarn("Debe ingresar una descripción a la maestría.");
             } else {
                 int resultadoRegistro = maestriaDAO.registrarMaestria(maestria);

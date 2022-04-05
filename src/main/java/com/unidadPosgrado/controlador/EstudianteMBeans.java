@@ -24,11 +24,16 @@ public class EstudianteMBeans {
     private Estudiante estudiante;
     EstudianteDAO estudianteDAO;
     private List<Estudiante> listaEstudiante;
+    List<Estudiante> busquedaEstudiante;
+    
+    private Estudiante estudianteBusqueda;
     
     public EstudianteMBeans() {
         estudiante = new Estudiante();
         estudianteDAO = new EstudianteDAO();
         listaEstudiante = new ArrayList<>();
+        estudianteBusqueda = new Estudiante();
+        busquedaEstudiante = new ArrayList<>();
     }
     @PostConstruct
     public void init() {
@@ -106,6 +111,21 @@ public class EstudianteMBeans {
         }
     }
     
+    public  void buscarEstudiante() {
+        if(estudianteBusqueda.getNombre_estudiante() == null || "".equals(estudianteBusqueda.getNombre_estudiante())) {
+            listaEstudiante = estudianteDAO.getListaEstudiante();
+        } else{
+            listaEstudiante = estudianteDAO.getListaEstudiante();
+            for(Estudiante busqueda : listaEstudiante) {
+                if(busqueda.getNombre_estudiante().toUpperCase().contains(estudianteBusqueda.getNombre_estudiante().toUpperCase())){
+                    busquedaEstudiante.add(busqueda);
+                }
+            }
+            listaEstudiante = busquedaEstudiante;
+            busquedaEstudiante = new ArrayList<>();
+        }
+    }
+    
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
         FacesContext.getCurrentInstance().
                 addMessage(null, new FacesMessage(severity, summary, detail));
@@ -138,6 +158,15 @@ public class EstudianteMBeans {
     public List<Estudiante> getListaEstudiante() {
         return listaEstudiante;
     }
+
+    public Estudiante getEstudianteBusqueda() {
+        return estudianteBusqueda;
+    }
+
+    public void setEstudianteBusqueda(Estudiante estudianteBusqueda) {
+        this.estudianteBusqueda = estudianteBusqueda;
+    }
+    
 
     public void setListaEstudiante(List<Estudiante> listaEstudiante) {
         this.listaEstudiante = listaEstudiante;

@@ -12,6 +12,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 
 /**
@@ -36,23 +37,24 @@ public class EstudianteMBeans {
     
     public void registrarEstudiante() {
         try {
-            if("".equals(estudiante.getNombre_estudiante())){
+            if("".equals(estudiante.getNombre_estudiante().trim())){
                 showWarn("Debe ingresar un nombre.");
-            } else if("".equals(estudiante.getApellido_estudiante())){
+            } else if("".equals(estudiante.getApellido_estudiante().trim())){
                 showWarn("Debe ingresar un apellido.");
-            } else if("".equals(estudiante.getTelefono_estudiante())){
+            } else if("".equals(estudiante.getTelefono_estudiante().trim())){
                 showWarn("Debe ingresar un teléfono.");
-            } else if("".equals(estudiante.getCedula_estudiante())){
+            } else if("".equals(estudiante.getCedula_estudiante().trim())){
                 showWarn("Debe ingresar una cédula.");
-            } else if("".equals(estudiante.getSexo())){
+            } else if("".equals(estudiante.getSexo().trim())){
                 showWarn("Debe ingresar su género.");
-            } else if("".equals(estudiante.getCorreo_estudiante())){
+            } else if("".equals(estudiante.getCorreo_estudiante().trim())){
                 showWarn("Debe ingresar un correo.");
             } else {
                 int resultadoRegistro = estudianteDAO.registrarEstudiante(estudiante);
                 if (resultadoRegistro > 0) {
                     showInfo(estudiante.getNombre_estudiante().trim().replace(".", ".") + " Registrado exitoso.");
                     listaEstudiante = estudianteDAO.getListaEstudiante();
+                    PrimeFaces.current().executeScript("PF('dlgEstudiante').hide()");
                 } else {
                     showWarn(estudiante.getNombre_estudiante().trim().replace(".", ".") + " ya se encuentra en el sistema.");
                 }
@@ -65,17 +67,17 @@ public class EstudianteMBeans {
     
     public void onRowEdit(RowEditEvent<Estudiante> event) {
         try {
-            if("".equals(event.getObject().getNombre_estudiante())){
+            if("".equals(event.getObject().getNombre_estudiante().trim())){
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            } else if ("".equals(event.getObject().getApellido_estudiante())) {
+            } else if ("".equals(event.getObject().getApellido_estudiante().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            } else if ("".equals(event.getObject().getCedula_estudiante())) {
+            } else if ("".equals(event.getObject().getCedula_estudiante().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            } else if ("".equals(event.getObject().getTelefono_estudiante())) {
+            } else if ("".equals(event.getObject().getTelefono_estudiante().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            } else if ("".equals(event.getObject().getSexo())) {
+            } else if ("".equals(event.getObject().getSexo().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            } else if ("".equals(event.getObject().getCorreo_estudiante())) {
+            } else if ("".equals(event.getObject().getCorreo_estudiante().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
             } else{
                 Estudiante editEstudiante = new Estudiante(event.getObject().getId_estudiante(),

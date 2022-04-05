@@ -12,6 +12,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 
 /**
@@ -62,6 +63,7 @@ public class ModuloMBeans {
                 int resultadoRegistro = moduloDAO.registrarModulo(modulo);
                 if (resultadoRegistro > 0) {
                     showInfo(modulo.getNombreMateria().trim().replace(".", ",") + " registrado con éxito.");
+                    PrimeFaces.current().executeScript("PF('dlgModulo').hide()");
                     listaModulo = moduloDAO.getListaModulo();
                 } else {
                     showWarn(modulo.getNombreMateria().trim().replace(".", ",") + " ya se encuentra registrado.");

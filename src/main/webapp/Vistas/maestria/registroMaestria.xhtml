@@ -78,10 +78,12 @@
                                      style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
                                      emptyMessage="No se encontro la maestría">
                             <f:facet name="header">
-                                <div class="p-d-flex p-jc-end">
-                                    <p:inputText id="globalFilter" onkeyup="PF('customersTable3').filter()" style="width:300px"
-                                                 placeholder="Buscar Maestrías" />
-                                </div>
+                                <span class="ui-input-icon-left">
+                                    <p:inputText placeholder="Buscar Maestría" value="#{maestriaMB.maestria.nombre}" style="margin-right: 6px">
+                                        <p:ajax event="blur" listener="#{maestriaMB.buscarMaestria()}" update=":form_maestria:dtMaestrias"></p:ajax>
+                                    </p:inputText>
+                                    <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
+                                </span>
                             </f:facet>
 
                             <p:ajax event="rowEdit" listener="#{maestriaMB.onRowEdit}" update=":form_maestria:msgs,:form_maestria:dtMaestrias"/>
@@ -131,7 +133,7 @@
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{moduloMB.registrarModulo()}"
-                                                 update=":form_maestria:msgs,nuevoModulo,:form_maestria:dtModulo"/>
+                                                 update=":form_maestria:msgs,nuevoModulo,:form_maestria:dtModulo,:form_maestria:dtSeleccionModulo"/>
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgModulo').hide()"/>
@@ -145,10 +147,12 @@
                                      style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
                                      emptyMessage="No se encontro el módulo">
                             <f:facet name="header">
-                                <div class="p-d-flex p-jc-end">
-                                    <p:inputText id="globalFilter" onkeyup="PF('customersTable3').filter()" style="width:300px"
-                                                 placeholder="Buscar Módulo" />
-                                </div>
+                                <span class="ui-input-icon-left">
+                                    <p:inputText placeholder="Buscar Maestría" value="#{moduloMB.modulo.nombreMateria}" style="margin-right: 6px">
+                                        <p:ajax event="blur" listener="#{moduloMB.buscarModulo()}" update=":form_maestria:dtModulo"></p:ajax>
+                                    </p:inputText>
+                                    <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
+                                </span>
                             </f:facet>
 
                             <p:ajax event="rowEdit" listener="#{moduloMB.onRowEdit}" update=":form_maestria:msgs,:form_maestria:dtModulo"/>

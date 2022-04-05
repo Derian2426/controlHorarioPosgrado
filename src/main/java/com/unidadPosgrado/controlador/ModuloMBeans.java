@@ -24,10 +24,12 @@ public class ModuloMBeans {
     private Modulo modulo;
     ModuloDAO moduloDAO;
     private List<Modulo> listaModulo;
+    List<Modulo> busquedaModulo;
 
     public ModuloMBeans() {
         modulo = new Modulo();
         moduloDAO = new ModuloDAO();
+        busquedaModulo = new ArrayList<>();
     }
 
     @PostConstruct
@@ -95,7 +97,7 @@ public class ModuloMBeans {
                             + " Solo se actualiza la descripción si el registro a editar es el mismo.");
                 }
             }
-            listaModulo= new ArrayList<>();
+            listaModulo = new ArrayList<>();
             listaModulo = moduloDAO.getListaModulo();
         } catch (Exception e) {
             showWarn(e.getMessage());
@@ -107,6 +109,19 @@ public class ModuloMBeans {
             showWarn("La edición del módulo de " + event.getObject().getNombreMateria() + " fue cancelada.");
         } catch (Exception e) {
             showWarn(e.getMessage());
+        }
+    }
+
+    public void buscarModulo() {
+        if (modulo.getNombreMateria() == null || "".equals(modulo.getNombreMateria())) {
+            listaModulo = moduloDAO.getListaModulo();
+        } else {
+            for (Modulo busqueda : listaModulo) {
+                if (busqueda.getNombreMateria().toUpperCase().contains(modulo.getNombreMateria().toUpperCase())) {
+                    busquedaModulo.add(busqueda);
+                }
+            }
+            listaModulo = busquedaModulo;
         }
     }
 

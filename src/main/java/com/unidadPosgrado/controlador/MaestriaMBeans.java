@@ -28,6 +28,7 @@ public class MaestriaMBeans {
     private Maestria integracionMaestria;
     MaestriaDAO maestriaDAO;
     private List<Maestria> listaMaestria;
+    List<Maestria> busquedaMaestria;
     List<Maestria> listaMaestriaxModulo;
     private List<Modulo> listaModulos;
     private TreeNode rootIntegracion;
@@ -40,6 +41,7 @@ public class MaestriaMBeans {
         maestria = new Maestria();
         maestriaDAO = new MaestriaDAO();
         integracionMaestria = new Maestria();
+        busquedaMaestria = new ArrayList<>();
         listaModulos = new ArrayList<>();
         listaMaestriaxModulo = new ArrayList<>();
         listaModulosVerificacion = new ArrayList<>();
@@ -128,7 +130,7 @@ public class MaestriaMBeans {
                 if (resultadoRegistro > 0) {
                     showInfo("Se actualizo con éxito, " + editMaestria.getNombre().trim());
                 } else {
-                    showWarn(editMaestria.getNombre().trim().replace(".", ",") + " se actualizo el registro con exito.");
+                    showWarn(editMaestria.getNombre().trim().replace(".", ",") + " no pudo ser actualizada.");
                 }
             }
             listaMaestria = new ArrayList<>();
@@ -270,6 +272,20 @@ public class MaestriaMBeans {
         } else {
             PrimeFaces.current().executeScript("PF('listModulosSeleccion').show()");
         }
+    }
+
+    public void buscarMaestria() {
+        if (maestria.getNombre() == null || "".equals(maestria.getNombre())) {
+            listaMaestria = maestriaDAO.getListaMaestria();
+        } else {
+            for (Maestria busqueda : listaMaestria) {
+                if (busqueda.getNombre().toUpperCase().contains(maestria.getNombre().toUpperCase())) {
+                    busquedaMaestria.add(busqueda);
+                }
+            }
+            listaMaestria = busquedaMaestria;
+        }
+
     }
 
 }

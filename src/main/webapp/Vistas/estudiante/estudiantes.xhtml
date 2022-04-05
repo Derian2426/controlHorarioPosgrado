@@ -13,7 +13,7 @@
 
     <ui:define name="content">
         <!-- carga -->
-        <div class="card container">
+        <div class="card">
             <h:form id="form_estudiante">
                 <p:growl id="msgs" showDetail="true"/>
                 <p:toolbar>
@@ -25,6 +25,7 @@
                 </p:toolbar>
                 <!-- TABLA DE DATOS -->
                 <div class="card">
+                    
                     <p:dataTable id="dtEstudiante" var="estudiante" value="#{estudianteMB.listaEstudiante}" editable="true" paginatorPosition="bottom"
                                  style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
                                  emptyMessage="No se encontro el estudiante">

@@ -243,11 +243,21 @@ header{
 #contenedor-carga{
     
 }
+/*CARGA*/
 #carga{
-    border: 15px solid #ccc;
+    border: 10px solid #ccc;
     border-top-color: #F5786E;
     border-top-style: groove;
-    height: 100px;
-    width: 100px;
+    height: 50px;
+    width: 50px;
     border-radius: 100%;
+    margin: 30px 30px 30px 50%;
+    -webkit-animation: girar 1.5s linear infinite;
+    -o-animation: girar 1.5s linear infinite;
+    animation: girar 1.5s linear infinite;
+}
+
+@keyframes girar{
+    from { transform: rotate(0deg);}
+    to { transform: rotate(360deg);}
 }

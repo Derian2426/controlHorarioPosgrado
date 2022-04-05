@@ -12,11 +12,8 @@
     </ui:define>
 
     <ui:define name="content">
-        <div id="contenedor-carga">
-            <div id="carga">
-                
-            </div>
-        </div>
+        <!-- carga -->
+        <div id="carga"></div>
         <div class="card container">
             <h:form id="form_estudiante">
                 <p:growl id="msgs" showDetail="true"/>
@@ -118,6 +115,8 @@
                 <!-- DIALOGO REGISTRAR ESTUDIANTES -->
                 <p:dialog header="Registro de Estudiante" widgetVar="dlgEstudiante"  width="850" showEffect="fade" modal="true" responsive="true">
                     <p:outputPanel id="nuevoEstudiante" class="ui-fluid">
+                        
+                        
                         <div class="ui-fluid p-formgrid p-grid">
                             <div class="p-field p-col-12 p-md-6">
                                 <p:outputLabel value="Nombre:"/>

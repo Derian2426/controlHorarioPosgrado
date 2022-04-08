@@ -22,12 +22,14 @@ import org.primefaces.event.RowEditEvent;
 public class ModuloMBeans {
 
     private Modulo modulo;
+    private Modulo moduloBusqueda;
     ModuloDAO moduloDAO;
     private List<Modulo> listaModulo;
     List<Modulo> busquedaModulo;
 
     public ModuloMBeans() {
         modulo = new Modulo();
+        moduloBusqueda = new Modulo();
         moduloDAO = new ModuloDAO();
         busquedaModulo = new ArrayList<>();
     }
@@ -51,6 +53,14 @@ public class ModuloMBeans {
 
     public void setListaModulo(List<Modulo> listaModulo) {
         this.listaModulo = listaModulo;
+    }
+
+    public Modulo getModuloBusqueda() {
+        return moduloBusqueda;
+    }
+
+    public void setModuloBusqueda(Modulo moduloBusqueda) {
+        this.moduloBusqueda = moduloBusqueda;
     }
 
     public void registrarModulo() {
@@ -98,7 +108,7 @@ public class ModuloMBeans {
                 }
             }
             listaModulo = new ArrayList<>();
-            modulo= new Modulo();
+            modulo = new Modulo();
             listaModulo = moduloDAO.getListaModulo();
         } catch (Exception e) {
             showWarn(e.getMessage());
@@ -114,17 +124,19 @@ public class ModuloMBeans {
     }
 
     public void buscarModulo() {
-        if (modulo.getNombreMateria() == null || "".equals(modulo.getNombreMateria())) {
+        if (moduloBusqueda.getNombreMateria() == null || "".equals(moduloBusqueda.getNombreMateria())) {
             listaModulo = moduloDAO.getListaModulo();
         } else {
             listaModulo = moduloDAO.getListaModulo();
             for (Modulo busqueda : listaModulo) {
-                if (busqueda.getNombreMateria().toUpperCase().contains(modulo.getNombreMateria().toUpperCase())) {
+                if (busqueda.getNombreMateria().toUpperCase().contains(moduloBusqueda.getNombreMateria().toUpperCase())) {
                     busquedaModulo.add(busqueda);
                 }
             }
             listaModulo = busquedaModulo;
             busquedaModulo = new ArrayList<>();
+            moduloBusqueda = new Modulo();
+
         }
     }
 

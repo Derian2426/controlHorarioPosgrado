@@ -8,6 +8,7 @@ package com.unidadPosgrado.dao;
 import com.global.config.Conexion;
 import com.unidadPosgrado.modelo.Maestria;
 import com.unidadPosgrado.modelo.Modulo;
+import com.unidadPosgrado.modelo.Periodo;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class MaestriaDAO {
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                listadoMaestria.add(new Maestria(resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"), resultSet.getString("_descripcion"),resultSet.getFloat("_hora")));
+                listadoMaestria.add(new Maestria(resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"), resultSet.getString("_descripcion"), resultSet.getFloat("_hora")));
             }
             return listadoMaestria;
         } catch (SQLException e) {
@@ -139,6 +140,27 @@ public class MaestriaDAO {
             return listadoModulo;
         } catch (SQLException e) {
             return listadoModulo;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public int registrarPeriodo(Maestria maestria, Periodo periodo) {
+        int mensaje = 0;
+        sentencia = String.format("SELECT public.\"registrarPeriodo\"(\n"
+                + "	" + maestria.getIdMaestria() + ", \n"
+                + "	'" + periodo.getNombrePeriodo() + "', \n"
+                + "	'" + periodo.getFechaInicio() + "', \n"
+                + "	'" + periodo.getFechaInicio() + "'\n"
+                + ")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("registrarPeriodo"));
+            }
+            return mensaje;
+        } catch (SQLException e) {
+            return mensaje;
         } finally {
             conexion.desconectar();
         }

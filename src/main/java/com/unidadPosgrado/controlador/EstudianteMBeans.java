@@ -155,8 +155,9 @@ public class EstudianteMBeans {
         inscripcion = new Inscripcion();
         listaEstudiante = new ArrayList<>();
         listaEstudiante = estudianteDAO.getListaEstudiante();
+        estudianteBusqueda= new Estudiante();
         inscripcion.setFecha_inscripcion(new Date());
-        showWarn("Registro cancelado con exito.");
+        showWarn("Registro cancelado.");
     }
 
     public void llenaMaestria(Maestria maestria) {
@@ -185,6 +186,7 @@ public class EstudianteMBeans {
             }
             listaEstudiante = busquedaEstudiante;
             busquedaEstudiante = new ArrayList<>();
+            estudianteBusqueda= new Estudiante();
         }
     }
 

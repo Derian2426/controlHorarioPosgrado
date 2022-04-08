@@ -24,11 +24,6 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
     <managed-bean>
-        <managed-bean-name>userMB</managed-bean-name>
-        <managed-bean-class>com.seguridad.controlador.UserMB</managed-bean-class>
-        <managed-bean-scope>view</managed-bean-scope>
-    </managed-bean>
-    <managed-bean>
         <managed-bean-name>maestriaMB</managed-bean-name>
         <managed-bean-class>com.unidadPosgrado.controlador.MaestriaMBeans</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
@@ -51,6 +46,11 @@
     <managed-bean>
         <managed-bean-name>estudianteDAO</managed-bean-name>
         <managed-bean-class>com.unidadPosgrado.dao.EstudianteDAO</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>usuarioMB</managed-bean-name>
+        <managed-bean-class>com.seguridad.controlador.UsuarioMB</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
 </faces-config>

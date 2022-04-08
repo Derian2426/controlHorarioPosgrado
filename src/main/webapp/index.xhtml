@@ -2,16 +2,77 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Login</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
-        <h:form>
-            <h:button outcome="Vistas/Global/principal.xhtml" value="Saludo"/>
-            <img src="resources/imagenes/Inicio.jpeg" alt=""/>
-        </h:form>
+        <h:form id="user">
+            <p:growl id="msgs" showDetail="true"/>
+            <!--<h:button outcome="Vistas/Global/principal.xhtml" value="Saludo"/>-->
+            <div class="container">
+                <input type="checkbox" id="flip"></input>
+                <div class="cover">
+                    <div class="front">
+                        <img src="LogoFinal.jpg" alt=""/>
+                    </div>
+                    <div class="back">
+                        <img class="backImg" src="LogoFinalBack.jpg" alt=""/>
+                    </div>
+                </div>
+                    <div class="form-content">
+                        <div class="login-form">
+                            <div class="title">Login</div>
+                            <div class="input-boxes">
+                                <div class="input-box">
+                                    <i class="fas fa-user"></i>
+                                    <p:inputText class="btnAcccion" type="text" placeholder="Ingrese su usuario" value="#{usuarioMB.usuario.nombre}"/>
+                                </div>
+                                <div class="input-box">
+                                    <i class="fas fa-lock"></i>
+                                    <p:inputText class="btnAcccion" type="password" placeholder="Ingrese su contraseña" value="#{usuarioMB.usuario.password}"/>
+                                </div>
+                                <div class="text"><a href="#">¿Olvidaste la contraseña?</a></div>
+                                <div class="input-box">
+                                    <!--<p:commandButton class="btnAcccion btnStyle" action="#{usuarioMB.iniciarSesion()}" update=":user:msgs" value="Iniciar Sesión"></p:commandButton>-->
+                                    <h:button class="btnAcccion btnStyle" outcome="Vistas/Global/principal.xhtml" value="Registrar"/>
+                                </div>
+                                <div class="text">¿No se encuentra registrado? <label for="flip">Registrarse ahora</label></div>
+                            </div>
+                        </div>
 
+                        <div class="signup-form">
+                            <div class="title">Registrarse</div>
+                            <div class="input-boxes">
+                                <div class="input-box">
+                                    <i class="fas fa-user"></i>
+                                    <p:inputText class="btnAcccion" type="text" placeholder="ingrese su nombre"/>
+                                </div>
+                                <div class="input-box">
+                                    <i class="fas fa-user"></i>
+                                    <p:inputText class="btnAcccion" type="text" placeholder="ingrese su apellido"/>
+                                </div>
+                                <div class="input-box">
+                                    <i class="fas fa-envelope"></i>
+                                    <p:inputText class="btnAcccion" type="text" placeholder="ingrese su e-mail"/>
+                                </div>
+                                <div class="input-box">
+                                    <i class="fas fa-lock"></i>
+                                    <p:inputText class="btnAcccion" type="password" placeholder="ingrese su contraseña"/>
+                                </div>
+                                <div class="input-box">
+                                    <h:button class="btnAcccion btnStyle" outcome="Vistas/Global/principal.xhtml" value="Registrar"/>
+                                </div>
+                                <div class="text">¿Ya se encuentra registrado? <label for="flip">Ingresar ahora</label></div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </h:form>
+        <h:outputStylesheet name="login.css" library="css"/>
 
     </h:body>
 </html>

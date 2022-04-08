@@ -11,6 +11,7 @@ package com.unidadPosgrado.modelo;
  */
 public class Estudiante {
 
+    private boolean verifica;
     private int id_estudiante;
     private String nombre_estudiante;
     private String apellido_estudiante;
@@ -18,12 +19,12 @@ public class Estudiante {
     private String cedula_estudiante;
     private String sexo;
     private String correo_estudiante;
-    
+
     public Estudiante() {
     }
 
-    public Estudiante(int id_estudiante, String nombre_estudiante, 
-            String apellido_estudiante, String telefono_estudiante, 
+    public Estudiante(int id_estudiante, String nombre_estudiante,
+            String apellido_estudiante, String telefono_estudiante,
             String cedula_estudiante, String sexo, String correo_estudiante) {
         this.id_estudiante = id_estudiante;
         this.nombre_estudiante = nombre_estudiante;
@@ -89,5 +90,13 @@ public class Estudiante {
     public void setCorreo_estudiante(String correo_estudiante) {
         this.correo_estudiante = correo_estudiante;
     }
-    
+
+    public boolean isVerifica() {
+        return verifica;
+    }
+
+    public void setVerifica(boolean verifica) {
+        this.verifica = verifica;
+    }
+
 }

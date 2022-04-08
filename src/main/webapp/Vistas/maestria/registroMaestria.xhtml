@@ -38,7 +38,7 @@
                     </p:toolbar>
                     <p:treeTable id="integracionModulo" 
                                  value="#{maestriaMB.rootIntegracion}" 
-                                 var="document" paginator="true" rows="2" 
+                                 var="document" paginator="true" rows="5" 
                                  scrollable="true" paginatorPosition="bottom" 
                                  scrollHeight="250" 
                                  size="small"
@@ -55,7 +55,7 @@
                         </p:column>
                     </p:treeTable>
                 </div>    
-                <p:dialog header="Planificación Periodo" widgetVar="dlgPlanificacion" minHeight="100" width="650" showEffect="fade" modal="true" responsive="true" position="center">
+                <p:dialog header="Planificación Periodo" widgetVar="dlgPlanificacion" minHeight="100" width="650" showEffect="fade" modal="true" responsive="true" position="center" closable="false">
                     <p:outputPanel id="nuevaPerido" class="ui-fluid">
                         <div class="ui-fluid p-formgrid p-grid">
                             <div class="p-field p-col-12 p-md-8">
@@ -260,7 +260,7 @@
                                         <h:outputText value="#{modulo.hora_materia}"/>
                                     </f:facet>
                                     <f:facet name="input">
-                                        <p:inputText value="#{modulo.hora_materia}" style="width:100%" label="Name"/>
+                                        <p:inputNumber value="#{modulo.hora_materia}" style="width:100%" label="Name"/>
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
@@ -270,7 +270,7 @@
                         </p:dataTable>
                     </div>
                 </p:dialog>
-                <p:dialog header="Integración Módulos" widgetVar="listadoModuloMaestria" height="500" width="1000" showEffect="fade" modal="true" responsive="true">
+                <p:dialog header="Integración Módulos" widgetVar="listadoModuloMaestria" height="500" width="1000" showEffect="fade" modal="true" responsive="true" closable="false">
                     <p:outputPanel id="nuevaIntegracionModulo" class="ui-fluid">
                         <div class="card">
                             <div class="ui-fluid p-formgrid p-grid">

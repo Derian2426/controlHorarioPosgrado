@@ -45,7 +45,7 @@
                         <p:ajax event="rowEdit" listener="#{estudianteMB.onRowEdit}" update=":form_estudiante:msgs,:form_estudiante:dtEstudiante"/>
                         <p:ajax event="rowEditCancel" listener="#{estudianteMB.onRowCancel}" update=":form_estudiante:msgs,:form_estudiante:dtEstudiante"/>
 
-                        <p:column headerText="Nombre" style="text-align: justify">
+                        <p:column headerText="Nombre" style="text-align: justify" sortBy="#{estudiante.nombre_estudiante}">
                             <p:cellEditor>
                                 <f:facet name="output">
                                     <h:outputText value="#{estudiante.nombre_estudiante}"/>
@@ -56,7 +56,7 @@
                             </p:cellEditor>
                         </p:column>
 
-                        <p:column headerText="Apellido" style="text-align: justify">
+                        <p:column headerText="Apellido" style="text-align: justify" sortBy="#{estudiante.apellido_estudiante}">
                             <p:cellEditor>
                                 <f:facet name="output">
                                     <h:outputText value="#{estudiante.apellido_estudiante}"/>
@@ -167,6 +167,7 @@
                         </div>
                     </p:outputPanel>
                 </p:dialog>
+                <!-- Inscripciones -->
                 <p:dialog header="Inscripciones" widgetVar="dlgInscripciones" height="500" width="1000" showEffect="fade" modal="true" responsive="true" closable="false">
                     <p:outputPanel id="nuevaIncripcion" class="ui-fluid">
                         <div class="card">
@@ -242,11 +243,11 @@
                                 <p:ajax listener="#{estudianteMB.addEstudiantes(estudianteSelect)}" update=":form_estudiante:estudianteSeleccionados,:form_estudiante:msgs"/>
                             </p:selectBooleanCheckbox>
                         </p:column>
-                        <p:column headerText="Nombre">
+                        <p:column headerText="Nombre" sortBy="#{estudiante.nombre_estudiante}">
                             <h:outputText value="#{estudianteSelect.nombre_estudiante}"/>
                         </p:column>
 
-                        <p:column headerText="Apellido">
+                        <p:column headerText="Apellido" sortBy="#{estudiante.apellido_estudiante}">
                             <h:outputText value="#{estudianteSelect.apellido_estudiante}"/>
                         </p:column>
 
@@ -257,13 +258,13 @@
                 </p:dialog>
                 <p:dialog header="Seleccione una de las  Maestrías" widgetVar="listMaestria" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
                     <div class="card">
-                        <p:dataTable id="dtSeleccionMaestria" var="maestrias" value="#{maestriaMB.listaMaestria}" editable="true" paginatorPosition="bottom"
+                        <p:dataTable id="dtSeleccionMaestria" var="maestrias" value="#{estudianteMB.listaMaestria}" editable="true" paginatorPosition="bottom"
                                      style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
                                      emptyMessage="No se encontro la maestría">
                             <f:facet name="header">
                                 <span class="ui-input-icon-left">
-                                    <p:inputText placeholder="Buscar Maestría" value="#{maestriaMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
-                                        <p:ajax event="blur" listener="#{maestriaMB.buscarMaestria()}" update=":form_estudiante:dtSeleccionMaestria"></p:ajax>
+                                    <p:inputText placeholder="Buscar Maestría" value="#{estudianteMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
+                                        <p:ajax event="blur" listener="#{estudianteMB.buscarMaestria()}" update=":form_estudiante:dtSeleccionMaestria"></p:ajax>
                                     </p:inputText>
                                     <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
                                 </span>

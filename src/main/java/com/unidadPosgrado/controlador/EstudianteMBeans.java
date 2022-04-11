@@ -6,6 +6,7 @@
 package com.unidadPosgrado.controlador;
 
 import com.unidadPosgrado.dao.EstudianteDAO;
+import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Estudiante;
 import com.unidadPosgrado.modelo.Inscripcion;
 import com.unidadPosgrado.modelo.Maestria;
@@ -32,6 +33,11 @@ public class EstudianteMBeans {
     private Maestria integracionMaestria;
     List<Inscripcion> listaInscripcion;
     private Inscripcion inscripcion;
+    private List<Maestria> listaMaestria;
+    MaestriaDAO maestriaDAO;
+    private Maestria maestriaBusqueda;
+    List<Maestria> busquedaMaestria;
+    
 
     private Estudiante estudianteBusqueda;
 
@@ -46,11 +52,15 @@ public class EstudianteMBeans {
         listaInscripcion = new ArrayList<>();
         inscripcion = new Inscripcion();
         inscripcion.setFecha_inscripcion(new Date());
+        maestriaDAO = new MaestriaDAO();
+        maestriaBusqueda = new Maestria();
+        busquedaMaestria = new ArrayList<>();
     }
 
     @PostConstruct
     public void init() {
         listaEstudiante = estudianteDAO.getListaEstudiante();
+        listaMaestria = maestriaDAO.getListaMaestria();
     }
 
     public void registrarEstudiante() {
@@ -155,7 +165,7 @@ public class EstudianteMBeans {
         inscripcion = new Inscripcion();
         listaEstudiante = new ArrayList<>();
         listaEstudiante = estudianteDAO.getListaEstudiante();
-        estudianteBusqueda= new Estudiante();
+        estudianteBusqueda = new Estudiante();
         inscripcion.setFecha_inscripcion(new Date());
         showWarn("Registro cancelado.");
     }
@@ -186,7 +196,7 @@ public class EstudianteMBeans {
             }
             listaEstudiante = busquedaEstudiante;
             busquedaEstudiante = new ArrayList<>();
-            estudianteBusqueda= new Estudiante();
+            estudianteBusqueda = new Estudiante();
         }
     }
 
@@ -200,6 +210,23 @@ public class EstudianteMBeans {
 
         } catch (Exception e) {
             showWarn("Error" + e.getMessage());
+        }
+
+    }
+
+    public void buscarMaestria() {
+        if (maestriaBusqueda.getNombre() == null || "".equals(maestriaBusqueda.getNombre())) {
+            listaMaestria = maestriaDAO.getListaMaestria();
+        } else {
+            listaMaestria = maestriaDAO.getListaMaestria();
+            for (Maestria busqueda : listaMaestria) {
+                if (busqueda.getNombre().toUpperCase().contains(maestriaBusqueda.getNombre().toUpperCase())) {
+                    busquedaMaestria.add(busqueda);
+                }
+            }
+            listaMaestria = busquedaMaestria;
+            busquedaMaestria = new ArrayList<>();
+            maestriaBusqueda = new Maestria();
         }
 
     }
@@ -271,6 +298,22 @@ public class EstudianteMBeans {
 
     public void setInscripcion(Inscripcion inscripcion) {
         this.inscripcion = inscripcion;
+    }
+
+    public List<Maestria> getListaMaestria() {
+        return listaMaestria;
+    }
+
+    public void setListaMaestria(List<Maestria> listaMaestria) {
+        this.listaMaestria = listaMaestria;
+    }
+
+    public Maestria getMaestriaBusqueda() {
+        return maestriaBusqueda;
+    }
+
+    public void setMaestriaBusqueda(Maestria maestriaBusqueda) {
+        this.maestriaBusqueda = maestriaBusqueda;
     }
 
 }

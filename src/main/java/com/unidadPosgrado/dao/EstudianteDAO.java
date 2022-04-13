@@ -116,6 +116,8 @@ public class EstudianteDAO {
             return mensaje;
         } catch (NumberFormatException | SQLException e) {
             return mensaje;
+        }finally {
+            conexion.desconectar();
         }
 
     }

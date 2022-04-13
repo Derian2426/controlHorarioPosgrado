@@ -7,8 +7,6 @@ package com.seguridad.dao;
 
 import com.global.config.Conexion;
 import com.seguridad.modelo.Usuario;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  *
@@ -19,7 +17,6 @@ public class UsuarioDAO {
     Conexion conexion;
     private Usuario usuario;
     String sentencia;
-    ResultSet result;
 
     public UsuarioDAO() {
         conexion = new Conexion();
@@ -34,34 +31,16 @@ public class UsuarioDAO {
         this.usuario = usuario;
     }
 
-    public Usuario iniciarSesion(Usuario u) throws SQLException {
-        Usuario usuarioAcceso = null;
-        if (true) {
-            try {
-                sentencia = String.format("SELECT * from public.iniciarsesion('%1$s','%2$s')",
-                        u.getNombreUsuario(), u.getPassword());
-                result = conexion.ejecutarSql2(sentencia);
-
-                while (result.next()) {
-                    usuarioAcceso = new Usuario(
-                            result.getInt("code"),
-                            result.getString("reslt"),
-                            result.getInt("iduser"),
-                            result.getString("name"),
-                            result.getString("firname"),
-                            result.getString("nickname"),
-                            result.getString("pswrd"),
-                            result.getString("mail")
-                    );
-                }
-            } catch (SQLException e) {
-                System.out.println(e.toString());
-            } finally {
-                conexion.desconectar();
-            }
-            this.usuario = usuarioAcceso;
+    public int insertUsuario() {
+        sentencia = String.format("INSERT INTO public.usuario(nombre, apellido, correo, nombre_usuario, password, estado)\n"
+                + "	VALUES ('Victor', 'Chun', 'victorelianchun14@gmail.com', 'Eliereme', 'HolaMundo', true);");
+        try {
+            return 1;
+        } catch (Exception e) {
+            return -1;
+        }finally{
+            conexion.desconectar();
         }
-        return usuarioAcceso;
-    } 
+    }
 
 }

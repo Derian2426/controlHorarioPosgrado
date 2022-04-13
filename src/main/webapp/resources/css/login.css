@@ -171,10 +171,10 @@ form .form-content label:hover{
     .form-content .signup-form{
         display: none;
     }
-    .container #flip:checked ~ .form-content .signup-form{
+    .container #flip:checked ~ form .signup-form{
         display: block;
     }
-    .container #flip:checked ~ .form-content .login-form{
+    .container #flip:checked ~ form .login-form{
         display: none;
     }
 }

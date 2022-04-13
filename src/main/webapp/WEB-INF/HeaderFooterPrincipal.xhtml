@@ -3,58 +3,55 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:p="http://primefaces.org/ui">
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="icon" type="image/png" href="https://www.uteq.edu.ec/images/page/4/logoUTEQoriginal1.png"/>
-
+        
         <title>
             <ui:insert name="titulo">
                 Inicio
             </ui:insert>
         </title>
-        <f:event type="preRenderView" listener="#{verificarSeguridad.verificarSesion()}"/>
     </h:head>
 
     <h:body>
-        <h:form>
-            <header>
-                <a href="../Global/principal.xhtml" class="logoP" style="text-decoration: none">
-                    <h:graphicImage name="logoUTEQ.png" library="imagenes" class="logo-prin"/>
-                    <h2 class="logo-nombre">UNIDAD DE POSGRADO</h2>
-                </a>
-                <div class="logoS">
-                    <h:graphicImage name="sesion.png" library="imagenes" class="logo-sesion"/>
-                    <ul class="nav user">
-                        <span class="user">  <h:outputText value="#{userMB.usuario.nombre}" style="font-size: 18px;"/></span>
-                    </ul>
-                    <div class="menu">
-                        <a class="flecha" href="#" style="text-decoration: none">
-                            <i class="pi pi-angle-down"></i>
-                        </a>
-                        <a class="perfil" href="#" style="text-decoration: none">
-                            <i class="pi pi-user"></i>
-                        </a>
-                        <a class="salir">
-                            <p:commandButton class="btnSalir" icon="pi pi-sign-out" action="#{userMB.cerrarSession()}" />
-                        </a>
-                    </div>
+        <header>
+            <a href="../Global/principal.xhtml" class="logoP" style="text-decoration: none">
+                <h:graphicImage name="logoUTEQ.png" library="imagenes" class="logo-prin"/>
+                <h2 class="logo-nombre">UNIDAD DE POSGRADO</h2>
+            </a>
+            <div class="logoS">
+                <h:graphicImage name="sesion.png" library="imagenes" class="logo-sesion"/>
+                <ul class="nav user">
+                    <a>User</a>
+                </ul>
+                <div class="menu">
+                    <a class="flecha" href="#" style="text-decoration: none">
+                        <i class="pi pi-angle-down"></i>
+                    </a>
+                    <a class="perfil" href="#" style="text-decoration: none">
+                        <i class="pi pi-user"></i>
+                    </a>
+                    <a class="salir" href="./index.xhtml" style="text-decoration: none">
+                        <i class="pi pi-sign-out"></i>
+                    </a>
                 </div>
-            </header>
-
-            <div id="content">
-                <ui:insert name="content">Content</ui:insert>
             </div>
-            <!-- comment -->
-            <footer>
-                <h2 class="nombre-final">SISTEMA DE CONTROL DE HORARIOS</h2>
-            </footer>
+        </header>
 
-            <h:outputStylesheet name="home.css" library="css"/>
-            <h:outputStylesheet name="primeflex.min.css" library="css"/>
-        </h:form>
+        <div id="content">
+            <ui:insert name="content">Content</ui:insert>
+        </div>
+        <!-- comment -->
+        <footer>
+            <h2 class="nombre-final">SISTEMA DE CONTROL DE HORARIOS</h2>
+        </footer>
+
+        <h:outputStylesheet name="home.css" library="css"/>
+        <h:outputStylesheet name="primeflex.min.css" library="css"/>
+
     </h:body>
 
 </html>

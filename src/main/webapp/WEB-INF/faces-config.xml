@@ -49,23 +49,8 @@
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
     <managed-bean>
-        <managed-bean-name>userMB</managed-bean-name>
-        <managed-bean-class>com.seguridad.controlador.UserMB</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
-    <managed-bean>
-        <managed-bean-name>rol</managed-bean-name>
-        <managed-bean-class>com.seguridad.modelo.Rol</managed-bean-class>
-        <managed-bean-scope>view</managed-bean-scope>
-    </managed-bean>
-    <managed-bean>
-        <managed-bean-name>rolDAO</managed-bean-name>
-        <managed-bean-class>com.seguridad.dao.RolDAO</managed-bean-class>
-        <managed-bean-scope>view</managed-bean-scope>
-    </managed-bean>
-    <managed-bean>
-        <managed-bean-name>verificarSeguridad</managed-bean-name>
-        <managed-bean-class>com.seguridad.controlador.VerificarSeguridad</managed-bean-class>
+        <managed-bean-name>usuarioMB</managed-bean-name>
+        <managed-bean-class>com.seguridad.controlador.UsuarioMB</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
 </faces-config>

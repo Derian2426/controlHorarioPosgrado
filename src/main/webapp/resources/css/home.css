@@ -182,8 +182,8 @@ header{
     color: white;
     font-size: 14px;
 }
-.btnSalir{
-    color: white !important;
+.salir i{
+    color: white;
     font-size: 14px;
 }
 .perfil {
@@ -198,17 +198,17 @@ header{
     margin: 3px 0px;
     transition: .5s;
 }
-.btnSalir{
+.salir{
     color: transparent;
-    background-color: #00b300 !important;
-    border-radius: 50% !important;
-    width: 0px !important;
-    height: 0px !important;
+    background-color: #00b300;
+    border-radius: 50%;
+    width: 0px;
+    height: 0px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 3px 0px !important;
-    transition: .5s !important;
+    margin: 3px 0px;
+    transition: .5s;
 }
 .menu:hover > .flecha{
     background-color: #4BB0E6;
@@ -219,17 +219,17 @@ header{
     height: 30px;
     color: white;
 }
-.menu:hover > .salir .btnSalir{
-    width: 30px !important;
-    height: 30px !important;
+.menu:hover > .salir{
+    width: 30px;
+    height: 30px;
     color: white;
 }
 
 .perfil:hover{
     background-color: deepskyblue;
 }
-.btnSalir:hover{
-    background-color: deepskyblue !important;
+.salir:hover{
+    background-color: deepskyblue;
 }
 
 #contenedor-carga{

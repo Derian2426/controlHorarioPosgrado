@@ -114,6 +114,16 @@ public class Conexion implements Serializable {
         }
         return result;
     }
+    //  EJECUTAR CONSULTAS SQL prueba
+    public ResultSet ejecutarSql2(String sql) {
+        try {
+            conectar();
+            result = statement.executeQuery(sql);
+        } catch (SQLException ex) {
+            System.out.println("Error: No se ejecuto la consulta: " + ex.getMessage());
+        } 
+        return result;
+    }
 
     public int insertar(String sql) {
         int retorno = -1;

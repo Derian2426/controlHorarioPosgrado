@@ -18,7 +18,9 @@ public class Usuario {
     private String nombreUsuario;
     private String password;
     private boolean estado;
-
+    
+    String mensajeAux;
+    int codigoAux;
     public Usuario() {
     }
 
@@ -30,6 +32,33 @@ public class Usuario {
         this.nombreUsuario = nombreUsuario;
         this.password = password;
         this.estado = estado;
+    }
+    public Usuario(int code, String reslt, int iduser, String name, String firname, String usrnm, String pssword, String mail) {
+        this.codigoAux = code;
+        this.mensajeAux = reslt;
+        this.idUsuario = iduser;
+        this.nombre = name;
+        this.apellido = firname;
+        this.nombreUsuario = usrnm;
+        this.password = pssword;
+        this.correo = mail;
+
+    }
+
+    public String getMensajeAux() {
+        return mensajeAux;
+    }
+
+    public void setMensajeAux(String mensajeAux) {
+        this.mensajeAux = mensajeAux;
+    }
+
+    public int getCodigoAux() {
+        return codigoAux;
+    }
+
+    public void setCodigoAux(int codigoAux) {
+        this.codigoAux = codigoAux;
     }
 
     public int getIdUsuario() {

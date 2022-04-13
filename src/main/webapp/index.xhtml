@@ -9,6 +9,16 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
+    <script type="text/javascript">
+        function preventbackbutton() {
+            window.history.forward();
+        }
+        setTimeout("preventbackbutton()", 0);
+        window.onunload = function () {
+            null
+        };
+    </script>
+    
     <h:body>
         <h:form id="user">
             <p:growl id="msgs" showDetail="true"/>
@@ -29,16 +39,16 @@
                             <div class="input-boxes">
                                 <div class="input-box">
                                     <i class="fas fa-user"></i>
-                                    <p:inputText class="btnAcccion" type="text" placeholder="Ingrese su usuario" value="#{usuarioMB.usuario.nombre}"/>
+                                    <p:inputText class="btnAcccion" type="text" placeholder="Ingrese su usuario" value="#{userMB.usuario.nombreUsuario}"/>
                                 </div>
                                 <div class="input-box">
                                     <i class="fas fa-lock"></i>
-                                    <p:inputText class="btnAcccion" type="password" placeholder="Ingrese su contraseña" value="#{usuarioMB.usuario.password}"/>
+                                    <p:inputText class="btnAcccion" type="password" placeholder="Ingrese su contraseña" value="#{userMB.usuario.password}"/>
                                 </div>
                                 <div class="text"><a href="#">¿Olvidaste la contraseña?</a></div>
                                 <div class="input-box">
-                                    <!--<p:commandButton class="btnAcccion btnStyle" action="#{usuarioMB.iniciarSesion()}" update=":user:msgs" value="Iniciar Sesión"></p:commandButton>-->
-                                    <h:button class="btnAcccion btnStyle" outcome="Vistas/Global/principal.xhtml" value="Registrar"/>
+                                    <p:commandButton class="btnAcccion btnStyle" action="#{userMB.iniciarSesion()}" update=":user:msgs" value="Iniciar Sesión"></p:commandButton>
+                                    <!--<h:button class="btnAcccion btnStyle" outcome="Vistas/Global/principal.xhtml" value="Registrar"/>-->
                                 </div>
                                 <div class="text">¿No se encuentra registrado? <label for="flip">Registrarse ahora</label></div>
                             </div>

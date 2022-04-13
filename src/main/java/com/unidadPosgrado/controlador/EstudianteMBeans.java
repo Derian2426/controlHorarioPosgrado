@@ -13,6 +13,7 @@ import com.unidadPosgrado.modelo.Maestria;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -30,6 +31,7 @@ public class EstudianteMBeans {
     private List<Estudiante> listaEstudiante;
     private List<Estudiante> listaEstudianteSeleccionado;
     List<Estudiante> busquedaEstudiante;
+    List<Estudiante> busquedaEstudianteAux;
     private Maestria integracionMaestria;
     List<Inscripcion> listaInscripcion;
     private Inscripcion inscripcion;
@@ -37,7 +39,7 @@ public class EstudianteMBeans {
     MaestriaDAO maestriaDAO;
     private Maestria maestriaBusqueda;
     List<Maestria> busquedaMaestria;
-    
+    List<Maestria> busquedaMaestriaAux;
 
     private Estudiante estudianteBusqueda;
 
@@ -48,6 +50,7 @@ public class EstudianteMBeans {
         estudianteBusqueda = new Estudiante();
         listaEstudianteSeleccionado = new ArrayList<>();
         busquedaEstudiante = new ArrayList<>();
+        busquedaEstudianteAux = new ArrayList<>();
         integracionMaestria = new Maestria();
         listaInscripcion = new ArrayList<>();
         inscripcion = new Inscripcion();
@@ -55,12 +58,15 @@ public class EstudianteMBeans {
         maestriaDAO = new MaestriaDAO();
         maestriaBusqueda = new Maestria();
         busquedaMaestria = new ArrayList<>();
+        busquedaMaestriaAux = new ArrayList<>();
     }
 
     @PostConstruct
     public void init() {
         listaEstudiante = estudianteDAO.getListaEstudiante();
+        busquedaEstudianteAux = listaEstudiante;
         listaMaestria = maestriaDAO.getListaMaestria();
+        busquedaMaestriaAux = listaMaestria;
     }
 
     public void registrarEstudiante() {
@@ -82,6 +88,7 @@ public class EstudianteMBeans {
                 if (resultadoRegistro > 0) {
                     showInfo(estudiante.getNombre_estudiante().trim().replace(".", ".") + " Registrado exitoso.");
                     listaEstudiante = estudianteDAO.getListaEstudiante();
+                    busquedaEstudianteAux = listaEstudiante;
                     PrimeFaces.current().executeScript("PF('dlgEstudiante').hide()");
                 } else {
                     showWarn(estudiante.getNombre_estudiante().trim().replace(".", ".") + " ya se encuentra en el sistema.");
@@ -121,6 +128,7 @@ public class EstudianteMBeans {
             }
             listaEstudiante = new ArrayList<>();
             listaEstudiante = estudianteDAO.getListaEstudiante();
+            busquedaEstudianteAux = listaEstudiante;
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
@@ -141,13 +149,16 @@ public class EstudianteMBeans {
                 }
                 if (estudianteDAO.registraEstudiante(listaInscripcion) > 0) {
                     showInfo("Registro exitoso");
+                    estudianteBusqueda = new Estudiante();
                     listaInscripcion = new ArrayList<>();
                     listaEstudianteSeleccionado = new ArrayList<>();
                     integracionMaestria = new Maestria();
                     inscripcion = new Inscripcion();
                     listaEstudiante = new ArrayList<>();
                     listaEstudiante = estudianteDAO.getListaEstudiante();
+                    busquedaEstudianteAux = listaEstudiante;
                     inscripcion.setFecha_inscripcion(new Date());
+                    maestriaBusqueda = new Maestria();
                     PrimeFaces.current().executeScript("PF('dlgInscripciones').hide()");
                 } else {
                     showWarn("No se pudo generar el registro");
@@ -165,8 +176,10 @@ public class EstudianteMBeans {
         inscripcion = new Inscripcion();
         listaEstudiante = new ArrayList<>();
         listaEstudiante = estudianteDAO.getListaEstudiante();
+        busquedaEstudianteAux = listaEstudiante;
         estudianteBusqueda = new Estudiante();
         inscripcion.setFecha_inscripcion(new Date());
+        maestriaBusqueda = new Maestria();
         showWarn("Registro cancelado.");
     }
 
@@ -186,17 +199,18 @@ public class EstudianteMBeans {
 
     public void buscarEstudiante() {
         if (estudianteBusqueda.getNombre_estudiante() == null || "".equals(estudianteBusqueda.getNombre_estudiante())) {
-            listaEstudiante = estudianteDAO.getListaEstudiante();
+            listaEstudiante = busquedaEstudianteAux;
         } else {
-            listaEstudiante = estudianteDAO.getListaEstudiante();
+            listaEstudiante = busquedaEstudianteAux;
             for (Estudiante busqueda : listaEstudiante) {
-                if (busqueda.getNombre_estudiante().toUpperCase().contains(estudianteBusqueda.getNombre_estudiante().toUpperCase())) {
+                if (busqueda.getNombre_estudiante().toUpperCase().contains(estudianteBusqueda.getNombre_estudiante().toUpperCase())
+                        || busqueda.getApellido_estudiante().toUpperCase().contains(estudianteBusqueda.getNombre_estudiante().toUpperCase())) {
                     busquedaEstudiante.add(busqueda);
                 }
             }
             listaEstudiante = busquedaEstudiante;
             busquedaEstudiante = new ArrayList<>();
-            estudianteBusqueda = new Estudiante();
+//            estudianteBusqueda = new Estudiante();
         }
     }
 
@@ -216,9 +230,9 @@ public class EstudianteMBeans {
 
     public void buscarMaestria() {
         if (maestriaBusqueda.getNombre() == null || "".equals(maestriaBusqueda.getNombre())) {
-            listaMaestria = maestriaDAO.getListaMaestria();
+            listaMaestria = busquedaMaestriaAux;
         } else {
-            listaMaestria = maestriaDAO.getListaMaestria();
+            listaMaestria = busquedaMaestriaAux;
             for (Maestria busqueda : listaMaestria) {
                 if (busqueda.getNombre().toUpperCase().contains(maestriaBusqueda.getNombre().toUpperCase())) {
                     busquedaMaestria.add(busqueda);
@@ -226,7 +240,7 @@ public class EstudianteMBeans {
             }
             listaMaestria = busquedaMaestria;
             busquedaMaestria = new ArrayList<>();
-            maestriaBusqueda = new Maestria();
+//            maestriaBusqueda = new Maestria();
         }
 
     }
@@ -315,5 +329,18 @@ public class EstudianteMBeans {
     public void setMaestriaBusqueda(Maestria maestriaBusqueda) {
         this.maestriaBusqueda = maestriaBusqueda;
     }
+
+    public void saludo() {
+        System.out.println("Holas");
+    }
+//    public List<String> completeText(String query) {
+//        String queryLowerCase = query.toLowerCase();
+//        List<String> estudianteList = new ArrayList<>();
+//        for (Estudiante student : listaEstudiante) {
+//            estudianteList.add(student.getNombre_estudiante());
+//        }
+//        
+//        return estudianteList.stream().filter(t -> t.toLowerCase().startsWith(queryLowerCase)).collect(Collectors.toList());
+//    }
 
 }

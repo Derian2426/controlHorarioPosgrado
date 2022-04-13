@@ -36,12 +36,11 @@
                         <f:facet name="header">
                             <span class="ui-input-icon-left">
                                 <p:inputText placeholder="Buscar Estudiante" value="#{estudianteMB.estudianteBusqueda.nombre_estudiante}" style="margin-right: 6px">
-                                    <p:ajax event="blur" listener="#{estudianteMB.buscarEstudiante()}" update="dtEstudiante"></p:ajax>
                                 </p:inputText>
-                                <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
+                                <p:commandButton icon="pi pi-search" update=":form_estudiante:dtEstudiante" styleClass="rounded-button" action="#{estudianteMB.buscarEstudiante()}" process="dtEstudiante @this">
+                                </p:commandButton>
                             </span>
                         </f:facet>
-
                         <p:ajax event="rowEdit" listener="#{estudianteMB.onRowEdit}" update=":form_estudiante:msgs,:form_estudiante:dtEstudiante"/>
                         <p:ajax event="rowEditCancel" listener="#{estudianteMB.onRowCancel}" update=":form_estudiante:msgs,:form_estudiante:dtEstudiante"/>
 
@@ -233,9 +232,9 @@
                         <f:facet name="header">
                             <span class="ui-input-icon-left">
                                 <p:inputText placeholder="Buscar Estudiante" value="#{estudianteMB.estudianteBusqueda.nombre_estudiante}" style="margin-right: 6px">
-                                    <p:ajax event="blur" listener="#{estudianteMB.buscarEstudiante()}" update="estudiantechec"></p:ajax>
                                 </p:inputText>
-                                <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
+                                <p:commandButton icon="pi pi-search" update=":form_estudiante:estudiantechec" styleClass="rounded-button" action="#{estudianteMB.buscarEstudiante()}" process="estudiantechec @this">
+                                </p:commandButton>
                             </span>
                         </f:facet>
                         <p:column headerText="Acciones" style="width:6rem">
@@ -263,10 +262,8 @@
                                      emptyMessage="No se encontro la maestría">
                             <f:facet name="header">
                                 <span class="ui-input-icon-left">
-                                    <p:inputText placeholder="Buscar Maestría" value="#{estudianteMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
-                                        <p:ajax event="blur" listener="#{estudianteMB.buscarMaestria()}" update=":form_estudiante:dtSeleccionMaestria"></p:ajax>
-                                    </p:inputText>
-                                    <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
+                                    <p:inputText placeholder="Buscar Maestría" value="#{estudianteMB.maestriaBusqueda.nombre}" style="margin-right: 6px"/>
+                                    <p:commandButton icon="pi pi-search" styleClass="rounded-button" actionListener="#{estudianteMB.buscarMaestria()}" update=":form_estudiante:dtSeleccionMaestria" process="dtSeleccionMaestria @this"/>
                                 </span>
                             </f:facet>
                             <p:column headerText="Acciones" style="width:6rem">

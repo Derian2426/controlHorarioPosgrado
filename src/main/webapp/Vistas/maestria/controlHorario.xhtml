@@ -8,13 +8,23 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
-        <div class="card">
+        <div class="card" style="position: initial">
             <h:form>
                 <p:growl id="messages" showDetail="true"/>
+                <div class="ui-fluid p-formgrid p-grid">
+                    <div class="p-field p-col-12 p-md-5">
 
-                
+                        <p:schedule value="#{horarioMB.eventModel}" style="position: initial">
 
-                
+                        </p:schedule>
+
+                    </div>
+                </div>
+
+
+
+
+
             </h:form>
         </div>
     </ui:define>

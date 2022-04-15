@@ -63,4 +63,9 @@
         <managed-bean-class>com.unidadPosgrado.controlador.DocenteMBeans</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>horarioMB</managed-bean-name>
+        <managed-bean-class>com.unidadPosgrado.controlador.HorarioMBeans</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
 </faces-config>

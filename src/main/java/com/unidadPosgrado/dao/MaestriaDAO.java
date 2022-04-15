@@ -151,7 +151,7 @@ public class MaestriaDAO {
                 + "	" + maestria.getIdMaestria() + ", \n"
                 + "	'" + periodo.getNombrePeriodo() + "', \n"
                 + "	'" + periodo.getFechaInicio() + "', \n"
-                + "	'" + periodo.getFechaInicio() + "'\n"
+                + "	'" + periodo.getFechaFin()+ "'\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);

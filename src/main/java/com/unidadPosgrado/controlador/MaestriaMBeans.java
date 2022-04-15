@@ -39,6 +39,7 @@ public class MaestriaMBeans {
     List<Modulo> listaModulosNode;
     List<Modulo> listaModulosVerificacion;
     private Periodo periodo;
+    List<Maestria> busquedaMaestriaAux;
 
     public MaestriaMBeans() {
         maestria = new Maestria();
@@ -51,12 +52,14 @@ public class MaestriaMBeans {
         listaModulosVerificacion = new ArrayList<>();
         rootIntegracion = new DefaultTreeNode("Root Node", null);
         periodo = new Periodo();
+        busquedaMaestriaAux = new ArrayList<>();
     }
 
     @PostConstruct
     public void init() {
         listaMaestria = maestriaDAO.getListaMaestria();
         listaMaestriaxModulo = maestriaDAO.getListaMaestriaxModulo();
+        busquedaMaestriaAux = listaMaestria;
         llenarLista();
     }
 
@@ -129,6 +132,7 @@ public class MaestriaMBeans {
                     maestria = new Maestria();
                     PrimeFaces.current().executeScript("PF('dlgMaestria').hide()");
                     listaMaestria = maestriaDAO.getListaMaestria();
+                    busquedaMaestriaAux = listaMaestria;
                 } else {
                     showWarn(maestria.getNombre().trim().replace(".", ",") + " ya se encuentra registrada.");
                 }
@@ -158,6 +162,7 @@ public class MaestriaMBeans {
             listaMaestria = new ArrayList<>();
             maestria = new Maestria();
             listaMaestria = maestriaDAO.getListaMaestria();
+            busquedaMaestriaAux = listaMaestria;
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
@@ -274,7 +279,7 @@ public class MaestriaMBeans {
                 rootIntegracion = new DefaultTreeNode("Root Node", null);
                 listaMaestriaxModulo = new ArrayList<>();
                 maestriaBusqueda = new Maestria();
-                listaMaestria = maestriaDAO.getListaMaestria();
+                listaMaestria = busquedaMaestriaAux;
                 listaMaestriaxModulo = maestriaDAO.getListaMaestriaxModulo();
                 PrimeFaces.current().executeScript("PF('listadoModuloMaestria').hide()");
                 llenarLista();
@@ -307,9 +312,9 @@ public class MaestriaMBeans {
 
     public void buscarMaestria() {
         if (maestriaBusqueda.getNombre() == null || "".equals(maestriaBusqueda.getNombre())) {
-            listaMaestria = maestriaDAO.getListaMaestria();
+            listaMaestria = busquedaMaestriaAux;
         } else {
-            listaMaestria = maestriaDAO.getListaMaestria();
+            listaMaestria = busquedaMaestriaAux;
             for (Maestria busqueda : listaMaestria) {
                 if (busqueda.getNombre().toUpperCase().contains(maestriaBusqueda.getNombre().toUpperCase())) {
                     busquedaMaestria.add(busqueda);
@@ -317,7 +322,7 @@ public class MaestriaMBeans {
             }
             listaMaestria = busquedaMaestria;
             busquedaMaestria = new ArrayList<>();
-            maestriaBusqueda = new Maestria();
+//            maestriaBusqueda = new Maestria();
         }
 
     }
@@ -332,13 +337,14 @@ public class MaestriaMBeans {
                 showWarn("Seleccione una fecha de inicio.");
             } else if (periodo.getFechaFin() == null) {
                 showWarn("Seleccione una fecha de finaalización.");
-            } else if(periodo.getFechaFin().before(periodo.getFechaInicio())){
+            } else if (periodo.getFechaFin().before(periodo.getFechaInicio())) {
                 showWarn("La fecha no puede ser anterior a la fecha de inicio del Periodo.");
-            }else {
+            } else {
                 if (maestriaDAO.registrarPeriodo(integracionMaestria, periodo) > 0) {
                     showInfo("Periodo registrado con exito.");
                     integracionMaestria = new Maestria();
                     periodo = new Periodo();
+                    maestriaBusqueda = new Maestria();
                 } else {
                     showWarn("Error al registrar el periodo, esta fecha ya se ha utilizado para la planificación"
                             + " de esta maestría.");
@@ -346,7 +352,7 @@ public class MaestriaMBeans {
             }
 
         } catch (Exception e) {
-            showError(e.getMessage()+"Error al registrar el periodo, vuelva a intentarlo.");
+            showError(e.getMessage() + "Error al registrar el periodo, vuelva a intentarlo.");
         }
     }
 
@@ -354,6 +360,7 @@ public class MaestriaMBeans {
         try {
             integracionMaestria = new Maestria();
             periodo = new Periodo();
+            maestriaBusqueda = new Maestria();
             showWarn("Se cancelo el registro.");
         } catch (Exception e) {
             showError(e.getMessage());

@@ -26,17 +26,20 @@ public class ModuloMBeans {
     ModuloDAO moduloDAO;
     private List<Modulo> listaModulo;
     List<Modulo> busquedaModulo;
+    List<Modulo> busquedaModuloAux;
 
     public ModuloMBeans() {
         modulo = new Modulo();
         moduloBusqueda = new Modulo();
         moduloDAO = new ModuloDAO();
         busquedaModulo = new ArrayList<>();
+        busquedaModuloAux = new ArrayList<>();
     }
 
     @PostConstruct
     public void init() {
         listaModulo = moduloDAO.getListaModulo();
+        busquedaModuloAux = listaModulo;
     }
 
     public Modulo getModulo() {
@@ -77,6 +80,7 @@ public class ModuloMBeans {
                     showInfo(modulo.getNombreMateria().trim().replace(".", ",") + " registrado con éxito.");
                     PrimeFaces.current().executeScript("PF('dlgModulo').hide()");
                     listaModulo = moduloDAO.getListaModulo();
+                    busquedaModuloAux = listaModulo;
                 } else {
                     showWarn(modulo.getNombreMateria().trim().replace(".", ",") + " ya se encuentra registrado.");
                 }
@@ -110,6 +114,7 @@ public class ModuloMBeans {
             listaModulo = new ArrayList<>();
             modulo = new Modulo();
             listaModulo = moduloDAO.getListaModulo();
+            busquedaModuloAux = listaModulo;
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
@@ -125,9 +130,9 @@ public class ModuloMBeans {
 
     public void buscarModulo() {
         if (moduloBusqueda.getNombreMateria() == null || "".equals(moduloBusqueda.getNombreMateria())) {
-            listaModulo = moduloDAO.getListaModulo();
+            listaModulo = busquedaModuloAux;
         } else {
-            listaModulo = moduloDAO.getListaModulo();
+            listaModulo = busquedaModuloAux;
             for (Modulo busqueda : listaModulo) {
                 if (busqueda.getNombreMateria().toUpperCase().contains(moduloBusqueda.getNombreMateria().toUpperCase())) {
                     busquedaModulo.add(busqueda);
@@ -135,13 +140,14 @@ public class ModuloMBeans {
             }
             listaModulo = busquedaModulo;
             busquedaModulo = new ArrayList<>();
-            moduloBusqueda = new Modulo();
+//            moduloBusqueda = new Modulo();
 
         }
     }
 
     public void actualizaModulo() {
         listaModulo = moduloDAO.getListaModulo();
+        busquedaModuloAux = listaModulo;
     }
 
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {

@@ -99,9 +99,8 @@
                             <f:facet name="header">
                                 <span class="ui-input-icon-left">
                                     <p:inputText placeholder="Buscar Maestría" value="#{maestriaMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
-                                        <p:ajax event="blur" listener="#{maestriaMB.buscarMaestria()}" update=":form_maestria:dtSeleccionMaestriaPeriodo"></p:ajax>
                                     </p:inputText>
-                                    <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
+                                    <p:commandButton icon="pi pi-search" update=":form_maestria:dtSeleccionMaestriaPeriodo" styleClass="rounded-button" actionListener="#{maestriaMB.buscarMaestria()}" process="dtSeleccionMaestriaPeriodo @this"/>
                                 </span>
                             </f:facet>
                             <p:column headerText="Acciones" style="width:6rem">
@@ -155,9 +154,8 @@
                             <f:facet name="header">
                                 <span class="ui-input-icon-left">
                                     <p:inputText placeholder="Buscar Maestría" value="#{maestriaMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
-                                        <p:ajax event="blur" listener="#{maestriaMB.buscarMaestria()}" update=":form_maestria:dtMaestrias"></p:ajax>
                                     </p:inputText>
-                                    <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
+                                    <p:commandButton icon="pi pi-search" update=":form_maestria:dtMaestrias" styleClass="rounded-button" actionListener="#{maestriaMB.buscarMaestria()}" process="dtMaestrias @this"/>
                                 </span>
                             </f:facet>
 
@@ -224,9 +222,8 @@
                             <f:facet name="header">
                                 <span class="ui-input-icon-left">
                                     <p:inputText placeholder="Buscar Módulo" value="#{moduloMB.moduloBusqueda.nombreMateria}" style="margin-right: 6px">
-                                        <p:ajax event="blur" listener="#{moduloMB.buscarModulo()}" update=":form_maestria:dtModulo"></p:ajax>
                                     </p:inputText>
-                                    <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
+                                    <p:commandButton icon="pi pi-search" styleClass="rounded-button" actionListener="#{moduloMB.buscarModulo()}" update=":form_maestria:dtModulo" process="dtModulo @this"/>
                                 </span>
                             </f:facet>
 
@@ -340,9 +337,8 @@
                             <f:facet name="header">
                                 <span class="ui-input-icon-left">
                                     <p:inputText placeholder="Buscar Maestría" value="#{maestriaMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
-                                        <p:ajax event="blur" listener="#{maestriaMB.buscarMaestria()}" update=":form_maestria:dtSeleccionMaestria"></p:ajax>
                                     </p:inputText>
-                                    <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
+                                    <p:commandButton icon="pi pi-search" styleClass="rounded-button" actionListener="#{maestriaMB.buscarMaestria()}" update=":form_maestria:dtSeleccionMaestria" process="dtSeleccionMaestria @this"/>
                                 </span>
                             </f:facet>
                             <p:column headerText="Acciones" style="width:6rem">
@@ -372,9 +368,8 @@
                         <f:facet name="header">
                             <span class="ui-input-icon-left">
                                 <p:inputText placeholder="Buscar Maestría" value="#{moduloMB.moduloBusqueda.nombreMateria}" style="margin-right: 6px">
-                                    <p:ajax event="blur" listener="#{moduloMB.buscarModulo()}" update=":form_maestria:dtSeleccionModulo"></p:ajax>
                                 </p:inputText>
-                                <p:commandButton type="button" icon="pi pi-search" styleClass="rounded-button"/>
+                                <p:commandButton icon="pi pi-search" styleClass="rounded-button" actionListener="#{moduloMB.buscarModulo()}" update=":form_maestria:dtSeleccionModulo" process="dtSeleccionModulo @this"/>
                             </span>
                         </f:facet>
                         <p:column headerText="Acciones" style="width:6rem">

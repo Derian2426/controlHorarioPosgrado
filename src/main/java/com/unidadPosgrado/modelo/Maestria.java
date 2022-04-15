@@ -11,6 +11,7 @@ package com.unidadPosgrado.modelo;
  */
 public class Maestria {
 
+    private boolean verifica;
     private int idMaestria;
     private String nombre;
     private String descripcion;
@@ -62,6 +63,14 @@ public class Maestria {
 
     public void setTiempoMaestria(float tiempoMaestria) {
         this.tiempoMaestria = tiempoMaestria;
+    }
+
+    public boolean isVerifica() {
+        return verifica;
+    }
+
+    public void setVerifica(boolean verifica) {
+        this.verifica = verifica;
     }
 
 }

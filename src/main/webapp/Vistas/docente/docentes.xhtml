@@ -20,9 +20,6 @@
                         <div class="p-d-flex p-jc-between p-ai-center">
                             <p:commandButton value="Nuevo Docente" style="margin-right: 6px; position: initial"  onclick="PF('dlgDocente').show()"/>
                         </div>
-                        <div class="p-d-flex p-jc-between p-ai-center">
-                            <p:commandButton value="Inscripciones" style="margin-right: 6px;position: initial"  onclick=""/>
-                        </div>
                     </p:toolbarGroup>
                 </p:toolbar>
                 <!-- TABLA DE DATOS -->
@@ -32,9 +29,9 @@
                                  emptyMessage="No se encontro el docente">
                         <f:facet name="header">
                             <span class="ui-input-icon-left">
-                                <p:inputText placeholder="Buscar Docente" value="#{estudianteMB.estudianteBusqueda.nombre_estudiante}" style="margin-right: 6px">
+                                <p:inputText placeholder="Buscar Docente" value="#{docenteMB.docenteBusqueda.nombre_docente}" style="margin-right: 6px">
                                 </p:inputText>
-                                <p:commandButton icon="pi pi-search" update=":form_docentes:dtDocente" styleClass="rounded-button" action="#{estudianteMB.buscarEstudiante()}" process="dtDocente @this">
+                                <p:commandButton icon="pi pi-search" update=":form_docentes:dtDocente" styleClass="rounded-button" action="#{docenteMB.buscarDocente()}" process="dtDocente @this">
                                 </p:commandButton>
                             </span>
                         </f:facet>
@@ -136,18 +133,60 @@
                                     <p:outputLabel value="Correo: *"/>
                                     <p:inputText maxlength="100" value="#{docenteMB.docente.correo_docente}"/>
                                 </div>
+                                <div class="p-field p-col-12 p-md-6">
+                                    <p:outputLabel value="." style="color: white"/>
+                                    <p:commandButton value="Asignar Maestrías" style="margin-right: 6px; position: initial"  onclick="PF('listMaestriaSeleccion').show()"/>
+                                </div>
+                                <p:dataTable id="dtMaestriacheck" var="maestria" value="#{docenteMB.seleccionMaestria}" editable="true" paginatorPosition="bottom"
+                                             style="margin-bottom:20px" reflow="true" rows="2" paginator="true"
+                                             emptyMessage="No se encontro la maestría">
+                                    <p:column headerText="Nombre Maestría" style="text-align: justify">
+                                        <h:outputText value="#{maestria.nombre}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Descripción" style="text-align: justify">
+                                        <h:outputText value="#{maestria.descripcion}"/>
+                                    </p:column>
+                                </p:dataTable>
+
                             </div>
                             <div class="p-grid p-justify-end">
                                 <div class="p-col-4">
                                     <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{docenteMB.registrarDocente()}"
-                                                     update=":form_docentes:msgs,nuevoDocente,:form_docentes:dtDocente"/>
+                                                     update=":form_docentes:msgs,nuevoDocente,:form_docentes:dtDocente,:form_docentes:dtSeleccionMaestria"/>
                                 </div>
                                 <div class="p-field p-col-12 p-md-4">
-                                    <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgDocente').hide()"/>
+                                    <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgDocente').hide()" 
+                                                     actionListener="#{docenteMB.cancelarRegistro()}" update=":form_docentes:msgs,nuevoDocente,:form_docentes:dtDocente,:form_docentes:dtSeleccionMaestria"/>
                                 </div>
                             </div>
                         </div>
                     </p:outputPanel>
+                </p:dialog>
+                <p:dialog header="Seleccione las Maestrías" widgetVar="listMaestriaSeleccion" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
+                    <p:dataTable id="dtSeleccionMaestria" var="maestria" value="#{docenteMB.listaMaestria}" editable="true" paginatorPosition="bottom"
+                                 style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                 emptyMessage="No se encontro la maestría">
+                        <f:facet name="header">
+                            <span class="ui-input-icon-left">
+                                <p:inputText placeholder="Buscar Maestría" value="#{docenteMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
+                                </p:inputText>
+                                <p:commandButton icon="pi pi-search" styleClass="rounded-button" actionListener="#{docenteMB.buscarMaestria()}" update=":form_docentes:dtSeleccionMaestria" process="dtSeleccionMaestria @this"/>
+                            </span>
+                        </f:facet>
+                        <p:column headerText="Acciones" style="width:6rem">
+                            <p:selectBooleanCheckbox value="#{maestria.verifica}">
+                                <p:ajax listener="#{docenteMB.addMaestria(maestria)}" update=":form_docentes:dtMaestriacheck"/>
+                            </p:selectBooleanCheckbox>
+                        </p:column>
+                        <p:column headerText="Nombre Maestría" style="text-align: justify">
+                            <h:outputText value="#{maestria.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="Descripción" style="text-align: justify">
+                            <h:outputText value="#{maestria.descripcion}"/>
+                        </p:column>
+                    </p:dataTable>
                 </p:dialog>
             </h:form>
         </div>

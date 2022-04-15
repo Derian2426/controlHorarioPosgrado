@@ -7,6 +7,7 @@ package com.unidadPosgrado.dao;
 
 import com.global.config.Conexion;
 import com.unidadPosgrado.modelo.Docente;
+import com.unidadPosgrado.modelo.Maestria;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,14 +18,15 @@ import java.util.List;
  * @author Alex
  */
 public class DocenteDAO {
+
     Conexion conexion;
     String sentencia;
     ResultSet resultSet;
-    
-    public DocenteDAO(){
+
+    public DocenteDAO() {
         conexion = new Conexion();
     }
-    
+
     public List<Docente> getListaDocente() {
         List<Docente> listadoDocente = new ArrayList<>();
         sentencia = String.format("select * from public.\"getListaDocentes\"()");
@@ -35,21 +37,30 @@ public class DocenteDAO {
                         resultSet.getString("_cedula_docente"), resultSet.getString("_telefono_docente"), resultSet.getString("_correo_docente"), resultSet.getBoolean("_estado")));
             }
             return listadoDocente;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return listadoDocente;
         } finally {
             conexion.desconectar();
         }
     }
-    
-    public int registrarDocente(Docente docent) {
+
+    public int registrarDocente(Docente docent, List<Maestria> maestrias) {
         int mensaje = 0;
+        String json = "[";
+        for (Maestria datos : maestrias) {
+            json += "{\n"
+                    + "  \"idMaestria\": " + datos.getIdMaestria()
+                    + "},";
+        }
+        json = json.substring(0, json.length() - 1);
+        json += "]";
         sentencia = String.format("SELECT public.\"registrarDocente\"(\n"
-                + "	'" + docent.getNombre_docente()+ "', \n"
-                + "	'" + docent.getApellido_docente()+ "', \n"
-                + "	'" + docent.getCedula_docente()+ "', \n"
-                + "	'" + docent.getTelefono_docente()+ "', \n"
-                + "	'" + docent.getCorreo_docente()+ "'\n"
+                + "	'" + docent.getNombre_docente() + "', \n"
+                + "	'" + docent.getApellido_docente() + "', \n"
+                + "	'" + docent.getCedula_docente() + "', \n"
+                + "	'" + docent.getTelefono_docente() + "', \n"
+                + "	'" + docent.getCorreo_docente() + "', \n"
+                + "	'" + json + "'\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
@@ -63,15 +74,16 @@ public class DocenteDAO {
             conexion.desconectar();
         }
     }
+
     public int editarDocente(Docente docent) {
         int mensaje = 0;
         sentencia = String.format("SELECT public.\"actualizarDocente\"(\n"
-                + "	" + docent.getId_docente()+ ", \n"
-                + "	'" + docent.getNombre_docente()+ "', \n"
-                + "	'" + docent.getApellido_docente()+ "', \n"
-                + "	'" + docent.getCedula_docente()+ "', \n"
-                + "	'" + docent.getTelefono_docente()+ "', \n"
-                + "	'" + docent.getCorreo_docente()+ "'\n"
+                + "	" + docent.getId_docente() + ", \n"
+                + "	'" + docent.getNombre_docente() + "', \n"
+                + "	'" + docent.getApellido_docente() + "', \n"
+                + "	'" + docent.getCedula_docente() + "', \n"
+                + "	'" + docent.getTelefono_docente() + "', \n"
+                + "	'" + docent.getCorreo_docente() + "'\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
@@ -79,7 +91,7 @@ public class DocenteDAO {
                 mensaje = Integer.parseInt(resultSet.getString("actualizarDocente"));
             }
             return mensaje;
-        } catch (Exception e) {
+        } catch (NumberFormatException | SQLException e) {
             return mensaje;
         } finally {
             conexion.desconectar();

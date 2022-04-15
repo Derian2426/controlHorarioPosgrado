@@ -6,7 +6,9 @@
 package com.unidadPosgrado.controlador;
 
 import com.unidadPosgrado.dao.DocenteDAO;
+import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Docente;
+import com.unidadPosgrado.modelo.Maestria;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -22,20 +24,41 @@ import org.primefaces.event.RowEditEvent;
 public class DocenteMBeans {
 
     private Docente docente;
+    private Docente docenteBusqueda;
     DocenteDAO docenteDAO;
     private List<Docente> listaDocente;
-    
+    private List<Maestria> listaMaestria;
+    MaestriaDAO maestriaDAO;
+    private Maestria maestriaBusqueda;
+    List<Maestria> busquedaMaestria;
+    List<Maestria> busquedaMaestriaAux;
+    private List<Maestria> seleccionMaestria;
+    List<Docente> listaDocenteBusqueda;
+    List<Docente> listaDocenteBusquedaAux;
+
     public DocenteMBeans() {
         docente = new Docente();
         docenteDAO = new DocenteDAO();
         listaDocente = new ArrayList<>();
+        listaMaestria = new ArrayList<>();
+        maestriaDAO = new MaestriaDAO();
+        maestriaBusqueda = new Maestria();
+        busquedaMaestria = new ArrayList<>();
+        busquedaMaestriaAux = new ArrayList<>();
+        seleccionMaestria = new ArrayList<>();
+        docenteBusqueda = new Docente();
+        listaDocenteBusqueda = new ArrayList<>();
+        listaDocenteBusquedaAux = new ArrayList<>();
     }
-    
+
     @PostConstruct
     public void init() {
+        listaMaestria = maestriaDAO.getListaMaestria();
         listaDocente = docenteDAO.getListaDocente();
+        busquedaMaestriaAux = listaMaestria;
+        listaDocenteBusqueda = listaDocente;
     }
-    
+
     public void registrarDocente() {
         try {
             if ("".equals(docente.getNombre_docente().trim())) {
@@ -48,22 +71,41 @@ public class DocenteMBeans {
                 showWarn("Debe ingresar una teléfono.");
             } else if ("".equals(docente.getCorreo_docente().trim())) {
                 showWarn("Debe ingresar un correo.");
+            } else if (seleccionMaestria.size() < 1) {
+                showWarn("Debe asignar al menos una maestría al docente.");
             } else {
-                int resultadoRegistro = docenteDAO.registrarDocente(docente);
+                int resultadoRegistro = docenteDAO.registrarDocente(docente, seleccionMaestria);
                 if (resultadoRegistro > 0) {
                     showInfo(docente.getNombre_docente().trim().replace(".", ",") + " Guardado con éxito.");
                     docente = new Docente();
+                    seleccionMaestria = new ArrayList<>();
                     PrimeFaces.current().executeScript("PF('dlgDocente').hide()");
                     listaDocente = docenteDAO.getListaDocente();
+                    listaDocenteBusqueda = listaDocente;
+                    listaMaestria = maestriaDAO.getListaMaestria();
+                    maestriaBusqueda = new Maestria();
                 } else {
                     showWarn("La cédula " + docente.getCedula_docente().trim().replace(".", ",") + " ya se encuentra registrada.");
+                    docente = new Docente();
+                    seleccionMaestria = new ArrayList<>();
+                    listaDocente = docenteDAO.getListaDocente();
+                    listaDocenteBusqueda = listaDocente;
+                    listaMaestria = maestriaDAO.getListaMaestria();
+                    maestriaBusqueda = new Maestria();
                 }
-                docente = new Docente();
             }
         } catch (Exception e) {
         }
     }
-    
+
+    public void cancelarRegistro() {
+        docente = new Docente();
+        seleccionMaestria = new ArrayList<>();
+        listaMaestria = maestriaDAO.getListaMaestria();
+        maestriaBusqueda = new Maestria();
+        showWarn("Registro cancelado.");
+    }
+
     public void onRowEdit(RowEditEvent<Docente> event) {
         try {
             if ("".equals(event.getObject().getNombre_docente().trim())) {
@@ -78,9 +120,9 @@ public class DocenteMBeans {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
             } else {
                 Docente editDocente = new Docente(event.getObject().getId_docente(),
-                    event.getObject().getNombre_docente(), event.getObject().getApellido_docente(),
-                    event.getObject().getCedula_docente(), event.getObject().getTelefono_docente(),
-                    event.getObject().getCorreo_docente());
+                        event.getObject().getNombre_docente(), event.getObject().getApellido_docente(),
+                        event.getObject().getCedula_docente(), event.getObject().getTelefono_docente(),
+                        event.getObject().getCorreo_docente());
                 int resultadoRegistro = docenteDAO.editarDocente(editDocente);
                 if (resultadoRegistro > 0) {
                     showInfo("Se actualizo con éxito, " + editDocente.getNombre_docente().trim());
@@ -91,19 +133,78 @@ public class DocenteMBeans {
             listaDocente = new ArrayList<>();
             docente = new Docente();
             listaDocente = docenteDAO.getListaDocente();
+            listaDocenteBusqueda = listaDocente;
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
     }
-    
+
     public void onRowCancel(RowEditEvent<Docente> event) {
         try {
-            showWarn("Edición del nombre " + event.getObject().getNombre_docente()+ " fue cancelado.");
+            showWarn("Edición del nombre " + event.getObject().getNombre_docente() + " fue cancelado.");
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
     }
-    
+
+    public void buscarMaestria() {
+        if (maestriaBusqueda.getNombre() == null || "".equals(maestriaBusqueda.getNombre())) {
+            listaMaestria = busquedaMaestriaAux;
+        } else {
+            listaMaestria = busquedaMaestriaAux;
+            for (Maestria busqueda : listaMaestria) {
+                if (busqueda.getNombre().toUpperCase().contains(maestriaBusqueda.getNombre().toUpperCase())) {
+                    busquedaMaestria.add(busqueda);
+                }
+            }
+            listaMaestria = busquedaMaestria;
+            busquedaMaestria = new ArrayList<>();
+//            maestriaBusqueda = new Maestria();
+        }
+
+    }
+
+    public void addMaestria(Maestria maestria) {
+        try {
+            if (maestria.isVerifica() && verificaModulo(maestria.getIdMaestria())) {
+                seleccionMaestria.add(maestria);
+            } else {
+                seleccionMaestria.remove(maestria);
+            }
+        } catch (Exception e) {
+            showWarn("Error" + e.getMessage());
+        }
+
+    }
+
+    public boolean verificaModulo(int idMaestria) {
+        boolean verifica = true;
+        for (Maestria maestria : seleccionMaestria) {
+            if (maestria.getIdMaestria() == idMaestria) {
+                verifica = false;
+                break;
+            }
+        }
+        return verifica;
+    }
+
+    public void buscarDocente() {
+        if (docenteBusqueda.getNombre_docente() == null || "".equals(docenteBusqueda.getNombre_docente())) {
+            listaDocente = listaDocenteBusqueda;
+        } else {
+            listaDocente = listaDocenteBusqueda;
+            for (Docente busqueda : listaDocente) {
+                if (busqueda.getNombre_docente().toUpperCase().contains(docenteBusqueda.getNombre_docente().toUpperCase())
+                        || busqueda.getApellido_docente().toUpperCase().contains(docenteBusqueda.getNombre_docente().toUpperCase())) {
+                    listaDocenteBusquedaAux.add(busqueda);
+                }
+            }
+            listaDocente = listaDocenteBusquedaAux;
+            listaDocenteBusquedaAux = new ArrayList<>();
+//            estudianteBusqueda = new Estudiante();
+        }
+    }
+
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
         FacesContext.getCurrentInstance().
                 addMessage(null, new FacesMessage(severity, summary, detail));
@@ -132,5 +233,37 @@ public class DocenteMBeans {
     public void setListaDocente(List<Docente> listaDocente) {
         this.listaDocente = listaDocente;
     }
-    
+
+    public List<Maestria> getListaMaestria() {
+        return listaMaestria;
+    }
+
+    public void setListaMaestria(List<Maestria> listaMaestria) {
+        this.listaMaestria = listaMaestria;
+    }
+
+    public Maestria getMaestriaBusqueda() {
+        return maestriaBusqueda;
+    }
+
+    public void setMaestriaBusqueda(Maestria maestriaBusqueda) {
+        this.maestriaBusqueda = maestriaBusqueda;
+    }
+
+    public List<Maestria> getSeleccionMaestria() {
+        return seleccionMaestria;
+    }
+
+    public void setSeleccionMaestria(List<Maestria> seleccionMaestria) {
+        this.seleccionMaestria = seleccionMaestria;
+    }
+
+    public Docente getDocenteBusqueda() {
+        return docenteBusqueda;
+    }
+
+    public void setDocenteBusqueda(Docente docenteBusqueda) {
+        this.docenteBusqueda = docenteBusqueda;
+    }
+
 }

@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/HeaderFooterPrincipal.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="titulo">
+        Docentes
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="card">
+            <h:form id="form_docentes">
+                <p:growl id="msgs" showDetail="true"/>
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            <p:commandButton value="Nuevo Docente" style="margin-right: 6px; position: initial"  onclick="PF('dlgDocente').show()"/>
+                        </div>
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            <p:commandButton value="Inscripciones" style="margin-right: 6px;position: initial"  onclick=""/>
+                        </div>
+                    </p:toolbarGroup>
+                </p:toolbar>
+                <!-- TABLA DE DATOS -->
+                <div class="card">
+                    <p:dataTable id="dtDocente" var="docente" value="#{docenteMB.listaDocente}" editable="true" paginatorPosition="bottom"
+                                 style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                 emptyMessage="No se encontro el docente">
+                        <f:facet name="header">
+                            <span class="ui-input-icon-left">
+                                <p:inputText placeholder="Buscar Docente" value="#{estudianteMB.estudianteBusqueda.nombre_estudiante}" style="margin-right: 6px">
+                                </p:inputText>
+                                <p:commandButton icon="pi pi-search" update=":form_docentes:dtDocente" styleClass="rounded-button" action="#{estudianteMB.buscarEstudiante()}" process="dtDocente @this">
+                                </p:commandButton>
+                            </span>
+                        </f:facet>
+
+                        <p:ajax event="rowEdit" listener="#{docenteMB.onRowEdit}" update=":form_docentes:msgs,:form_docentes:dtDocente"/>
+                        <p:ajax event="rowEditCancel" listener="#{docenteMB.onRowCancel}" update=":form_docentes:msgs,:form_docentes:dtDocente"/>
+
+                        <p:column headerText="Nombre" style="text-align: justify" sortBy="#{docente.nombre_docente}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{docente.nombre_docente}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{docente.nombre_docente}" style="width:100%" maxlength="30"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Apellido" style="text-align: justify" sortBy="#{docente.apellido_docente}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{docente.apellido_docente}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{docente.apellido_docente}" style="width:100%" maxlength="30"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Cédula" style="text-align: justify">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{docente.cedula_docente}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{docente.cedula_docente}" style="width:100%" maxlength="15">
+                                        <p:keyFilter mask="num" />
+                                    </p:inputText>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Teléfono" style="text-align: justify">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{docente.telefono_docente}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{docente.telefono_docente}" style="width:100%" maxlength="15">
+                                        <p:keyFilter mask="num" />
+                                    </p:inputText>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Correo" style="text-align: justify">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{docente.correo_docente}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{docente.correo_docente}" style="width:100%" maxlength="100"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Acciones" style="width:6rem">
+                            <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+
+                <p:dialog header="Registro de Docente" widgetVar="dlgDocente" width="850" showEffect="fade" modal="true" responsive="true">
+                    <p:outputPanel id="nuevoDocente" class="ui-fluid">
+                        <div class="card">
+                            <div class="ui-fluid p-formgrid p-grid">
+                                <div class="p-field p-col-12 p-md-6">
+                                    <p:outputLabel value="Nombre: *"/>
+                                    <p:inputText maxlength="50" value="#{docenteMB.docente.nombre_docente}"/>
+                                </div>
+                                <div class="p-field p-col-12 p-md-6">
+                                    <p:outputLabel value="Apellido: *"/>
+                                    <p:inputText maxlength="50" value="#{docenteMB.docente.apellido_docente}"/>
+                                </div>
+                                <div class="p-field p-col-12 p-md-6">
+                                    <p:outputLabel value="Cédula:"/>
+                                    <p:inputText maxlength="15" value="#{docenteMB.docente.cedula_docente}">
+                                        <p:keyFilter mask="num"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="p-field p-col-12 p-md-6">
+                                    <p:outputLabel value="Teléfono:"/>
+                                    <p:inputText maxlength="15" value="#{docenteMB.docente.telefono_docente}">
+                                        <p:keyFilter mask="num"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="p-field p-col-12 p-md-6">
+                                    <p:outputLabel value="Correo: *"/>
+                                    <p:inputText maxlength="100" value="#{docenteMB.docente.correo_docente}"/>
+                                </div>
+                            </div>
+                            <div class="p-grid p-justify-end">
+                                <div class="p-col-4">
+                                    <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{docenteMB.registrarDocente()}"
+                                                     update=":form_docentes:msgs,nuevoDocente,:form_docentes:dtDocente"/>
+                                </div>
+                                <div class="p-field p-col-12 p-md-4">
+                                    <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgDocente').hide()"/>
+                                </div>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

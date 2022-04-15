@@ -151,7 +151,7 @@ header{
 .menu{
     position: absolute;
     background-color: white;
-    padding: 5px;
+    padding: 3px;
     top: 17%;
     left: 95%;
     transform: translate(-50%, -5%);
@@ -170,7 +170,7 @@ header{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 1px 0px;
+    margin: 2px 0px;
     transform: rotate(90deg);
     transition: .5s;
 }
@@ -182,7 +182,7 @@ header{
     color: white;
     font-size: 14px;
 }
-.salir i{
+.btnSalir{
     color: white;
     font-size: 14px;
 }
@@ -195,20 +195,20 @@ header{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 3px 0px;
+    margin: 1px 0px;
     transition: .5s;
 }
-.salir{
+ .btnSalir{
     color: transparent;
-    background-color: #00b300;
-    border-radius: 50%;
-    width: 0px;
-    height: 0px;
+    background-color: #00b300 !important;
+    border-radius: 50% !important;
+    width: 0px !important;
+    height: 0px !important;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 3px 0px;
-    transition: .5s;
+    margin: 3px 0px -12px 0px !important;
+    transition: .5s !important;
 }
 .menu:hover > .flecha{
     background-color: #4BB0E6;
@@ -219,37 +219,15 @@ header{
     height: 30px;
     color: white;
 }
-.menu:hover > .salir{
-    width: 30px;
-    height: 30px;
+.menu:hover > .salir .btnSalir{
+    width: 30px !important;
+    height: 30px !important;
     color: white;
 }
 
 .perfil:hover{
     background-color: deepskyblue;
 }
-.salir:hover{
-    background-color: deepskyblue;
-}
-
-#contenedor-carga{
-    
-}
-/*CARGA*/
-#carga{
-    border: 10px solid #ccc;
-    border-top-color: #F5786E;
-    border-top-style: groove;
-    height: 50px;
-    width: 50px;
-    border-radius: 100%;
-    margin: 30px 30px 30px 50%;
-    -webkit-animation: girar 1.5s linear infinite;
-    -o-animation: girar 1.5s linear infinite;
-    animation: girar 1.5s linear infinite;
-}
-
-@keyframes girar{
-    from { transform: rotate(0deg);}
-    to { transform: rotate(360deg);}
+.btnSalir:hover{
+    background-color: deepskyblue !important;
 }

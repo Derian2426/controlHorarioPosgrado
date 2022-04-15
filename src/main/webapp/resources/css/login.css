@@ -129,6 +129,8 @@ form .form-content .text a:hover{
 }
 .form-content .input-box .btnAcccion:focus{
     border-color: seagreen;
+    box-shadow: none;
+    
 }
 .form-content .input-box i{
     position: absolute;

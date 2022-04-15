@@ -65,7 +65,7 @@ public class EstudianteMBeans {
     public void init() {
         listaEstudiante = estudianteDAO.getListaEstudiante();
         busquedaEstudianteAux = listaEstudiante;
-        listaMaestria = maestriaDAO.getListaMaestria();
+        listaMaestria = maestriaDAO.getListaMaestriaPeriodo();
         busquedaMaestriaAux = listaMaestria;
     }
 

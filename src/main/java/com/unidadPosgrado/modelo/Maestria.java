@@ -5,6 +5,8 @@
  */
 package com.unidadPosgrado.modelo;
 
+import java.util.Date;
+
 /**
  *
  * @author HP
@@ -16,6 +18,8 @@ public class Maestria {
     private String nombre;
     private String descripcion;
     private float tiempoMaestria;
+    private Date fechaInicio;
+    private Date fechaFin;
 
     public Maestria() {
     }
@@ -31,6 +35,13 @@ public class Maestria {
         this.idMaestria = idMaestria;
         this.nombre = nombre;
         this.descripcion = descripcion;
+    }
+
+    public Maestria(int idMaestria, String nombre, Date fechaInicio, Date fechaFin) {
+        this.idMaestria = idMaestria;
+        this.nombre = nombre;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
     }
 
     public int getIdMaestria() {
@@ -71,6 +82,22 @@ public class Maestria {
 
     public void setVerifica(boolean verifica) {
         this.verifica = verifica;
+    }
+
+    public Date getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public Date getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(Date fechaFin) {
+        this.fechaFin = fechaFin;
     }
 
 }

@@ -51,6 +51,16 @@
     <managed-bean>
         <managed-bean-name>usuarioMB</managed-bean-name>
         <managed-bean-class>com.seguridad.controlador.UsuarioMB</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>verificarSesion</managed-bean-name>
+        <managed-bean-class>com.seguridad.controlador.VerificarSesion</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>docenteMB</managed-bean-name>
+        <managed-bean-class>com.unidadPosgrado.controlador.DocenteMBeans</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
 </faces-config>

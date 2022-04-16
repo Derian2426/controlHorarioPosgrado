@@ -12,13 +12,29 @@
             <h:form>
                 <p:growl id="messages" showDetail="true"/>
                 <div class="ui-fluid p-formgrid p-grid">
-                    <div class="p-field p-col-12 p-md-5">
+                    <!-- Lado Izquierdo -->
+                    <div class="p-field p-col-12 p-md-6">
+                        <div class="p-field p-col-12 p-md-12">
+                            <p:outputLabel value="Nombre: *"/>
+                            <p:inputText maxlength="50" value=""/>
+                        </div>
+                        <div class="p-field p-col-12 p-md-12">
+                            <p:outputLabel value="Nombre: *"/>
+                            <p:inputText maxlength="50" value=""/>
+                        </div>
+                        <div class="p-field p-col-12 p-md-12">
+                            <p:outputLabel value="Nombre: *"/>
+                            <p:inputText maxlength="50" value=""/>
+                        </div>
+                    </div>
 
+                    <!-- Lado Derecho -->
+                    <div class="p-field p-col-12 p-md-6">
                         <p:schedule value="#{horarioMB.eventModel}" style="position: initial">
 
                         </p:schedule>
-
                     </div>
+
                 </div>
 
 

@@ -12,8 +12,6 @@ body{
     padding-bottom: 2rem;
     position: initial;
 }
-
-
 .card-box {
     position: initial;
     color: #fff;
@@ -99,20 +97,26 @@ footer{
     align-items: center;
     padding: 10px;
     color: white;
+    border-bottom: 1px solid var(--surface-d);
+    box-shadow: 0 0 4px rgb(0 0 0 / 25%);
+    z-index: 997;
 }
-
 /*CABECERA*/
 header{
-    left: 0;
-    top: 0;
-    right: 0;
-    position: fixed;
-    display: flex;
-    min-height: 70px;
     background-color: seagreen;
-    justify-content: space-between;
+    padding: 0;
+    height: 80px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 997;
+    box-shadow: 0 0 4px rgb(0 0 0 / 25%);
+    border-bottom: 1px solid var(--surface-d);
+    display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 0 35px;
+    justify-content: space-between;
 }
 .logoP{
     display: flex;
@@ -146,7 +150,6 @@ header{
         flex-direction: var;
     }
 }
-
 /*MENU DE SESION*/
 .menu{
     position: absolute;
@@ -224,7 +227,6 @@ header{
     height: 30px !important;
     color: white;
 }
-
 .perfil:hover{
     background-color: deepskyblue;
 }

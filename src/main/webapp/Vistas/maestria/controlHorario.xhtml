@@ -15,15 +15,17 @@
                     <div class="ui-fluid p-formgrid p-grid">
                         <!-- Lado Izquierdo -->
                         <div class="p-field p-col-12 p-md-6">
-                            <div class="p-field p-col-12 p-md-12">
-                                    <p:outputLabel value="Nombre Maestría"/>
-                                    <p:inputText maxlength="150" value="#{horarioMB.integracionMaestria.nombre}" readonly="true"/>
-                                
-                                    <p:commandButton style="margin-right: 6px;" value="Buscar Maestría" 
-                                                     styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestriaPeriodo').show()">
-                                    </p:commandButton>
+                            <div class="p-md-6">
+                                <p:outputLabel value="Nombre Maestría"/>
                             </div>
-
+                            <div class="p-d-flex p-md-12">
+                                
+                                <p:inputText maxlength="150" value="#{horarioMB.integracionMaestria.nombre}" readonly="true"/>
+                               
+                                <p:commandButton value="Buscar Maestría" 
+                                                 styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestriaPeriodo').show()">
+                                </p:commandButton>
+                            </div>
                             <div class="p-field p-col-12 p-md-12">
                                 <p:outputLabel value="Descripción:"/>
                                 <p:inputTextarea maxlength="200" rows="5" cols="6" value="#{maestriaMB.periodo.nombrePeriodo}"/>

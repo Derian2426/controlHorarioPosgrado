@@ -9,38 +9,77 @@
 
     <ui:define name="content">
         <div class="card" style="position: initial">
-            <h:form>
+            <h:form id="form_horario">
                 <p:growl id="messages" showDetail="true"/>
-                <div class="ui-fluid p-formgrid p-grid">
-                    <!-- Lado Izquierdo -->
-                    <div class="p-field p-col-12 p-md-6">
-                        <div class="p-field p-col-12 p-md-12">
-                            <p:outputLabel value="Nombre: *"/>
-                            <p:inputText maxlength="50" value=""/>
+                <p:outputPanel id="nuevaPerido" class="ui-fluid">
+                    <div class="ui-fluid p-formgrid p-grid">
+                        <!-- Lado Izquierdo -->
+                        <div class="p-field p-col-12 p-md-6">
+                            <div class="p-field p-col-12 p-md-12">
+                                    <p:outputLabel value="Nombre Maestría"/>
+                                    <p:inputText maxlength="150" value="#{horarioMB.integracionMaestria.nombre}" readonly="true"/>
+                                
+                                    <p:commandButton style="margin-right: 6px;" value="Buscar Maestría" 
+                                                     styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestriaPeriodo').show()">
+                                    </p:commandButton>
+                            </div>
+
+                            <div class="p-field p-col-12 p-md-12">
+                                <p:outputLabel value="Descripción:"/>
+                                <p:inputTextarea maxlength="200" rows="5" cols="6" value="#{maestriaMB.periodo.nombrePeriodo}"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Fecha de inicio:"/>
+                                <p:calendar value="#{maestriaMB.periodo.fechaInicio}" />
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Fecha de finalización:"/>
+                                <p:calendar value="#{maestriaMB.periodo.fechaFin}" />
+                            </div>
                         </div>
-                        <div class="p-field p-col-12 p-md-12">
-                            <p:outputLabel value="Nombre: *"/>
-                            <p:inputText maxlength="50" value=""/>
+                        <!-- Lado Derecho -->
+                        <div class="p-field p-col-12 p-md-6">
+                            <p:schedule value="#{horarioMB.eventModel}" style="position: initial">
+
+                            </p:schedule>
                         </div>
-                        <div class="p-field p-col-12 p-md-12">
-                            <p:outputLabel value="Nombre: *"/>
-                            <p:inputText maxlength="50" value=""/>
-                        </div>
+
                     </div>
+                </p:outputPanel>
 
-                    <!-- Lado Derecho -->
-                    <div class="p-field p-col-12 p-md-6">
-                        <p:schedule value="#{horarioMB.eventModel}" style="position: initial">
 
-                        </p:schedule>
+                <p:dialog header="Seleccione una de las  Maestrías" widgetVar="listMaestriaPeriodo" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
+                    <div class="card">
+                        <p:dataTable id="dtSeleccionMaestriaPeriodo" var="maestrias" value="#{horarioMB.listaMaestria}" editable="true" paginatorPosition="bottom"
+                                     style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                     emptyMessage="No se encontro la maestría">
+                            <f:facet name="header">
+                                <span class="ui-input-icon-left">
+                                    <p:inputText placeholder="Buscar Maestría" value="#{horarioMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
+                                    </p:inputText>
+                                    <p:commandButton icon="pi pi-search" update=":form_horario:dtSeleccionMaestriaPeriodo" styleClass="rounded-button" actionListener="#{horarioMB.buscarMaestria()}" process="dtSeleccionMaestriaPeriodo @this"/>
+                                </span>
+                            </f:facet>
+                            <p:column headerText="Acciones" style="width:6rem">
+                                <p:commandButton
+                                    class="rounded-button"
+                                    icon="pi pi-check">
+                                    <p:ajax listener="#{horarioMB.llenaMaestriaPeriodo(maestrias)}" 
+                                            update=":form_horario:nuevaPerido,:form_horario:messages"
+                                            oncomplete="PF('listMaestriaPeriodo').hide()"/>
+
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="Nombre Maestría" style="text-align: justify">
+                                <h:outputText value="#{maestrias.nombre}"/>
+                            </p:column>
+
+                            <p:column headerText="Descripción" style="text-align: justify">
+                                <h:outputText value="#{maestrias.descripcion}"/>
+                            </p:column>
+                        </p:dataTable>
                     </div>
-
-                </div>
-
-
-
-
-
+                </p:dialog>
             </h:form>
         </div>
     </ui:define>

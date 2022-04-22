@@ -25,7 +25,7 @@ public class UsuarioDAO {
     String sentencia;
     ResultSet resultSet;
     
-    boolean estado = true;
+    boolean estado = false;
 
     public UsuarioDAO() {
         conexion = new Conexion();

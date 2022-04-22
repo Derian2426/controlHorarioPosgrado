@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/HeaderFooterPrincipal.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="titulo">
+        Administración
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="card">
+            <h:form id="form_admin">
+                <p:growl id="msgs" showDetail="true"/>
+                <p:menubar autoDisplay="false" >
+                    <p:menuitem value="Usuarios"
+                                style="display: flex; align-items: center; text-decoration: none"
+                                icon="pi pi-users"/>
+                    <p:menuitem value="Roles"
+                                style="display: flex; align-items: center; text-decoration: none;"
+                                icon="pi pi-globe"/>
+                </p:menubar>
+
+                <div class="card">
+                    <p:dataTable id="dtUsuarios" var="usuario" value="#{adminMB.listaUsuario}" editable="true" paginatorPosition="bottom"
+                                 style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                 emptyMessage="No se encontro el estudiante">
+                        <f:facet name="header">
+                            <span class="ui-input-icon-left">
+                                <p:inputText placeholder="Buscar Estudiante" value="#{estudianteMB.estudianteBusqueda.nombre_estudiante}" style="margin-right: 6px">
+                                </p:inputText>
+                                <p:commandButton icon="pi pi-search" update=":form_admin:dtUsuarios" styleClass="rounded-button ui-button-secondary" action="#{estudianteMB.buscarEstudiante()}" process="dtUsuarios @this">
+                                </p:commandButton>
+                            </span>
+                        </f:facet>
+                        <!--<p:ajax event="rowEdit" listener="#{estudianteMB.onRowEdit}" update=":form_admin:msgs,:form_admin:dtUsuarios"/>
+                        <p:ajax event="rowEditCancel" listener="#{estudianteMB.onRowCancel}" update=":form_admin:msgs,:form_admin:dtUsuarios"/>-->
+
+                        <p:column headerText="Nombre" style="text-align: justify" sortBy="#{usuario.nombre}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{usuario.nombre}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{usuario.nombre}" style="width:100%" maxlength="30"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Apellido" style="text-align: justify" sortBy="#{usuario.apellido}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{usuario.apellido}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{usuario.apellido}" style="width:100%" maxlength="30"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Correo" style="text-align: justify" sortBy="#{usuario.correo}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{usuario.correo}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{usuario.correo}" style="width:100%" maxlength="30"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Nombre usuario" style="text-align: justify" sortBy="#{usuario.nombreUsuario}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{usuario.nombreUsuario}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{usuario.nombreUsuario}" style="width:100%" maxlength="30"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Estado" style="text-align: justify" sortBy="#{usuario.estado}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{usuario.estado}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{usuario.estado}" style="width:100%" maxlength="30"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

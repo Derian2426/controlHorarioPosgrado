@@ -10,6 +10,8 @@ import com.global.config.Conexion;
 import com.seguridad.modelo.Usuario;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -21,7 +23,9 @@ public class UsuarioDAO {
     private Usuario usuario;
     private AES encryptAES;
     String sentencia;
-    ResultSet result;
+    ResultSet resultSet;
+    
+    boolean estado = true;
 
     public UsuarioDAO() {
         conexion = new Conexion();
@@ -36,20 +40,37 @@ public class UsuarioDAO {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
+    
+    public List<Usuario> getListaUsuario() {
+        List<Usuario> listaUsuario = new ArrayList<>();
+        sentencia = String.format("SELECT * from public.\"getListaUsuarios\"();");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listaUsuario.add(new Usuario(resultSet.getInt("_id_usuario"), resultSet.getString("_nombre"), resultSet.getString("_apellido"),
+                        resultSet.getString("_correo"), resultSet.getString("_nombre_usuario"), resultSet.getBoolean("_estado")));
+            }
+            return listaUsuario;
+        } catch (SQLException ex) {
+            return listaUsuario;
+        }  finally {
+            conexion.desconectar();
+        }
+    }
     public int registrarUsuario(Usuario user) {
         int mensaje = 0;
         sentencia = String.format("SELECT public.\"registrarUsuario\"(\n"
                 + "	'" + user.getNombre()+ "', \n"
                 + "	'" + user.getApellido()+ "', \n"
-                + "	'" + user.getNombreUsuario()+ "', \n"
                 + "	'" + user.getCorreo()+ "', \n"
-                + "	'" + encryptAES.getAESEncrypt(user.getPassword())+ "'\n"
+                + "	'" + user.getNombreUsuario()+ "', \n"
+                + "	'" + encryptAES.getAESEncrypt(user.getPassword())+ "', \n"
+                + "	'" + estado + "'\n"
                 + ")");
         try {
-            result = conexion.ejecutarSql(sentencia);
-            while (result.next()) {
-                mensaje = Integer.parseInt(result.getString("registrarUsuario"));
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("registrarUsuario"));
             }
             return mensaje;
         } catch (Exception e) {
@@ -64,18 +85,18 @@ public class UsuarioDAO {
         try {
             sentencia = String.format("SELECT * from public.iniciarsesion('%1$s','%2$s')",
                     u.getNomUserSesion(), encryptAES.getAESEncrypt(u.getPassSesion()));
-            result = conexion.ejecutarSql2(sentencia);
+            resultSet = conexion.ejecutarSql2(sentencia);
 
-            while (result.next()) {
+            while (resultSet.next()) {
                 usuarioAcceso = new Usuario(
-                        result.getInt("code"),
-                        result.getString("reslt"),
-                        result.getInt("iduser"),
-                        result.getString("name"),
-                        result.getString("firname"),
-                        result.getString("nickname"),
-                        result.getString("pswrd"),
-                        result.getString("mail")
+                        resultSet.getInt("code"),
+                        resultSet.getString("reslt"),
+                        resultSet.getInt("iduser"),
+                        resultSet.getString("name"),
+                        resultSet.getString("firname"),
+                        resultSet.getString("nickname"),
+                        resultSet.getString("pswrd"),
+                        resultSet.getString("mail")
                 );
             }
         } catch (SQLException e) {

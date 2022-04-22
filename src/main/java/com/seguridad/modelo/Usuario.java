@@ -34,7 +34,17 @@ public class Usuario {
 
     public Usuario() {
     }
-
+    
+    public Usuario(int idUsuario, String nombre, String apellido, String correo, 
+            String nombreUsuario, boolean estado) {
+        this.idUsuario = idUsuario;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.correo = correo;
+        this.nombreUsuario = nombreUsuario;
+        this.estado = estado;
+    }
+    
     public Usuario(int idUsuario, String nombre, String apellido, String correo, 
             String nombreUsuario, String password, boolean estado) {
         this.idUsuario = idUsuario;

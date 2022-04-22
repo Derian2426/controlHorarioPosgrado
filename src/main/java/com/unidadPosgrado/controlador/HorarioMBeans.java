@@ -321,7 +321,7 @@ public class HorarioMBeans {
             estadoAsignacion = true;
             PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
             }else{
-                showWarn("Erese Gay");
+                showWarn("Ya se asigno el docente en este horario");
             }
             
         }

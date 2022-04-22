@@ -68,4 +68,9 @@
         <managed-bean-class>com.unidadPosgrado.controlador.HorarioMBeans</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>adminMB</managed-bean-name>
+        <managed-bean-class>com.seguridad.controlador.AdminMBeans</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
 </faces-config>

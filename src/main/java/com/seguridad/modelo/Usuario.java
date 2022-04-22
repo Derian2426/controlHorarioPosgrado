@@ -19,13 +19,24 @@ public class Usuario {
     private String password;
     private boolean estado;
     
+    private String confpassword;
+    
+    //sesion
+    private int idUsuarioSesion;
+    private String nomUserSesion;
+    private String passSesion;
+    private String nombreSesion;
+    private String apellidoSesion;
+    private String correoSesion;
+    
     String mensajeAux;
     int codigoAux;
 
     public Usuario() {
     }
 
-    public Usuario(int idUsuario, String nombre, String apellido, String correo, String nombreUsuario, String password, boolean estado) {
+    public Usuario(int idUsuario, String nombre, String apellido, String correo, 
+            String nombreUsuario, String password, boolean estado) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -35,22 +46,78 @@ public class Usuario {
         this.estado = estado;
     }
     
-    public Usuario(int code, String reslt, int iduser, String name, String firname, String usrnm, String pssword, String mail) {
+    public Usuario(int code, String reslt, int iduser, String name, String firname, 
+            String usrnm, String pssword, String mail) {
         this.codigoAux = code;
         this.mensajeAux = reslt;
-        this.idUsuario = iduser;
-        this.nombre = name;
-        this.apellido = firname;
-        this.nombreUsuario = usrnm;
-        this.password = pssword;
-        this.correo = mail;
-
+        this.idUsuarioSesion = iduser;
+        this.nombreSesion = name;
+        this.apellidoSesion = firname;
+        this.nomUserSesion = usrnm;
+        this.passSesion = pssword;
+        this.correoSesion = mail;
     }
 
+    public int getIdUsuarioSesion() {
+        return idUsuarioSesion;
+    }
+
+    public void setIdUsuarioSesion(int idUsuarioSesion) {
+        this.idUsuarioSesion = idUsuarioSesion;
+    }
+
+    public String getNombreSesion() {
+        return nombreSesion;
+    }
+
+    public void setNombreSesion(String nombreSesion) {
+        this.nombreSesion = nombreSesion;
+    }
+
+    public String getApellidoSesion() {
+        return apellidoSesion;
+    }
+
+    public void setApellidoSesion(String apellidoSesion) {
+        this.apellidoSesion = apellidoSesion;
+    }
+
+    public String getCorreoSesion() {
+        return correoSesion;
+    }
+
+    public void setCorreoSesion(String correoSesion) {
+        this.correoSesion = correoSesion;
+    }
+
+    public String getNomUserSesion() {
+        return nomUserSesion;
+    }
+
+    public void setNomUserSesion(String nomUserSesion) {
+        this.nomUserSesion = nomUserSesion;
+    }
+
+    public String getPassSesion() {
+        return passSesion;
+    }
+
+    public void setPassSesion(String passSesion) {
+        this.passSesion = passSesion;
+    }
+    
     public int getIdUsuario() {
         return idUsuario;
     }
 
+    public String getConfpassword() {
+        return confpassword;
+    }
+
+    public void setConfpassword(String confpassword) {
+        this.confpassword = confpassword;
+    }
+    
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
     }

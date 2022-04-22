@@ -8,6 +8,8 @@ package com.seguridad.controlador;
 import com.seguridad.dao.UsuarioDAO;
 import com.seguridad.modelo.Usuario;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -43,14 +45,48 @@ public class UsuarioMB {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+    
+    public void registrarUsuario(){
+        Pattern pattern = Pattern
+                .compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+        Matcher matcher = pattern.matcher(usuario.getCorreo());
+        try {
+            if ("".equals(usuario.getNombre().trim())) {
+                showWarn("Debe ingresar un nombre.");
+            } else if ("".equals(usuario.getApellido().trim())) {
+                showWarn("Debe ingresar un apellido.");
+            } else if ("".equals(usuario.getNombreUsuario().trim())) {
+                showWarn("Ingrese una nombre de usuario");
+            } else if (matcher.find() == false) {
+                showWarn("Ingrese un email válido");
+            } else if ("".equals(usuario.getPassword())) {
+                showWarn("Ingrese una contraseña");
+            } else if ("".equals(usuario.getConfpassword())) {
+                showWarn("Confirme contraseña");
+            } else if (usuario.getPassword().equals(usuario.getConfpassword())) {
+                int resultadoRegistro = userDAO.registrarUsuario(usuario);
+                if(resultadoRegistro > 0){
+                    showInfo(usuario.getNombre().trim().replace(".", ",") + " Guardado con exito");
+                    usuario = new Usuario();
+                } else{
+                    showWarn("El nombre de usuario ya se encuentra registrado");
+                }
+            } else {
+                showWarn("Contraseñas no coinciden");
+            }
+        } catch (Exception e) {
+        }
+    }
+    
     public void iniciarSesion() {
         try {
             Usuario usuarioSesion = new Usuario();
-            if ("".equals(usuario.getNombreUsuario())) {
+            if ("".equals(usuario.getNomUserSesion())) {
                 mensajeDeAdvertencia("Ingrese un usuario");
-            } else if ("".equals(usuario.getPassword())) {
+            } else if ("".equals(usuario.getPassSesion())) {
                 mensajeDeAdvertencia("Ingrese una contraseña");
-            } else if (!usuario.getNombreUsuario().isEmpty() && !usuario.getPassword().isEmpty()) {
+            } else if (!usuario.getNomUserSesion().isEmpty() && !usuario.getPassSesion().isEmpty()) {
                 usuarioSesion = userDAO.iniciarSesion(usuario);
                 if (usuarioSesion != null) {
                     if (usuarioSesion.getCodigoAux() < 1) {
@@ -80,8 +116,8 @@ public class UsuarioMB {
         httpSession.removeAttribute("usuario");
         facesContext.getExternalContext().redirect(
                 "../../../");
-        usuario.setPassword("");
-        usuario.setNombreUsuario("");
+        usuario.setPassSesion("");
+        usuario.setNomUserSesion("");
     }
     
     public void mensajeDeAdvertencia(String msj) {

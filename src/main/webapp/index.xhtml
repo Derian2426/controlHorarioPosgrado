@@ -37,15 +37,16 @@
                         <div class="login-form">
                             <div class="title">Login</div>
                             <div class="input-boxes">
+                                <div class="text textoA">Bienvenido !!</div>
                                 <div class="input-box">
                                     <i class="fas fa-user"></i>
-                                    <p:inputText class="btnAcccion" type="text" placeholder="Ingrese su usuario" value="#{usuarioMB.usuario.nombreUsuario}"/>
+                                    <p:inputText class="btnAcccion" type="text" placeholder="Ingrese su usuario" value="#{usuarioMB.usuario.nomUserSesion}"/>
                                 </div>
                                 <div class="input-box">
                                     <i class="fas fa-lock"></i>
-                                    <p:inputText class="btnAcccion" type="password" placeholder="Ingrese su contraseña" value="#{usuarioMB.usuario.password}"/>
+                                    <p:inputText class="btnAcccion" type="password" placeholder="Ingrese su contraseña" value="#{usuarioMB.usuario.passSesion}"/>
                                 </div>
-                                <div class="text"><a href="#">¿Olvidaste la contraseña?</a></div>
+                                <!--<div class="text"><a href="#">¿Olvidaste la contraseña?</a></div>-->
                                 <div class="input-box">
                                     <p:commandButton class="btnAcccion btnStyle" action="#{usuarioMB.iniciarSesion()}" update=":user:msgs" value="Iniciar Sesión"></p:commandButton>
                                     <!--<h:button class="btnAcccion btnStyle" outcome="Vistas/Global/principal.xhtml" value="Registrar"/>-->
@@ -53,32 +54,40 @@
                                 <div class="text">¿No se encuentra registrado? <label for="flip">Registrarse ahora</label></div>
                             </div>
                         </div>
-
-                        <div class="signup-form">
+                        <p:outputPanel id="regist" class="signup-form">
                             <div class="title">Registrarse</div>
                             <div class="input-boxes">
                                 <div class="input-box">
                                     <i class="fas fa-user"></i>
-                                    <p:inputText class="btnAcccion" type="text" placeholder="ingrese su nombre"/>
+                                    <p:inputText class="btnAcccion" type="text" placeholder="Nombre" value="#{usuarioMB.usuario.nombre}"/>
                                 </div>
                                 <div class="input-box">
                                     <i class="fas fa-user"></i>
-                                    <p:inputText class="btnAcccion" type="text" placeholder="ingrese su apellido"/>
+                                    <p:inputText class="btnAcccion" type="text" placeholder="Apellido" value="#{usuarioMB.usuario.apellido}"/>
+                                </div>
+                                <div class="input-box">
+                                    <i class="fas fa-user"></i>
+                                    <p:inputText class="btnAcccion" type="text" placeholder="Nombre de usuario" value="#{usuarioMB.usuario.nombreUsuario}"/>
                                 </div>
                                 <div class="input-box">
                                     <i class="fas fa-envelope"></i>
-                                    <p:inputText class="btnAcccion" type="text" placeholder="ingrese su e-mail"/>
+                                    <p:inputText class="btnAcccion" type="text" placeholder="E-mail" value="#{usuarioMB.usuario.correo}"/>
                                 </div>
                                 <div class="input-box">
                                     <i class="fas fa-lock"></i>
-                                    <p:inputText class="btnAcccion" type="password" placeholder="ingrese su contraseña"/>
+                                    <p:inputText class="btnAcccion" type="password" placeholder="Contraseña" value="#{usuarioMB.usuario.password}"/>
                                 </div>
                                 <div class="input-box">
-                                    <h:button class="btnAcccion btnStyle" outcome="Vistas/Global/principal.xhtml" value="Registrar"/>
+                                    <i class="fas fa-lock"></i>
+                                    <p:inputText class="btnAcccion" type="password" placeholder="Confirmar contraseña" value="#{usuarioMB.usuario.confpassword}"/>
+                                </div>
+                                <div class="input-box">
+                                    <p:commandButton class="btnAcccion btnStyle" action="#{usuarioMB.registrarUsuario()}" update=":user:msgs,:user:regist" value="Registrarse"></p:commandButton>
                                 </div>
                                 <div class="text">¿Ya se encuentra registrado? <label for="flip">Ingresar ahora</label></div>
                             </div>
-                        </div>
+                        </p:outputPanel>
+                        
                     </div>
             </div>
         </h:form>

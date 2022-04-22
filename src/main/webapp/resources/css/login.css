@@ -16,7 +16,7 @@ body{
 .container{
     position: relative;
     max-width: 850px;
-    width: 100%;
+    width: 104%;
     background: #fff;
     padding: 30px 50px;
     box-shadow: 0 15px 20px rgba(0,0,0,0.2);
@@ -139,6 +139,12 @@ form .form-content .text a:hover{
 }
 .text{
     margin-top: 30px;
+    margin-bottom: 10px;
+}
+.form-content .input-boxes .textoA{
+    color: darkgray;
+    font-size: 17px;
+    text-align: center;
 }
 form .form-content .input-box .btnStyle{
     color: #fff;

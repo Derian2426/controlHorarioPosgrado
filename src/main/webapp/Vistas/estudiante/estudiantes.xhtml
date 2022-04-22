@@ -37,7 +37,7 @@
                             <span class="ui-input-icon-left">
                                 <p:inputText placeholder="Buscar Estudiante" value="#{estudianteMB.estudianteBusqueda.nombre_estudiante}" style="margin-right: 6px">
                                 </p:inputText>
-                                <p:commandButton icon="pi pi-search" update=":form_estudiante:dtEstudiante" styleClass="rounded-button" action="#{estudianteMB.buscarEstudiante()}" process="dtEstudiante @this">
+                                <p:commandButton icon="pi pi-search" update=":form_estudiante:dtEstudiante" styleClass="rounded-button ui-button-secondary" action="#{estudianteMB.buscarEstudiante()}" process="dtEstudiante @this">
                                 </p:commandButton>
                             </span>
                         </f:facet>
@@ -157,7 +157,7 @@
                         </div>
                         <div class="p-grid p-justify-end">
                             <div class="p-col-4">
-                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{estudianteMB.registrarEstudiante()}"
+                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{estudianteMB.registrarEstudiante()}"
                                                  update=":form_estudiante:msgs,nuevoEstudiante,:form_estudiante:dtEstudiante"/>
                             </div>
                             <div class="p-field p-col-12 p-md-4">
@@ -192,7 +192,7 @@
                                     </p:inputText>
                                 </div>
                                 <div class="p-field p-col-12 p-md-4">
-                                    <p:commandButton value="Nómina de estudiantes" type="button" icon="pi pi-search" onclick="PF('listEstudiantesSeleccion').show()"/>
+                                    <p:commandButton value="Nómina de estudiantes" styleClass="ui-button-secondary" type="button" icon="pi pi-search" onclick="PF('listEstudiantesSeleccion').show()"/>
                                 </div>
                             </div>
                             <p:dataTable id="estudianteSeleccionados" var="estudianteSelect" value="#{estudianteMB.listaEstudianteSeleccionado}" rows="4" paginator="true" paginatorPosition="bottom">
@@ -214,7 +214,7 @@
                     <div class="p-grid p-justify-end" style="margin-top: 10px">
                         <p:commandButton value="Guardar"  
                                          icon="pi pi-check"
-                                         styleClass="ui-button-primary"
+                                         styleClass="ui-button-success"
                                          style="margin-right: 6px;"
                                          actionListener="#{estudianteMB.registrarEstudianteMaestria()}"
                                          update=":form_estudiante:nuevaIncripcion ,:form_estudiante:dtSeleccionMaestria,:form_estudiante:dtEstudiante,:form_estudiante:msgs,:form_estudiante:estudiantechec"/>
@@ -233,7 +233,7 @@
                             <span class="ui-input-icon-left">
                                 <p:inputText placeholder="Buscar Estudiante" value="#{estudianteMB.estudianteBusqueda.nombre_estudiante}" style="margin-right: 6px">
                                 </p:inputText>
-                                <p:commandButton icon="pi pi-search" update=":form_estudiante:estudiantechec" styleClass="rounded-button" action="#{estudianteMB.buscarEstudiante()}" process="estudiantechec @this">
+                                <p:commandButton icon="pi pi-search" update=":form_estudiante:estudiantechec" styleClass="rounded-button ui-button-secondary" action="#{estudianteMB.buscarEstudiante()}" process="estudiantechec @this">
                                 </p:commandButton>
                             </span>
                         </f:facet>
@@ -263,7 +263,7 @@
                             <f:facet name="header">
                                 <span class="ui-input-icon-left">
                                     <p:inputText placeholder="Buscar Maestría" value="#{estudianteMB.maestriaBusqueda.nombre}" style="margin-right: 6px"/>
-                                    <p:commandButton icon="pi pi-search" styleClass="rounded-button" actionListener="#{estudianteMB.buscarMaestria()}" update=":form_estudiante:dtSeleccionMaestria" process="dtSeleccionMaestria @this"/>
+                                    <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-secondary" actionListener="#{estudianteMB.buscarMaestria()}" update=":form_estudiante:dtSeleccionMaestria" process="dtSeleccionMaestria @this"/>
                                 </span>
                             </f:facet>
                             <p:column headerText="Acciones" style="width:6rem">

@@ -31,7 +31,7 @@
                             <span class="ui-input-icon-left">
                                 <p:inputText placeholder="Buscar Docente" value="#{docenteMB.docenteBusqueda.nombre_docente}" style="margin-right: 6px">
                                 </p:inputText>
-                                <p:commandButton icon="pi pi-search" update=":form_docentes:dtDocente" styleClass="rounded-button" action="#{docenteMB.buscarDocente()}" process="dtDocente @this">
+                                <p:commandButton icon="pi pi-search" update=":form_docentes:dtDocente" styleClass="rounded-button ui-button-secondary" action="#{docenteMB.buscarDocente()}" process="dtDocente @this">
                                 </p:commandButton>
                             </span>
                         </f:facet>
@@ -124,7 +124,7 @@
                                     </p:inputText>
                                 </div>
                                 <div class="p-field p-col-12 p-md-6">
-                                    <p:outputLabel value="Teléfono:"/>
+                                    <p:outputLabel value="Teléfono: *"/>
                                     <p:inputText maxlength="15" value="#{docenteMB.docente.telefono_docente}">
                                         <p:keyFilter mask="num"/>
                                     </p:inputText>
@@ -135,7 +135,7 @@
                                 </div>
                                 <div class="p-field p-col-12 p-md-6">
                                     <p:outputLabel value="." style="color: white"/>
-                                    <p:commandButton value="Asignar Maestrías" style="margin-right: 6px; position: initial"  onclick="PF('listMaestriaSeleccion').show()"/>
+                                    <p:commandButton value="Asignar Maestrías" icon="pi pi-search" styleClass="ui-button-secondary"  onclick="PF('listMaestriaSeleccion').show()"/>
                                 </div>
                                 <p:dataTable id="dtMaestriacheck" var="maestria" value="#{docenteMB.seleccionMaestria}" editable="true" paginatorPosition="bottom"
                                              style="margin-bottom:20px" reflow="true" rows="2" paginator="true"
@@ -152,7 +152,7 @@
                             </div>
                             <div class="p-grid p-justify-end">
                                 <div class="p-col-4">
-                                    <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{docenteMB.registrarDocente()}"
+                                    <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{docenteMB.registrarDocente()}"
                                                      update=":form_docentes:msgs,nuevoDocente,:form_docentes:dtDocente,:form_docentes:dtSeleccionMaestria"/>
                                 </div>
                                 <div class="p-field p-col-12 p-md-4">
@@ -171,7 +171,7 @@
                             <span class="ui-input-icon-left">
                                 <p:inputText placeholder="Buscar Maestría" value="#{docenteMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
                                 </p:inputText>
-                                <p:commandButton icon="pi pi-search" styleClass="rounded-button" actionListener="#{docenteMB.buscarMaestria()}" update=":form_docentes:dtSeleccionMaestria" process="dtSeleccionMaestria @this"/>
+                                <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-secondary" actionListener="#{docenteMB.buscarMaestria()}" update=":form_docentes:dtSeleccionMaestria" process="dtSeleccionMaestria @this"/>
                             </span>
                         </f:facet>
                         <p:column headerText="Acciones" style="width:6rem">

@@ -6,7 +6,9 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-
+    <ui:define name="titulo">
+        Control de Horarios
+    </ui:define>
     <ui:define name="content">
         <div class="card" style="position: initial">
             <h:form id="form_horario">
@@ -19,30 +21,33 @@
                                 <p:outputLabel value="Nombre Maestría"/>
                             </div>
                             <div class="p-d-flex p-md-12">
-                                
-                                <p:inputText maxlength="150" value="#{horarioMB.integracionMaestria.nombre}" readonly="true"/>
-                               
+                                <p:inputText maxlength="150" value="#{horarioMB.integracionMaestria.nombre}" readonly="true" style="margin-right: 1vh;"/>
                                 <p:commandButton value="Buscar Maestría" 
-                                                 styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestriaPeriodo').show()">
-                                </p:commandButton>
+                                                 styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestriaPeriodo').show()" disabled="#{horarioMB.estado}"/>
                             </div>
+
                             <div class="p-field p-col-12 p-md-12">
                                 <p:outputLabel value="Descripción:"/>
-                                <p:inputTextarea maxlength="200" rows="5" cols="6" value="#{maestriaMB.periodo.nombrePeriodo}"/>
+                                <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.periodo.nombrePeriodo}" disabled="#{horarioMB.estado}"/>
                             </div>
-                            <div class="p-field p-col-12 p-md-6">
+                            <div class="p-md-12">
                                 <p:outputLabel value="Fecha de inicio:"/>
-                                <p:calendar value="#{maestriaMB.periodo.fechaInicio}" />
+                                <p:outputLabel value="Fecha de finalización:" style="margin-left:32vh;"/>
+                            </div>
+
+                            <div class="p-d-flex p-md-12">
+                                <p:calendar value="#{horarioMB.periodo.fechaInicio}" style="margin-right: 1vh;" disabled="#{horarioMB.estado}"/>
+                                <p:calendar value="#{horarioMB.periodo.fechaFin}" disabled="#{horarioMB.estado}"/>
                             </div>
                             <div class="p-field p-col-12 p-md-6">
-                                <p:outputLabel value="Fecha de finalización:"/>
-                                <p:calendar value="#{maestriaMB.periodo.fechaFin}" />
+                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{horarioMB.registrarPeriodo()}" disabled="#{horarioMB.estado}"
+                                                 update=":form_horario:messages ,:form_horario:nuevaPerido,:form_horario:calendarioAcademico" process="nuevaPerido @this"/>
                             </div>
                         </div>
                         <!-- Lado Derecho -->
                         <div class="p-field p-col-12 p-md-6">
-                            <p:schedule value="#{horarioMB.eventModel}" style="position: initial">
-
+                            <p:schedule id="calendarioAcademico" value="#{horarioMB.eventModel}" style="position: initial" minTime="#{horarioMB.periodo.fechaInicio}" maxTime="#{horarioMB.periodo.fechaFin}">
+                                <p:ajax event="dateSelect" listener="#{horarioMB.onDateSelect}" update=":form_horario:nuevoDocenteAsignado,:form_horario:messages ,:form_horario:nuevaPerido, calendarioAcademico" process="nuevaPerido @this"/>
                             </p:schedule>
                         </div>
 
@@ -67,7 +72,7 @@
                                     class="rounded-button"
                                     icon="pi pi-check">
                                     <p:ajax listener="#{horarioMB.llenaMaestriaPeriodo(maestrias)}" 
-                                            update=":form_horario:nuevaPerido,:form_horario:messages"
+                                            update=":form_horario:nuevaPerido,:form_horario:messages,:form_horario:nuevoDocenteAsignado"
                                             oncomplete="PF('listMaestriaPeriodo').hide()"/>
 
                                 </p:commandButton>
@@ -81,6 +86,31 @@
                             </p:column>
                         </p:dataTable>
                     </div>
+                </p:dialog>
+                <p:dialog widgetVar="seleccionFecha" header="Asignación Horario" showEffect="fade" height="50%" width="50%" modal="true" responsive="true">
+                    <p:outputPanel id="nuevoDocenteAsignado" class="ui-fluid">
+                        <p:outputLabel value="Módulos" for="@next" styleClass="p-text-bold"/>
+                        <p:selectOneMenu editable="false" value="#{horarioMB.modulo.idMateria}" disabled="#{horarioMB.estadoAsignacion}">
+                            <f:selectItem itemLabel="Seleccione un Módulo" noSelectionOption="true"/>
+                            <f:selectItems value="#{horarioMB.listaModulo}" var="moduloAsignado" 
+                                           itemLabel="#{moduloAsignado.nombreMateria}" 
+                                           itemValue="#{moduloAsignado.idMateria}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Docentes" for="@next" styleClass="p-text-bold"/>
+                        <p:selectOneMenu editable="false" disabled="#{horarioMB.estadoAsignacion}" value="#{horarioMB.docente.id_docente}">
+                            <f:selectItem itemLabel="Seleccione una Docente" noSelectionOption="true"/>
+                            <f:selectItems value="#{horarioMB.listaDocente}" var="docenteAsignado" 
+                                           itemLabel="#{docenteAsignado.nombre_docente}" 
+                                           itemValue="#{docenteAsignado.id_docente}"></f:selectItems>
+                                           <p:ajax listener="#{horarioMB.obtenerValidacionHorario()}" process="nuevoDocenteAsignado @this"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Descripción:" styleClass="p-text-bold"/>
+                        <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.tiempoModulo.descripcion}" disabled="#{horarioMB.estadoAsignacion}"/>
+                        <p:outputLabel value="Fecha de asignación:" styleClass="p-text-bold"/>
+                        <p:datePicker value="#{horarioMB.tiempoModulo.fechaAsignacion}" pattern="yyyy/dd/MM" style="margin-bottom: 1vh;" disabled="true"/>
+                        <p:commandButton action="#{horarioMB.addEvent()}" value="Asignar otra Fecha" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" update=":form_horario:calendarioAcademico,:form_horario:nuevoDocenteAsignado,:form_horario:messages" style="margin-bottom: 1vh;"/>
+                        <p:commandButton value="Guardar" actionListener="#{horarioMB.registrarPeriodo()}" process="nuevoDocenteAsignado @this nuevaPerido @this" style="margin-bottom: 1vh;"/>
+                    </p:outputPanel>
                 </p:dialog>
             </h:form>
         </div>

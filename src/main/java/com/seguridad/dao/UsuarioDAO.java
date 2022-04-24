@@ -7,6 +7,7 @@ package com.seguridad.dao;
 
 import com.global.config.AES;
 import com.global.config.Conexion;
+import com.seguridad.modelo.Rol;
 import com.seguridad.modelo.Usuario;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +25,7 @@ public class UsuarioDAO {
     private AES encryptAES;
     String sentencia;
     ResultSet resultSet;
-    
+
     boolean estado = false;
 
     public UsuarioDAO() {
@@ -40,7 +41,7 @@ public class UsuarioDAO {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    
+
     public List<Usuario> getListaUsuario() {
         List<Usuario> listaUsuario = new ArrayList<>();
         sentencia = String.format("SELECT * from public.\"getListaUsuarios\"();");
@@ -53,18 +54,47 @@ public class UsuarioDAO {
             return listaUsuario;
         } catch (SQLException ex) {
             return listaUsuario;
-        }  finally {
+        } finally {
             conexion.desconectar();
         }
     }
+    
+    public int registrarIntegracionRol(Usuario integracionUsuario, List<Rol> listaRol) {
+        int mensaje = 0;
+        String consulta;
+        try {
+            sentencia = "[";
+            for (Rol rol : listaRol) {
+                sentencia += "{\n"
+                        + "  \"idRol\": " + rol.getIdRol() + ",\n"
+                        + "  \"idUsuario\": " + integracionUsuario.getIdUsuario() + "\n"
+                        + "},";
+            }
+            sentencia = sentencia.substring(0, sentencia.length() - 1);
+            sentencia += "]";
+            consulta = "SELECT public.\"registrarUsuarioRol\"(\n"
+                    + "	'" + sentencia + "'\n"
+                    + ")";
+            resultSet = conexion.ejecutarSql(consulta);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("registrarUsuarioRol"));
+            }
+            return mensaje;
+        } catch (NumberFormatException | SQLException e) {
+            return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
     public int registrarUsuario(Usuario user) {
         int mensaje = 0;
         sentencia = String.format("SELECT public.\"registrarUsuario\"(\n"
-                + "	'" + user.getNombre()+ "', \n"
-                + "	'" + user.getApellido()+ "', \n"
-                + "	'" + user.getCorreo()+ "', \n"
-                + "	'" + user.getNombreUsuario()+ "', \n"
-                + "	'" + encryptAES.getAESEncrypt(user.getPassword())+ "', \n"
+                + "	'" + user.getNombre() + "', \n"
+                + "	'" + user.getApellido() + "', \n"
+                + "	'" + user.getCorreo() + "', \n"
+                + "	'" + user.getNombreUsuario() + "', \n"
+                + "	'" + encryptAES.getAESEncrypt(user.getPassword()) + "', \n"
                 + "	'" + estado + "'\n"
                 + ")");
         try {
@@ -74,6 +104,29 @@ public class UsuarioDAO {
             }
             return mensaje;
         } catch (Exception e) {
+            return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public int editarUsuario(Usuario user) {
+        int mensaje = 0;
+        sentencia = String.format("SELECT public.\"actualizarUsuario\"(\n"
+                + "	" + user.getIdUsuario() + ", \n"
+                + "	'" + user.getNombre() + "', \n"
+                + "	'" + user.getApellido()+ "', \n"
+                + "	'" + user.getCorreo()+ "', \n"
+                + "	'" + user.getNombreUsuario()+ "', \n"
+                + "	" + user.isEstado()+ "\n"
+                + ")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("actualizarUsuario"));
+            }
+            return mensaje;
+        } catch (NumberFormatException | SQLException e) {
             return mensaje;
         } finally {
             conexion.desconectar();

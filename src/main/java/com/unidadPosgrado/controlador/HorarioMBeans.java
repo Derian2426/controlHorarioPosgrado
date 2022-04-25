@@ -206,7 +206,7 @@ public class HorarioMBeans {
             } else if ("".equals(tiempoModulo.getDescripcion())) {
                 showWarn("Ingrese una descripción.");
             } else {
-                 
+
                 if (horarioDAO.registrarHorarioAsignacion(modulo, docente, integracionMaestria, tiempoModulo, listaTiempoModulo) > 0) {
                     showInfo("Periodo registrado con exito.");
                     integracionMaestria = new Maestria();
@@ -256,6 +256,10 @@ public class HorarioMBeans {
 
     }
 
+    public void onEventSelect(SelectEvent<ScheduleEvent<?>> selectEvent) {
+        event = selectEvent.getObject();
+    }
+
     public Date convertToDateViaSqlTimestamp(LocalDateTime dateToConvert) {
         return java.sql.Timestamp.valueOf(dateToConvert);
     }
@@ -280,7 +284,7 @@ public class HorarioMBeans {
         integracionMaestria.setFechaFin(maestria.getFechaFin());
         integracionMaestria.setIdCurso(maestria.getIdCurso());
         listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria());
-        listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(),integracionMaestria.getIdCurso());
+        listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
     }
 
     public void buscarMaestria() {

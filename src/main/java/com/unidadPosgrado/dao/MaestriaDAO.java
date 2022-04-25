@@ -146,7 +146,7 @@ public class MaestriaDAO {
 
     public List<Modulo> getListaModulo(int idModulo) {
         List<Modulo> listadoModulo = new ArrayList<>();
-        sentencia = String.format("SELECT * from public.\"listaModuloxMaestria\"(\n"
+        sentencia = String.format("SELECT * from public.\"listaModuloxMaestria1\"(\n"
                 + "	" + idModulo + "\n"
                 + ")");
         try {

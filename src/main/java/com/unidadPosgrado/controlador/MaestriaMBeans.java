@@ -339,7 +339,9 @@ public class MaestriaMBeans {
                 showWarn("Seleccione una fecha de finaalización.");
             } else if (periodo.getFechaFin().before(periodo.getFechaInicio())) {
                 showWarn("La fecha no puede ser anterior a la fecha de inicio del Periodo.");
-            } else {
+            }else if(periodo.getCantidadEstudiante()<1){
+                showWarn("Ingrese una cantidad de estudiantes para el paralelo.");
+            }else {
                 if (maestriaDAO.registrarPeriodo(integracionMaestria, periodo) > 0) {
                     showInfo("Periodo registrado con exito.");
                     integracionMaestria = new Maestria();

@@ -43,13 +43,15 @@ public class MaestriaDAO {
             conexion.desconectar();
         }
     }
+
     public List<Maestria> getListaMaestriaPeriodo() {
         List<Maestria> listadoMaestria = new ArrayList<>();
         sentencia = String.format("SELECT* from public.\"getListaMaestriasPeriodo\"()");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                listadoMaestria.add(new Maestria(resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"), resultSet.getDate("_fecha_inicio"), resultSet.getDate("_fecha_fin")));
+                listadoMaestria.add(new Maestria(resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"), resultSet.getDate("_fecha_inicio"), resultSet.getDate("_fecha_fin"),
+                 resultSet.getInt("_id_curso"),resultSet.getString("_nombre_curso")));
             }
             return listadoMaestria;
         } catch (SQLException e) {
@@ -166,7 +168,9 @@ public class MaestriaDAO {
                 + "	" + maestria.getIdMaestria() + ", \n"
                 + "	'" + periodo.getNombrePeriodo() + "', \n"
                 + "	'" + periodo.getFechaInicio() + "', \n"
-                + "	'" + periodo.getFechaFin()+ "'\n"
+                + "	'" + periodo.getFechaFin() + "', \n"
+                + "	'" + "Paralelo " + periodo.getNombreParalelo() + "', \n"
+                + "	" + periodo.getCantidadEstudiante() + "\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);

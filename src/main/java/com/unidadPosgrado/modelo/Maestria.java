@@ -14,8 +14,10 @@ import java.util.Date;
 public class Maestria {
 
     private boolean verifica;
+    private int idCurso;
     private int idMaestria;
     private String nombre;
+    private String nombreParalelo;
     private String descripcion;
     private float tiempoMaestria;
     private Date fechaInicio;
@@ -37,11 +39,13 @@ public class Maestria {
         this.descripcion = descripcion;
     }
 
-    public Maestria(int idMaestria, String nombre, Date fechaInicio, Date fechaFin) {
+    public Maestria(int idMaestria, String nombre, Date fechaInicio, Date fechaFin, int idCurso, String nombreParalelo) {
         this.idMaestria = idMaestria;
         this.nombre = nombre;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
+        this.idCurso = idCurso;
+        this.nombreParalelo = nombreParalelo;
     }
 
     public int getIdMaestria() {
@@ -98,6 +102,22 @@ public class Maestria {
 
     public void setFechaFin(Date fechaFin) {
         this.fechaFin = fechaFin;
+    }
+
+    public int getIdCurso() {
+        return idCurso;
+    }
+
+    public void setIdCurso(int idCurso) {
+        this.idCurso = idCurso;
+    }
+
+    public String getNombreParalelo() {
+        return nombreParalelo;
+    }
+
+    public void setNombreParalelo(String nombreParalelo) {
+        this.nombreParalelo = nombreParalelo;
     }
 
 }

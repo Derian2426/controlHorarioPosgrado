@@ -70,15 +70,31 @@
                             </div>
 
                             <p:outputLabel value="Descripción:"/>
-                            <p:inputTextarea maxlength="200" rows="5" cols="6" value="#{maestriaMB.periodo.nombrePeriodo}"/>
-                            <div class="p-field p-col-12 p-md-12">
+                            <p:inputTextarea maxlength="200" rows="3" cols="3" value="#{maestriaMB.periodo.nombrePeriodo}"/>
+                            <div class="p-field p-col-12 p-md-6">
                                 <p:outputLabel value="Fecha de inicio:"/>
                                 <p:calendar value="#{maestriaMB.periodo.fechaInicio}" />
                             </div>
-                            <div class="p-field p-col-12 p-md-12">
+                            <div class="p-field p-col-12 p-md-6">
                                 <p:outputLabel value="Fecha de finalización:"/>
                                 <p:calendar value="#{maestriaMB.periodo.fechaFin}" />
                             </div>
+
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Paralelo:"/>
+                                <p:selectOneMenu id="paralelo" value="#{maestriaMB.periodo.nombreParalelo}">
+                                    <p:ajax update="@this" process="@this"/>
+                                    <f:selectItem itemLabel="A" itemValue="A"/>
+                                    <f:selectItem itemLabel="B" itemValue="B"/>
+                                    <f:selectItem itemLabel="C" itemValue="C"/>
+                                    <f:selectItem itemLabel="D" itemValue="D"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Cantidad de estudiantes:"/>
+                                <p:inputNumber value="#{maestriaMB.periodo.cantidadEstudiante}" />
+                            </div>
+
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{maestriaMB.registrarPeriodo()}"
                                                  update=":form_maestria:msgs ,:form_maestria:nuevaPerido"/>

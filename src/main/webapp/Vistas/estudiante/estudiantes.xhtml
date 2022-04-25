@@ -185,11 +185,15 @@
                                     <p:outputLabel value="Fecha Inscripción:"/>
                                     <p:inputText maxlength="100" value="#{estudianteMB.inscripcion.fecha_inscripcion}" readonly="true"/>
                                 </div>
-                                <div class="p-field p-col-12 p-md-6">
+                                <div class="p-field p-col-12 p-md-3">
                                     <p:outputLabel value="Valor Inscripción:"/>
                                     <p:inputText maxlength="100" value="#{estudianteMB.inscripcion.valor}">
                                         <p:keyFilter mask="num" />
                                     </p:inputText>
+                                </div>
+                                <div class="p-field p-col-12 p-md-3">
+                                    <p:outputLabel value="Paralelo:"/>
+                                    <p:inputText maxlength="100" value="#{estudianteMB.integracionMaestria.nombreParalelo}" readonly="true"/>
                                 </div>
                                 <div class="p-field p-col-12 p-md-4">
                                     <p:commandButton value="Nómina de estudiantes" styleClass="ui-button-secondary" type="button" icon="pi pi-search" onclick="PF('listEstudiantesSeleccion').show()"/>
@@ -258,7 +262,7 @@
                 <p:dialog header="Seleccione una de las  Maestrías" widgetVar="listMaestria" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
                     <div class="card">
                         <p:dataTable id="dtSeleccionMaestria" var="maestrias" value="#{estudianteMB.listaMaestria}" editable="true" paginatorPosition="bottom"
-                                     style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                     style="margin-bottom:20px" reflow="true" rows="2" paginator="true"
                                      emptyMessage="No se encontro la maestría">
                             <f:facet name="header">
                                 <span class="ui-input-icon-left">

@@ -97,7 +97,7 @@ public class EstudianteDAO {
             String json = "[";
             for (Inscripcion i : inscripcion) {
                 json += "{\n"
-                        + "  \"idMaestria\": " + i.getIdMaestria() + ",\n"
+                        + "  \"idCurso\": " + i.getIdCurso()+ ",\n"
                         + "  \"idEstudiante\": " + i.getIdEstudiante() + ",\n"
                         + "  \"fecha_inscripcion\":\"" + i.getFecha_inscripcion() + "\",\n"
                         + "  \"descripcion\":\"" + i.getDescripcion() + "\",\n"

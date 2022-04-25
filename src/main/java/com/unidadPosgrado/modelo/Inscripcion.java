@@ -14,7 +14,7 @@ import java.util.Date;
 public class Inscripcion {
 
     private int idInscripcion;
-    private int idMaestria;
+    private int idCurso;
     private int idEstudiante;
     private Date fecha_inscripcion;
     private String descripcion;
@@ -23,8 +23,8 @@ public class Inscripcion {
     public Inscripcion() {
     }
 
-    public Inscripcion(int idMaestria, int idEstudiante, Date fecha_inscripcion, String descripcion, float valor) {
-        this.idMaestria = idMaestria;
+    public Inscripcion(int idCurso, int idEstudiante, Date fecha_inscripcion, String descripcion, float valor) {
+        this.idCurso = idCurso;
         this.idEstudiante = idEstudiante;
         this.fecha_inscripcion = fecha_inscripcion;
         this.descripcion = descripcion;
@@ -39,12 +39,12 @@ public class Inscripcion {
         this.idInscripcion = idInscripcion;
     }
 
-    public int getIdMaestria() {
-        return idMaestria;
+    public int getIdCurso() {
+        return idCurso;
     }
 
-    public void setIdMaestria(int idMaestria) {
-        this.idMaestria = idMaestria;
+    public void setIdCurso(int idCurso) {
+        this.idCurso = idCurso;
     }
 
     public int getIdEstudiante() {

@@ -39,13 +39,14 @@ public class Maestria {
         this.descripcion = descripcion;
     }
 
-    public Maestria(int idMaestria, String nombre, Date fechaInicio, Date fechaFin, int idCurso, String nombreParalelo) {
+    public Maestria(int idMaestria, String nombre, String descripcion, Date fechaInicio, Date fechaFin, int idCurso, String nombreParalelo) {
         this.idMaestria = idMaestria;
         this.nombre = nombre;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.idCurso = idCurso;
         this.nombreParalelo = nombreParalelo;
+        this.descripcion = descripcion;
     }
 
     public int getIdMaestria() {

@@ -50,8 +50,8 @@ public class MaestriaDAO {
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                listadoMaestria.add(new Maestria(resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"), resultSet.getDate("_fecha_inicio"), resultSet.getDate("_fecha_fin"),
-                 resultSet.getInt("_id_curso"),resultSet.getString("_nombre_curso")));
+                listadoMaestria.add(new Maestria(resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"), resultSet.getString("_nombre_periodo"), resultSet.getDate("_fecha_inicio"), resultSet.getDate("_fecha_fin"),
+                        resultSet.getInt("_id_curso"), resultSet.getString("_nombre_curso")));
             }
             return listadoMaestria;
         } catch (SQLException e) {

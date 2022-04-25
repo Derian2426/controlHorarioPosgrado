@@ -18,10 +18,10 @@
                         <!-- Lado Izquierdo -->
                         <p:toolbar style="width: 600px; height: 530px">
                             <p:toolbarGroup style="width: 100%; margin-bottom: 200px">
-                                
+
                                 <div class="p-field p-md-12">
                                     <span style="font-weight: bold; 
-                                          font-size: 24px">Planificación</span>
+                                          font-size: 24px">Planificación de Horarios</span>
                                 </div>
                                 <div class="p-col-12 p-md-4">
                                     <p:outputLabel value="Nombre Maestría"/>
@@ -29,12 +29,12 @@
                                 <div class="p-d-flex p-md-12">
                                     <p:inputText maxlength="150" value="#{horarioMB.integracionMaestria.nombre}" readonly="true" style="margin-right: 1vh;"/>
                                     <p:commandButton value="Buscar Maestría" 
-                                                     styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestriaPeriodo').show()" disabled="#{horarioMB.estado}"/>
+                                                     styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestriaPeriodo').show()"/>
                                 </div>
 
                                 <div class="p-field p-col-12 p-md-12">
                                     <p:outputLabel value="Descripción:"/>
-                                    <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.periodo.nombrePeriodo}" disabled="#{horarioMB.estado}"/>
+                                    <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.integracionMaestria.descripcion}" readonly="true"/>
                                 </div>
                                 <div class="p-md-12">
                                     <p:outputLabel value="Fecha de inicio:"/>
@@ -42,14 +42,9 @@
                                 </div>
 
                                 <div class="p-d-flex p-md-12">
-                                    <p:calendar value="#{horarioMB.periodo.fechaInicio}" style="margin-right: 1vh;" disabled="#{horarioMB.estado}"/>
-                                    <p:calendar value="#{horarioMB.periodo.fechaFin}" disabled="#{horarioMB.estado}"/>
+                                    <p:calendar value="#{horarioMB.integracionMaestria.fechaInicio}" style="margin-right: 1vh;" readonly="true"/>
+                                    <p:calendar value="#{horarioMB.integracionMaestria.fechaFin}" readonly="true"/>
                                 </div>
-                                <div class="p-field p-col-12 p-md-6">
-                                    <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-primary" actionListener="#{horarioMB.registrarPeriodo()}" disabled="#{horarioMB.estado}"
-                                                     update=":form_horario:messages ,:form_horario:nuevaPerido,:form_horario:calendarioAcademico" process="nuevaPerido @this"/>
-                                </div>
-
                             </p:toolbarGroup>
                         </p:toolbar>
 
@@ -57,7 +52,7 @@
                         <!-- Lado Derecho -->
 
                         <div class="p-field p-col-12 p-md-6">
-                            <p:schedule id="calendarioAcademico" value="#{horarioMB.eventModel}" rightHeaderTemplate="dayGridMonth" minTime="#{horarioMB.periodo.fechaInicio}" maxTime="#{horarioMB.periodo.fechaFin}">
+                            <p:schedule id="calendarioAcademico" draggable="false" value="#{horarioMB.eventModel}" rightHeaderTemplate="dayGridMonth" minTime="#{horarioMB.periodo.fechaInicio}" maxTime="#{horarioMB.periodo.fechaFin}">
                                 <p:ajax event="dateSelect" listener="#{horarioMB.onDateSelect}" update=":form_horario:nuevoDocenteAsignado,:form_horario:messages ,:form_horario:nuevaPerido, calendarioAcademico" process="nuevaPerido @this"/>
                             </p:schedule>
                         </div>
@@ -69,7 +64,7 @@
                 <p:dialog header="Seleccione una de las  Maestrías" widgetVar="listMaestriaPeriodo" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
                     <div class="card">
                         <p:dataTable id="dtSeleccionMaestriaPeriodo" var="maestrias" value="#{horarioMB.listaMaestria}" editable="true" paginatorPosition="bottom"
-                                     style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                     style="margin-bottom:20px" reflow="true" rows="2" paginator="true"
                                      emptyMessage="No se encontro la maestría">
                             <f:facet name="header">
                                 <span class="ui-input-icon-left">
@@ -91,9 +86,11 @@
                             <p:column headerText="Nombre Maestría" style="text-align: justify">
                                 <h:outputText value="#{maestrias.nombre}"/>
                             </p:column>
-
-                            <p:column headerText="Descripción" style="text-align: justify">
-                                <h:outputText value="#{maestrias.descripcion}"/>
+                            <p:column headerText="Fecha Inicio" style="text-align: justify">
+                                <h:outputText value="#{maestrias.fechaInicio}"/>
+                            </p:column>
+                            <p:column headerText="Fecha Fin" style="text-align: justify">
+                                <h:outputText value="#{maestrias.fechaFin}"/>
                             </p:column>
                         </p:dataTable>
                     </div>
@@ -120,7 +117,7 @@
                         <p:outputLabel value="Fecha de asignación:" styleClass="p-text-bold"/>
                         <p:datePicker value="#{horarioMB.tiempoModulo.fechaAsignacion}" pattern="yyyy/dd/MM" style="margin-bottom: 1vh;" disabled="true"/>
                         <p:commandButton action="#{horarioMB.addEvent()}" value="Asignar otra Fecha" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" update=":form_horario:calendarioAcademico,:form_horario:nuevoDocenteAsignado,:form_horario:messages" style="margin-bottom: 1vh;"/>
-                        <p:commandButton value="Guardar" actionListener="#{horarioMB.registrarPeriodo()}" process="nuevoDocenteAsignado @this nuevaPerido @this" style="margin-bottom: 1vh;"/>
+                        <p:commandButton action="#{horarioMB.registrarPeriodo()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" update=":form_horario:calendarioAcademico,:form_horario:nuevoDocenteAsignado,:form_horario:messages" style="margin-bottom: 1vh;"/>
                     </p:outputPanel>
                 </p:dialog>
             </h:form>

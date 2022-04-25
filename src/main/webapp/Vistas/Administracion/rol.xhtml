@@ -28,17 +28,14 @@
                                  style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
                                  emptyMessage="No se encontro el estudiante">
                         <f:facet name="header">
-                            <span class="ui-input-icon-left">
-                                <p:inputText placeholder="Buscar Rol" value="#{estudianteMB.estudianteBusqueda.nombre_estudiante}" style="margin-right: 6px">
-                                </p:inputText>
-                                <p:commandButton icon="pi pi-search" update=":form_rol:dtRol" styleClass="rounded-button ui-button-secondary" action="#{estudianteMB.buscarEstudiante()}" process="dtRol @this">
-                                </p:commandButton>
-                            </span>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                <p:commandButton value="Nuevo Rol" style="margin-right: 6px;" icon="pi pi-plus" onclick="PF('dlgRol').show()"/>
+                            </div>
                         </f:facet>
-                        
+
                         <p:ajax event="rowEdit" listener="#{rolMB.onRowEdit}" update=":form_rol:msgs,:form_rol:dtRol"/>
                         <p:ajax event="rowEditCancel" listener="#{rolMB.onRowCancel}" update=":form_rol:msgs,:form_rol:dtRol"/>
-                        
+
                         <p:column headerText="Nombre" style="text-align: justify" sortBy="#{rol.nombre}">
                             <p:cellEditor>
                                 <f:facet name="output">
@@ -78,6 +75,40 @@
                         </p:column>
                     </p:dataTable>
                 </div>
+
+                <!-- DIALOGO REGISTRAR ESTUDIANTES -->
+                <p:dialog header="Registrar Rol" widgetVar="dlgRol"  width="850" showEffect="fade" modal="true" responsive="true">
+                    <p:outputPanel id="nuevoRol" class="ui-fluid">
+
+                        <div class="ui-fluid p-formgrid p-grid">
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Nombre:"/>
+                                <p:inputText maxlength="30" value="#{rolMB.rol.nombre}"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Detalle"/>
+                                <p:inputText maxlength="30" value="#{rolMB.rol.detalle}"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Estado:"/>
+                                <p:selectOneMenu id="genero" value="#{rolMB.rol.estado}">
+                                    <p:ajax update="@this" process="@this"/>
+                                    <f:selectItem itemLabel="Habilitado" itemValue="true"/>
+                                    <f:selectItem itemLabel="Deshabilitado" itemValue="false"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="p-grid p-justify-end">
+                            <div class="p-col-4">
+                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{rolMB.registrarRol()}"
+                                                 update=":form_rol:msgs,nuevoRol,:form_rol:dtRol"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-4">
+                                <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgRol').hide()"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
             </h:form>
         </div>
     </ui:define>

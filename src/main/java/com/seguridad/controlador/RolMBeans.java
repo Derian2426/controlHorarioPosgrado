@@ -12,6 +12,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 
 /**
@@ -33,6 +34,30 @@ public class RolMBeans {
     @PostConstruct
     public void init() {
         listaRol = rolDAO.getListaRol();
+    }
+    
+    public void registrarRol() {
+        try {
+            if ("".equals(rol.getNombre().trim())) {
+                showWarn("Debe ingresar un nombre.");
+            } else if ("".equals(rol.getDetalle().trim())) {
+                showWarn("Debe ingresar una descripción.");
+            } else if ("".equals(rol.isEstado())) {
+                showWarn("Campo vacio.");
+            } else {
+                int resultadoRegistro = rolDAO.registrarRol(rol);
+                if (resultadoRegistro > 0) {
+                    showInfo(rol.getNombre().trim().replace(".", ".") + " Registrado exitoso.");
+                    listaRol = rolDAO.getListaRol();
+                    PrimeFaces.current().executeScript("PF('dlgRol').hide()");
+                } else {
+                    showWarn(rol.getNombre().trim().replace(".", ".") + " ya se encuentra en el sistema.");
+                }
+                rol = new Rol();
+            }
+        } catch (Exception e) {
+            showWarn(e.getMessage());
+        }
     }
     
     public void onRowEdit(RowEditEvent<Rol> event) {

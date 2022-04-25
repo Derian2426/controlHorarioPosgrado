@@ -69,7 +69,7 @@ public class AdminMBeans {
             if(listaRol.size() < 1){
                 showWarn("Seleccione al menos un rol.");
             }
-            if(userDAO.registrarIntegracionRol(integracionUsuario, listaRol) > 0){
+            if(userDAO.registrarIntegracionRol(usuario, listaRol) > 0){
                 showInfo("Integración de Módulos registrado con éxito.");
                 integracionUsuario = new Usuario();
                 listaRol = new ArrayList<>();

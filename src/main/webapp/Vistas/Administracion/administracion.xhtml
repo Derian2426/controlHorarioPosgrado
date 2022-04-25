@@ -28,14 +28,14 @@
                     <p:dataTable id="dtUsuarios" var="usuario" value="#{adminMB.listaUsuario}" editable="true" paginatorPosition="bottom"
                                  style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
                                  emptyMessage="No se encontro el estudiante">
-                        <f:facet name="header">
+                        <!--<f:facet name="header">
                             <span class="ui-input-icon-left">
                                 <p:inputText placeholder="Buscar Usuario" value="#{estudianteMB.estudianteBusqueda.nombre_estudiante}" style="margin-right: 6px">
                                 </p:inputText>
                                 <p:commandButton icon="pi pi-search" update=":form_admin:dtUsuarios" styleClass="rounded-button ui-button-secondary" action="#{estudianteMB.buscarEstudiante()}" process="dtUsuarios @this">
                                 </p:commandButton>
                             </span>
-                        </f:facet>
+                        </f:facet>-->
                         <p:ajax event="rowEdit" listener="#{adminMB.onRowEdit}" update=":form_admin:msgs,:form_admin:dtUsuarios"/>
                         <p:ajax event="rowEditCancel" listener="#{adminMB.onRowCancel}" update=":form_admin:msgs,:form_admin:dtUsuarios"/>
 
@@ -96,10 +96,14 @@
                         </p:column>
                         <p:column headerText="Acciones" style="width:6rem">
                             <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
-                            <p:commandButton icon="pi pi-th-large"                                                         
+                            <!--<p:commandButton icon="pi pi-th-large"                                                         
                                              styleClass="rounded-button ui-button-primary" process="@this"
-                                             onclick="PF('asignarRol').show()" update="dtUsuarios" >
-                            </p:commandButton>
+                                             onclick="PF('asignarRol').show()" update=":form_admin:dtUsuarios, :form_admin:colocarRol">
+                                <f:setPropertyActionListener 
+                                    value="#{usuario}" 
+                                    target="#{adminMB.usuario}"/>
+                                <p:resetInput target=":form_admin:dtUsuarios"/>
+                            </p:commandButton>-->
                         </p:column>
 
                     </p:dataTable>
@@ -108,6 +112,17 @@
                 <p:dialog header="Seleccionar Rol" widgetVar="asignarRol" 
                           height="500" width="700" showEffect="fade" modal="true" responsive="true">
                     <p:outputPanel id="colocarRol" class="ui-fluid">
+                        <div class="p-d-flex">
+                            <div class="p-md-6">
+                                <p:outputLabel value="Nombre:"/>
+                                <p:inputText maxlength="100" value="#{adminMB.usuario.nombre}" readonly="true"/>
+                            </div>
+                            <div class="p-md-6">
+                                <p:outputLabel value="Apellido:"/>
+                                <p:inputText maxlength="100" value="#{adminMB.usuario.apellido}" readonly="true"/>
+                            </div>
+                        </div>
+
                         <div class="card">
                             <div class="p-field p-col-12 p-md-3">
                                 <p:commandButton style="margin-right: 6px;" value="Agregar Rol" 

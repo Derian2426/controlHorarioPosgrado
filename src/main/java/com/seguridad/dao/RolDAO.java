@@ -34,6 +34,7 @@ public class RolDAO {
     public void setRol(Rol rol) {
         this.rol = rol;
     }
+    
     public List<Rol> getListaRol() {
         List<Rol> listaRol = new ArrayList<>();
         sentencia = String.format("SELECT * from public.\"getListaRoles\"();");
@@ -46,6 +47,26 @@ public class RolDAO {
             return listaRol;
         } catch (SQLException ex) {
             return listaRol;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+    
+    public int registrarRol(Rol rol) {
+        int mensaje = 0;
+        sentencia = String.format("SELECT public.\"registrarRol\"(\n"
+                + "	'" + rol.getNombre() + "', \n"
+                + "	'" + rol.getDetalle()+ "', \n"
+                + "	" + rol.isEstado()+ "\n"
+                + ")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("registrarRol"));
+            }
+            return mensaje;
+        } catch (NumberFormatException | SQLException e) {
+            return mensaje;
         } finally {
             conexion.desconectar();
         }

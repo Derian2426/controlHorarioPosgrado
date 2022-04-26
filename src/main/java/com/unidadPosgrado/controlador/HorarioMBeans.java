@@ -12,7 +12,6 @@ import com.unidadPosgrado.modelo.Maestria;
 import com.unidadPosgrado.modelo.Modulo;
 import com.unidadPosgrado.modelo.Periodo;
 import com.unidadPosgrado.modelo.TiempoModulo;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -56,6 +55,7 @@ public class HorarioMBeans {
     private TiempoModulo tiempoModulo;
     List<TiempoModulo> listaTiempoModulo;
     List<TiempoModulo> listaVerificacionTiempo;
+    List<TiempoModulo> listaTiempoAsignados;
     String descripcion;
 
     public HorarioMBeans() {
@@ -72,6 +72,7 @@ public class HorarioMBeans {
         listaTiempoModulo = new ArrayList<>();
         tiempoModulo = new TiempoModulo();
         listaVerificacionTiempo = new ArrayList<>();
+        listaTiempoAsignados = new ArrayList<>();
     }
 
     @PostConstruct
@@ -187,6 +188,9 @@ public class HorarioMBeans {
 
     public void registrarPeriodo() {
         try {
+            if (!verificaTiempoAsignacion() && !verificaTiempoSeleccion()) {
+                listaTiempoModulo.add(tiempoModulo);
+            }
             if ("".equals(integracionMaestria.getNombre()) || integracionMaestria.getNombre() == null) {
                 showWarn("Seleccione una maestría.");
             } else if ("".equals(integracionMaestria.getDescripcion())) {
@@ -207,14 +211,22 @@ public class HorarioMBeans {
                 showWarn("Ingrese una descripción.");
             } else {
 
-                if (horarioDAO.registrarHorarioAsignacion(modulo, docente, integracionMaestria, tiempoModulo, listaTiempoModulo) > 0) {
-                    showInfo("Periodo registrado con exito.");
-                    integracionMaestria = new Maestria();
-                    periodo = new Periodo();
-                    maestriaBusqueda = new Maestria();
+                if (verificaTiempo().size() < 1) {
+                    if (horarioDAO.registrarHorarioAsignacion(modulo, docente, integracionMaestria, tiempoModulo, listaTiempoModulo) > 0) {
+                        showInfo("Periodo registrado con exito.");
+                        integracionMaestria = new Maestria();
+                        periodo = new Periodo();
+                        maestriaBusqueda = new Maestria();
+                    } else {
+                        showWarn("Error al registrar el periodo, esta fecha ya se ha utilizado para la planificación"
+                                + " de esta maestría.");
+                    }
                 } else {
-                    showWarn("Error al registrar el periodo, esta fecha ya se ha utilizado para la planificación"
-                            + " de esta maestría.");
+                    String fechasUtilizadas = "";
+                    for (TiempoModulo horario : listaTiempoAsignados) {
+                        fechasUtilizadas += horario.getFechaAsignacion() + " ,";
+                    }
+                    showWarn("Estas fechas se encuentran asignadas " + fechasUtilizadas);
                 }
             }
 
@@ -224,9 +236,45 @@ public class HorarioMBeans {
 
     }
 
+    public List<TiempoModulo> verificaTiempo() {
+        listaTiempoAsignados = new ArrayList<>();
+        listaVerificacionTiempo = horarioDAO.getListaValidacion(docente.getId_docente());
+        for (TiempoModulo horario : listaVerificacionTiempo) {
+            if (tiempoModulo.getFechaAsignacion().compareTo(horario.getFechaAsignacion()) == 0) {
+                listaTiempoAsignados.add(horario);
+            }
+        }
+        return listaTiempoAsignados;
+    }
+
+    public boolean verificaTiempoSeleccion() {
+        boolean verifica = false;
+        for (TiempoModulo horario : listaTiempoModulo) {
+            if (tiempoModulo.getFechaAsignacion().compareTo(horario.getFechaAsignacion()) == 0) {
+                verifica = true;
+                break;
+            }
+        }
+        return verifica;
+    }
+
+    public boolean verificaTiempoAsignacion() {
+        boolean verificarTiempo = false;
+        for (TiempoModulo horario : listaVerificacionTiempo) {
+            if (tiempoModulo.getFechaAsignacion().compareTo(horario.getFechaAsignacion()) == 0) {
+                verificarTiempo = true;
+                break;
+            }
+        }
+        return verificarTiempo;
+    }
+
+    public void confirm() {
+        showInfo("You have accepted");
+    }
+
     public void obtenerValidacionHorario() {
         listaVerificacionTiempo = horarioDAO.getListaValidacion(docente.getId_docente());
-        System.out.println("    " + listaVerificacionTiempo.size());
     }
 
     public void onDateSelect(SelectEvent<LocalDateTime> selectEvent) {
@@ -283,7 +331,7 @@ public class HorarioMBeans {
         integracionMaestria.setFechaInicio(maestria.getFechaInicio());
         integracionMaestria.setFechaFin(maestria.getFechaFin());
         integracionMaestria.setIdCurso(maestria.getIdCurso());
-        listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria());
+        listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), maestria.getIdCurso());
         listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
     }
 
@@ -305,7 +353,6 @@ public class HorarioMBeans {
     }
 
     public void addEvent() {
-        boolean verificarTiempo = false, verifica = false;
         if (modulo.getIdMateria() < 1) {
             showWarn("Seleccione uno de los módulos.");
         } else if (docente.getId_docente() < 1) {
@@ -319,19 +366,7 @@ public class HorarioMBeans {
                     .endDate(convertToLocalDateTimeViaInstant(tiempoModulo.getFechaAsignacion()))
                     .borderColor("orange")
                     .build();
-            for (TiempoModulo horario : listaVerificacionTiempo) {
-                if (tiempoModulo.getFechaAsignacion().compareTo(horario.getFechaAsignacion()) == 0) {
-                    verificarTiempo = true;
-                    break;
-                }
-            }
-            for (TiempoModulo horario : listaTiempoModulo) {
-                if (tiempoModulo.getFechaAsignacion().compareTo(horario.getFechaAsignacion()) == 0) {
-                    verifica = true;
-                    break;
-                }
-            }
-            if (!verificarTiempo && !verifica) {
+            if (!verificaTiempoAsignacion() && !verificaTiempoSeleccion()) {
                 eventModel.addEvent(event);
                 listaTiempoModulo.add(tiempoModulo);
                 estadoAsignacion = true;
@@ -340,7 +375,7 @@ public class HorarioMBeans {
                 tiempoModulo.setDescripcion(descripcion);
                 PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
             } else {
-                showWarn("Ya se asigno el docente en este horario");
+                showWarn("Ya se asigno el docente en este horario.");
             }
 
         }

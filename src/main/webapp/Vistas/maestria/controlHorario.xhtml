@@ -120,6 +120,21 @@
                         <p:datePicker value="#{horarioMB.tiempoModulo.fechaAsignacion}" pattern="yyyy/dd/MM" style="margin-bottom: 1vh;" disabled="true"/>
                         <p:commandButton action="#{horarioMB.addEvent()}" value="Asignar otra Fecha" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" update=":form_horario:calendarioAcademico,:form_horario:nuevoDocenteAsignado,:form_horario:messages" style="margin-bottom: 1vh;"/>
                         <p:commandButton action="#{horarioMB.registrarPeriodo()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" update=":form_horario:calendarioAcademico,:form_horario:nuevoDocenteAsignado,:form_horario:messages" style="margin-bottom: 1vh;"/>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <p:commandButton value="Confirm" action="#{horarioMB.confirm}" update="messages" styleClass="p-mr-2" icon="pi pi-check">
+                            <p:confirm header="Confirmation" message="Are you sure you want to proceed?" icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" />
+                        </p:confirmDialog>
                     </p:outputPanel>
                 </p:dialog>
             </h:form>

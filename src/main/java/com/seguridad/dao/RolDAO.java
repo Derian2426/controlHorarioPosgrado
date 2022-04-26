@@ -35,6 +35,33 @@ public class RolDAO {
         this.rol = rol;
     }
     
+    public List<Rol> getRolesByUsers(int idUsuario) {
+        List<Rol> roles = new ArrayList<>();
+        Rol rolAux;
+        String query = "select r.* from public.\"rolusuario\" ru inner join public.rol r on ru.\"idrol\" = r.\"id_rol\" where ru.\"idusuario\" = " + String.valueOf(idUsuario) + ";";
+        ResultSet rs;
+        try {
+            rs = conexion.ejecutarSql(query);
+            while (rs.next()) {
+                rolAux = new Rol();
+                rolAux.setIdRol(rs.getInt("id_rol"));
+                rolAux.setNombre(rs.getString("nombre"));
+                rolAux.setDetalle(rs.getString("detalle"));
+                rolAux.setEstado(rs.getBoolean("estado"));
+                roles.add(rolAux);
+            }
+
+            rs.close();
+
+            return roles;
+        } catch (SQLException e) {
+            e.toString();
+        } finally {
+            conexion.desconectar();
+        }
+        return null;
+    }
+    
     public List<Rol> getListaRol() {
         List<Rol> listaRol = new ArrayList<>();
         sentencia = String.format("SELECT * from public.\"getListaRoles\"();");

@@ -5,9 +5,12 @@
  */
 package com.seguridad.controlador;
 
+import com.seguridad.dao.RolDAO;
 import com.seguridad.dao.UsuarioDAO;
+import com.seguridad.modelo.Rol;
 import com.seguridad.modelo.Usuario;
 import java.io.IOException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
@@ -22,6 +25,7 @@ import javax.servlet.http.HttpSession;
 public class UsuarioMB {
 
     UsuarioDAO userDAO;
+    RolDAO rolDAO;
     private Usuario usuario;
     
     String warnMsj = "Advertencia";
@@ -32,6 +36,7 @@ public class UsuarioMB {
     
     public UsuarioMB() {
         userDAO = new UsuarioDAO();
+        rolDAO = new RolDAO();
         usuario = new Usuario();
     }
     @PostConstruct
@@ -96,10 +101,14 @@ public class UsuarioMB {
 
                         usuario = usuarioSesion;
                         
+                        List<Rol> rolesSesion = rolDAO.getRolesByUsers(usuarioSesion.getIdUsuarioSesion());
+                        
                         httpSession.setAttribute("username", usuarioSesion);
 
                         FacesContext.getCurrentInstance().getExternalContext()
                                 .getSessionMap().put("usuario", usuarioSesion);
+                        FacesContext.getCurrentInstance().getExternalContext()
+                                .getSessionMap().put("roles", rolesSesion);
                         
                         facesContext.getExternalContext().redirect("faces/Vistas/Global/principal.xhtml");
                     }

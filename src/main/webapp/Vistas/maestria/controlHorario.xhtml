@@ -54,8 +54,8 @@
                         <div class="p-field p-col-12 p-md-6">
                             <p:schedule id="calendarioAcademico" draggable="false" value="#{horarioMB.eventModel}" rightHeaderTemplate="dayGridMonth" minTime="#{horarioMB.periodo.fechaInicio}" maxTime="#{horarioMB.periodo.fechaFin}">
                                 <p:ajax event="dateSelect" listener="#{horarioMB.onDateSelect}" update=":form_horario:nuevoDocenteAsignado,:form_horario:messages ,:form_horario:nuevaPerido, calendarioAcademico" process="nuevaPerido @this"/>
-                                <p:ajax event="eventSelect" listener="#{horarioMB.onEventSelect}" update=":form_horario:nuevoDocenteAsignado,:form_horario:messages ,:form_horario:nuevaPerido, calendarioAcademico" process="nuevaPerido @this"
-                                        oncomplete="PF('seleccionFecha').show();"/>
+                                <p:ajax event="eventSelect" listener="#{horarioMB.onEventSelect}" update=":form_horario:editDocenteAsignado,:form_horario:messages ,:form_horario:nuevaPerido, calendarioAcademico" process="nuevaPerido @this"
+                                        oncomplete="PF('seleccionEditFecha').show();"/>
                             </p:schedule>
                         </div>
 
@@ -80,7 +80,7 @@
                                     class="rounded-button"
                                     icon="pi pi-check">
                                     <p:ajax listener="#{horarioMB.llenaMaestriaPeriodo(maestrias)}" 
-                                            update=":form_horario:nuevaPerido,:form_horario:messages,:form_horario:nuevoDocenteAsignado"
+                                            update=":form_horario:nuevaPerido,:form_horario:messages,:form_horario:nuevoDocenteAsignado,:form_horario:calendarioAcademico"
                                             oncomplete="PF('listMaestriaPeriodo').hide()"/>
 
                                 </p:commandButton>
@@ -118,23 +118,36 @@
                         <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.tiempoModulo.descripcion}" disabled="#{horarioMB.estadoAsignacion}"/>
                         <p:outputLabel value="Fecha de asignación:" styleClass="p-text-bold"/>
                         <p:datePicker value="#{horarioMB.tiempoModulo.fechaAsignacion}" pattern="yyyy/dd/MM" style="margin-bottom: 1vh;" disabled="true"/>
-                        <p:commandButton action="#{horarioMB.addEvent()}" value="Asignar otra Fecha" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" update=":form_horario:calendarioAcademico,:form_horario:nuevoDocenteAsignado,:form_horario:messages" style="margin-bottom: 1vh;"/>
-                        <p:commandButton action="#{horarioMB.registrarPeriodo()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" update=":form_horario:calendarioAcademico,:form_horario:nuevoDocenteAsignado,:form_horario:messages" style="margin-bottom: 1vh;"/>
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        <p:commandButton value="Confirm" action="#{horarioMB.confirm}" update="messages" styleClass="p-mr-2" icon="pi pi-check">
-                            <p:confirm header="Confirmation" message="Are you sure you want to proceed?" icon="pi pi-exclamation-triangle"/>
+                        <p:commandButton value="Asignar otra Fecha" action="#{horarioMB.confirm}" update=":form_horario:calendarioAcademico,:form_horario:nuevoDocenteAsignado,:form_horario:messages" styleClass="p-mr-2" style="margin-bottom: 1vh;">
+                            <p:confirm header="Confirmation" message="Esta seguro de que quiere asignar está fecha?
+                                       Se recuerda que una vez que se asigna una fecha no podra ser cambiada." icon="pi pi-exclamation-triangle"/>
                         </p:commandButton>
+                        <p:commandButton action="#{horarioMB.registrarPeriodo()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" update=":form_horario:calendarioAcademico,:form_horario:nuevoDocenteAsignado,:form_horario:messages" style="margin-bottom: 1vh;"/>
+
+
+
+
+
+
+
+
+
                         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
                             <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
                             <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" />
                         </p:confirmDialog>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:dialog widgetVar="seleccionEditFecha" header="Asignación Horario" showEffect="fade" height="50%" width="50%" modal="true" responsive="true">
+                    <p:outputPanel id="editDocenteAsignado" class="ui-fluid">
+                        <p:outputLabel value="Módulo" for="@next" styleClass="p-text-bold"/>
+                        <p:inputText value="#{horarioMB.modulo.nombreMateria}" readonly="true"/>
+                        <p:outputLabel value="Docente" for="@next" styleClass="p-text-bold"/>
+                        <p:inputText value="#{horarioMB.docente.nombre_docente}" readonly="true"/>
+                        <p:outputLabel value="Descripción:" styleClass="p-text-bold"/>
+                        <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.tiempoModulo.descripcion}" readonly="true"/>
+                        <p:outputLabel value="Fecha de asignación:" styleClass="p-text-bold"/>
+                        <p:datePicker value="#{horarioMB.tiempoModulo.fechaAsignacion}" pattern="yyyy/dd/MM" style="margin-bottom: 1vh;" disabled="true"/>
                     </p:outputPanel>
                 </p:dialog>
             </h:form>

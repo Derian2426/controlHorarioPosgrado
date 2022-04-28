@@ -22,8 +22,21 @@ public class Maestria {
     private float tiempoMaestria;
     private Date fechaInicio;
     private Date fechaFin;
+    private int idDocente;
+    private String nombreDocente;
 
     public Maestria() {
+    }
+
+    public Maestria(int idCurso, int idMaestria, String nombre, String nombreParalelo, String descripcion, Date fechaInicio, int idDocente, String nombreDocente) {
+        this.idCurso = idCurso;
+        this.idMaestria = idMaestria;
+        this.nombre = nombre;
+        this.nombreParalelo = nombreParalelo;
+        this.descripcion = descripcion;
+        this.fechaInicio = fechaInicio;
+        this.idDocente = idDocente;
+        this.nombreDocente = nombreDocente;
     }
 
     public Maestria(int idMaestria, String nombre, String descripcion, float tiempoMaestria) {
@@ -119,6 +132,22 @@ public class Maestria {
 
     public void setNombreParalelo(String nombreParalelo) {
         this.nombreParalelo = nombreParalelo;
+    }
+
+    public int getIdDocente() {
+        return idDocente;
+    }
+
+    public void setIdDocente(int idDocente) {
+        this.idDocente = idDocente;
+    }
+
+    public String getNombreDocente() {
+        return nombreDocente;
+    }
+
+    public void setNombreDocente(String nombreDocente) {
+        this.nombreDocente = nombreDocente;
     }
 
 }

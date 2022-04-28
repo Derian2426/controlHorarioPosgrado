@@ -75,7 +75,7 @@ public class HorarioDAO {
         }
         json = json.substring(0, json.length() - 1);
         json += "]";
-        sentencia = String.format("SELECT public.\"asignacionHorario\"(\n"
+        sentencia = String.format("SELECT public.\"asignacionHorarioPrueba001\"(\n"
                 + "	" + modulo.getIdMateria() + ", \n"
                 + "	" + docente.getId_docente() + ", \n"
                 + "	" + maestria.getIdCurso() + ", \n"

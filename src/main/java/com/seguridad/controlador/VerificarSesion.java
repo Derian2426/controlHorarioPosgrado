@@ -7,7 +7,9 @@ package com.seguridad.controlador;
 
 import com.seguridad.modelo.Rol;
 import com.seguridad.modelo.Usuario;
+import java.io.IOException;
 import java.util.List;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 /**
@@ -16,25 +18,37 @@ import javax.faces.context.FacesContext;
  */
 public class VerificarSesion {
     
+    boolean estado = true;
+    
     FacesContext context = FacesContext.getCurrentInstance();
     List<Rol> listaRoles = (List<Rol>) context.getExternalContext().getSessionMap().get("roles");
+    ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+
     public VerificarSesion() {
+        
     }
-    
-    public void verificarSesion(){
+
+    public void verificarSesion() {
         try {
-            FacesContext context = FacesContext.getCurrentInstance();
-            Usuario us = (Usuario) context.getExternalContext().getSessionMap().get("usuario");
-            
-            if(us == null){
-                context.getExternalContext().redirect("../../../");
+            FacesContext contexto2 = FacesContext.getCurrentInstance();
+            Usuario us = (Usuario) contexto2.getExternalContext().getSessionMap().get("usuario");
+
+            if (us == null) {
+                contexto2.getExternalContext().redirect("../../../");
             }
+
         } catch (Exception e) {
-            
         }
     }
-    public String verificarAdmin(){
-        if("Administrador".equals(listaRoles.get(0).getNombre())){
+    
+    public void redireccionExternas() throws IOException {
+        if (!"Administrador".equals(listaRoles.get(0).getNombre())) {
+            externalContext.redirect("../Global/principal.xhtml");
+        }
+    }
+
+    public String verificarAdmin() {
+        if ("Administrador".equals(listaRoles.get(0).getNombre()) ) {
             return "true";
         } else {
             return "false";

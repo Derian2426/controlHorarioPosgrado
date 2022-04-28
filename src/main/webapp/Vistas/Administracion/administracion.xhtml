@@ -10,8 +10,10 @@
     <ui:define name="titulo">
         Administración
     </ui:define>
+    
 
     <ui:define name="content">
+        <f:event type="preRenderView" listener="#{verificarSesion.redireccionExternas()}"/>
         <div class="card">
             <h:form id="form_admin">
                 <p:growl id="msgs" showDetail="true"/>

@@ -27,6 +27,7 @@ public class UsuarioMB {
     UsuarioDAO userDAO;
     RolDAO rolDAO;
     private Usuario usuario;
+    private Rol rol;
     
     String warnMsj = "Advertencia";
     String infMsj = "Exito";
@@ -38,6 +39,7 @@ public class UsuarioMB {
         userDAO = new UsuarioDAO();
         rolDAO = new RolDAO();
         usuario = new Usuario();
+        rol = new Rol();
     }
     @PostConstruct
     public void init() {
@@ -123,10 +125,12 @@ public class UsuarioMB {
     
     public void cerrarSession() throws IOException {
         httpSession.removeAttribute("usuario");
+        httpSession.removeAttribute("roles");
         facesContext.getExternalContext().redirect(
                 "../../../");
         usuario.setPassSesion("");
         usuario.setNomUserSesion("");
+        rol.setNombre("");
     }
     
     public void mensajeDeAdvertencia(String msj) {

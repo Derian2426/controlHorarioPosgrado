@@ -11,6 +11,7 @@
     </ui:define>
 
     <ui:define name="content">
+        <f:event type="preRenderView" listener="#{verificarSesion.redireccionExternas()}"/>
         <div class="card">
             <h:form id="form_rol">
                 <p:growl id="msgs" showDetail="true"/>

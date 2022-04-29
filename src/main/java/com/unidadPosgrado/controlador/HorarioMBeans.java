@@ -256,10 +256,12 @@ public class HorarioMBeans {
                     maestriaBusqueda = new Maestria();
                     listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
                     listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+
+                    listaTiempoModulo = new ArrayList<>();
                     PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
                     eventModel = new DefaultScheduleModel();
                     event = new DefaultScheduleEvent<>();
-                    
+
                 } else {
                     showInfo("Asignación registrada con exito.");
                     docente = new Docente();
@@ -270,6 +272,7 @@ public class HorarioMBeans {
                     maestriaBusqueda = new Maestria();
                     listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
                     listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+                    listaTiempoModulo = new ArrayList<>();
                     PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
                 }
 

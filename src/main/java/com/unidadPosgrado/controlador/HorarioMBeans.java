@@ -248,6 +248,8 @@ public class HorarioMBeans {
                 }
                 if (estado == 1) {
                     showWarn(mensaje);
+                    eventModel = new DefaultScheduleModel();
+                    event = new DefaultScheduleEvent<>();
                     docente = new Docente();
                     modulo = new Modulo();
                     tiempoModulo = new TiempoModulo();
@@ -259,11 +261,11 @@ public class HorarioMBeans {
 
                     listaTiempoModulo = new ArrayList<>();
                     PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
-                    eventModel = new DefaultScheduleModel();
-                    event = new DefaultScheduleEvent<>();
 
                 } else {
                     showInfo("Asignación registrada con exito.");
+                    eventModel = new DefaultScheduleModel();
+                    event = new DefaultScheduleEvent<>();
                     docente = new Docente();
                     modulo = new Modulo();
                     tiempoModulo = new TiempoModulo();
@@ -274,6 +276,7 @@ public class HorarioMBeans {
                     listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
                     listaTiempoModulo = new ArrayList<>();
                     PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
+                    llenaFechasHorario();
                 }
 
 //                if (verificaTiempo().size() < 1) {
@@ -351,7 +354,9 @@ public class HorarioMBeans {
 
             if (!verificaTiempoAsignacion() && !verificaTiempoSeleccion()) {
                 event = DefaultScheduleEvent.builder()
+                        .id(String.valueOf(docente.getId_docente()))
                         .title(tiempoModulo.getDescripcion())
+                        .description(String.valueOf(modulo.getIdMateria()))
                         .startDate(convertToLocalDateTimeViaInstant(tiempoModulo.getFechaAsignacion()))
                         .endDate(convertToLocalDateTimeViaInstant(tiempoModulo.getFechaAsignacion()))
                         .borderColor("orange")
@@ -402,18 +407,35 @@ public class HorarioMBeans {
 
     public void onEventSelect(SelectEvent<ScheduleEvent<?>> selectEvent) {
         event = selectEvent.getObject();
+        modulo.setDescripcion(null);
         for (Maestria mHorario : listaHorario) {
             if (Integer.parseInt(event.getId()) == mHorario.getIdMaestria()
                     && Integer.parseInt(event.getDescription()) == mHorario.getIdDocente()
                     && convertToDateViaSqlTimestamp(event.getStartDate()).compareTo(mHorario.getFechaInicio()) == 0) {
                 modulo.setIdMateria(mHorario.getIdMaestria());
                 modulo.setNombreMateria(mHorario.getNombre());
+                modulo.setDescripcion(mHorario.getNombre());
                 docente.setNombre_docente(mHorario.getNombreDocente());
                 docente.setId_docente(mHorario.getIdDocente());
                 tiempoModulo.setDescripcion(mHorario.getDescripcion());
                 tiempoModulo.setFechaAsignacion(mHorario.getFechaInicio());
                 break;
             }
+        }
+        if (modulo.getDescripcion() == null) {
+            for (Modulo moduloB : listaModulo) {
+                if (moduloB.getIdMateria() == modulo.getIdMateria()) {
+                    modulo.setNombreMateria(moduloB.getNombreMateria());
+                    break;
+                }
+            }
+            for (Docente docenteB : listaDocente) {
+                if (docenteB.getId_docente() == docente.getId_docente()) {
+                    docente.setNombre_docente(docenteB.getNombre_docente() + " " + docenteB.getApellido_docente());
+                    break;
+                }
+            }
+            tiempoModulo.setFechaAsignacion(convertToDateViaSqlTimestamp(event.getStartDate()));
         }
 //        docente = new Docente();
 //        modulo = new Modulo();

@@ -81,16 +81,18 @@ public class DocenteMBeans {
                     seleccionMaestria = new ArrayList<>();
                     PrimeFaces.current().executeScript("PF('dlgDocente').hide()");
                     listaDocente = docenteDAO.getListaDocente();
-                    listaDocenteBusqueda = listaDocente;
+                    listaDocenteBusqueda = docenteDAO.getListaDocente();
                     listaMaestria = maestriaDAO.getListaMaestria();
+                    busquedaMaestriaAux = maestriaDAO.getListaMaestria();
                     maestriaBusqueda = new Maestria();
                 } else {
                     showWarn("La cédula " + docente.getCedula_docente().trim().replace(".", ",") + " ya se encuentra registrada.");
                     docente = new Docente();
                     seleccionMaestria = new ArrayList<>();
                     listaDocente = docenteDAO.getListaDocente();
-                    listaDocenteBusqueda = listaDocente;
+                    listaDocenteBusqueda = docenteDAO.getListaDocente();
                     listaMaestria = maestriaDAO.getListaMaestria();
+                    busquedaMaestriaAux = maestriaDAO.getListaMaestria();
                     maestriaBusqueda = new Maestria();
                 }
             }
@@ -103,6 +105,7 @@ public class DocenteMBeans {
         seleccionMaestria = new ArrayList<>();
         listaMaestria = maestriaDAO.getListaMaestria();
         maestriaBusqueda = new Maestria();
+        listaDocenteBusqueda = docenteDAO.getListaDocente();
         showWarn("Registro cancelado.");
     }
 

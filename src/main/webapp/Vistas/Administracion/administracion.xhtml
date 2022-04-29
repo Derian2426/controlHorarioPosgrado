@@ -87,7 +87,6 @@
                                     <h:outputText value="#{usuario.estado}"/>
                                 </f:facet>
                                 <f:facet name="input">
-                                    <!--<p:inputText value="#{usuario.estado}" style="width:100%" maxlength="30"/>-->
                                     <p:selectOneMenu id="genero" value="#{usuario.estado}">
                                         <p:ajax update="@this" process="@this"/>
                                         <f:selectItem itemLabel="Habilitado" itemValue="true"/>
@@ -96,6 +95,7 @@
                                 </f:facet>
                             </p:cellEditor>
                         </p:column>
+                        
                         <p:column headerText="Acciones" style="width:6rem">
                             <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
                             <p:commandButton icon="pi pi-th-large"                                                         
@@ -107,7 +107,7 @@
                                 <p:resetInput target=":form_admin:dtUsuarios"/>
                             </p:commandButton>
                         </p:column>
-
+                        
                     </p:dataTable>
                 </div>
 

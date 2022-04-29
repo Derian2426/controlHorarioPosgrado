@@ -120,7 +120,7 @@
                         <p:outputLabel value="Fecha de asignación:" styleClass="p-text-bold"/>
                         <p:datePicker value="#{horarioMB.tiempoModulo.fechaAsignacion}" pattern="yyyy/dd/MM" style="margin-bottom: 1vh;" disabled="true"/>
                         <p:commandButton value="Asignar otra Fecha" action="#{horarioMB.confirm}" update=":form_horario:calendarioAcademico,:form_horario:nuevoDocenteAsignado,:form_horario:messages" styleClass="p-mr-2" style="margin-bottom: 1vh;">
-                            <p:confirm header="Confirmation" message="Esta seguro de que quiere asignar está fecha?
+                            <p:confirm header="Confirmación" message="Esta seguro de que quiere asignar está fecha?
                                        Se recuerda que una vez que se asigna una fecha no podra ser cambiada." icon="pi pi-exclamation-triangle"/>
                         </p:commandButton>
                         <p:commandButton action="#{horarioMB.registrarPeriodo()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" update=":form_horario:calendarioAcademico,:form_horario:nuevoDocenteAsignado,:form_horario:messages" style="margin-bottom: 1vh;"/>
@@ -135,7 +135,7 @@
 
                         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
                             <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
-                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" />
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
                         </p:confirmDialog>
                     </p:outputPanel>
                 </p:dialog>

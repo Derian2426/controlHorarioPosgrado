@@ -28,6 +28,11 @@ public class TiempoModulo {
         this.descripcion = descripcion;
     }
 
+    public TiempoModulo(int idTiempo, Date fechaAsignacion) {
+        this.idTiempo = idTiempo;
+        this.fechaAsignacion = fechaAsignacion;
+    }
+
     public TiempoModulo(Date fechaAsignacion) {
         this.fechaAsignacion = fechaAsignacion;
     }

@@ -86,11 +86,43 @@ public class HorarioDAO {
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                mensaje = Integer.parseInt(resultSet.getString("asignacionHorario"));
+                mensaje = Integer.parseInt(resultSet.getString("asignacionHorarioPrueba001"));
             }
             return mensaje;
         } catch (SQLException e) {
             return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public List<TiempoModulo> registrarHorarioAsignaciones(Modulo modulo, Docente docente, Maestria maestria, TiempoModulo tiempoModulo, List<TiempoModulo> tiempo) {
+        int mensaje = 0;
+        List<TiempoModulo> listadoFecha = new ArrayList<>();
+        String json = "[";
+        for (TiempoModulo moduloT : tiempo) {
+            json += "{\n"
+                    + "  \"fechainicio\": \"" + moduloT.getFechaAsignacion() + "\"\n"
+                    + "},";
+        }
+        json = json.substring(0, json.length() - 1);
+        json += "]";
+        sentencia = String.format("SELECT * from public.\"asignacionHorarioPrueba002\"(\n"
+                + "	" + modulo.getIdMateria() + ", \n"
+                + "	" + docente.getId_docente() + ", \n"
+                + "	" + maestria.getIdCurso() + ", \n"
+                + "	'" + tiempoModulo.getDescripcion() + "', \n"
+                + "	" + tiempo.size() + ", \n"
+                + "	'" + json + "'\n"
+                + ")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoFecha.add(new TiempoModulo(resultSet.getInt("validacion"),resultSet.getDate("_fecharetorno")));
+            }
+            return listadoFecha;
+        } catch (SQLException e) {
+            return listadoFecha;
         } finally {
             conexion.desconectar();
         }
@@ -122,7 +154,7 @@ public class HorarioDAO {
             while (resultSet.next()) {
                 listadoMaestria.add(new Maestria(resultSet.getInt("_id_curso"), resultSet.getInt("_id_materia"),
                         resultSet.getString("_nombre_materia"), resultSet.getString("_nombre_curso"), resultSet.getString("_descripcion"),
-                        resultSet.getDate("_fecha"), resultSet.getInt("_id_docente"), resultSet.getString("_nombre_docente")+" "+resultSet.getString("_apellido_docente")));
+                        resultSet.getDate("_fecha"), resultSet.getInt("_id_docente"), resultSet.getString("_nombre_docente") + " " + resultSet.getString("_apellido_docente")));
             }
             return listadoMaestria;
         } catch (SQLException e) {

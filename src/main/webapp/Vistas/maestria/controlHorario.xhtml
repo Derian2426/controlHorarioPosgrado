@@ -52,7 +52,7 @@
                         <!-- Lado Derecho -->
 
                         <div class="p-field p-col-12 p-md-6">
-                            <p:schedule clientTimeZone="local" id="calendarioAcademico" draggable="false" value="#{horarioMB.eventModel}" rightHeaderTemplate="dayGridMonth" 
+                            <p:schedule clientTimeZone="America/Chicago" id="calendarioAcademico" draggable="false" value="#{horarioMB.eventModel}" rightHeaderTemplate="dayGridMonth" 
                                         minTime="#{horarioMB.periodo.fechaInicio}" maxTime="#{horarioMB.periodo.fechaFin}">
                                 <p:ajax event="dateSelect" listener="#{horarioMB.onDateSelect}" update=":form_horario:nuevoDocenteAsignado,:form_horario:messages ,:form_horario:nuevaPerido, calendarioAcademico" process="nuevaPerido @this"/>
                                 <p:ajax event="eventSelect" listener="#{horarioMB.onEventSelect}" update=":form_horario:editDocenteAsignado,:form_horario:messages ,:form_horario:nuevaPerido, calendarioAcademico" process="nuevaPerido @this"

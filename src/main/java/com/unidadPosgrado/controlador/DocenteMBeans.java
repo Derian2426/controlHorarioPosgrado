@@ -127,7 +127,7 @@ public class DocenteMBeans {
                 if (resultadoRegistro > 0) {
                     showInfo("Se actualizo con éxito, " + editDocente.getNombre_docente().trim());
                 } else {
-                    showWarn(editDocente.getNombre_docente().trim().replace(".", ",") + " no se actualizo.");
+                    showWarn(editDocente.getNombre_docente().trim().replace(".", ",") + " Se actualizaron algunos campos.");
                 }
             }
             listaDocente = new ArrayList<>();

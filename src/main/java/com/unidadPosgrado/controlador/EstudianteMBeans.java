@@ -123,7 +123,7 @@ public class EstudianteMBeans {
                 if (resultadoRegistro > 0) {
                     showInfo("Se actualizo con éxito, " + editEstudiante.getNombre_estudiante().trim());
                 } else {
-                    showInfo("Se actualizo el registro con exito.");
+                    showInfo("Se actualizon los campos.");
                 }
             }
             listaEstudiante = new ArrayList<>();

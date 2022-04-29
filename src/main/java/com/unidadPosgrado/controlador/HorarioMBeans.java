@@ -399,6 +399,7 @@ public class HorarioMBeans {
                     .endDate(selectEvent.getObject().plusHours(1))
                     .build();
             tiempoModulo.setFechaAsignacion(convertToDateViaSqlTimestamp(selectEvent.getObject()));
+            tiempoModulo.setDescripcion("");
             PrimeFaces.current().executeScript("PF('seleccionFecha').show()");
             estado = true;
         }

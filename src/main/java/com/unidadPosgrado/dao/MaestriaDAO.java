@@ -44,6 +44,22 @@ public class MaestriaDAO {
         }
     }
 
+    public List<Maestria> getListaMaestria_Periodo() {
+        List<Maestria> listadoMaestria = new ArrayList<>();
+        sentencia = String.format("select * from public.\"getListaMaestria_Periodo\"()");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoMaestria.add(new Maestria(resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"), resultSet.getString("_descripcion")));
+            }
+            return listadoMaestria;
+        } catch (SQLException e) {
+            return listadoMaestria;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
     public List<Maestria> getListaMaestriaPeriodo() {
         List<Maestria> listadoMaestria = new ArrayList<>();
         sentencia = String.format("SELECT* from public.\"getListaMaestriasPeriodo\"()");

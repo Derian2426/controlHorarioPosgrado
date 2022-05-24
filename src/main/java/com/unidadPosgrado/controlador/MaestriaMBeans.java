@@ -40,6 +40,8 @@ public class MaestriaMBeans {
     List<Modulo> listaModulosVerificacion;
     private Periodo periodo;
     List<Maestria> busquedaMaestriaAux;
+    private List<Maestria> listaMaestriaPeriodo;
+    List<Maestria> busquedaMaestriaAuxP;
 
     public MaestriaMBeans() {
         maestria = new Maestria();
@@ -53,13 +55,17 @@ public class MaestriaMBeans {
         rootIntegracion = new DefaultTreeNode("Root Node", null);
         periodo = new Periodo();
         busquedaMaestriaAux = new ArrayList<>();
+        listaMaestriaPeriodo = new ArrayList<>();
+        busquedaMaestriaAuxP = new ArrayList<>();
     }
 
     @PostConstruct
     public void init() {
         listaMaestria = maestriaDAO.getListaMaestria();
+        listaMaestriaPeriodo = maestriaDAO.getListaMaestria_Periodo();
         listaMaestriaxModulo = maestriaDAO.getListaMaestriaxModulo();
         busquedaMaestriaAux = listaMaestria;
+        busquedaMaestriaAuxP = listaMaestriaPeriodo;
         llenarLista();
     }
 
@@ -117,6 +123,14 @@ public class MaestriaMBeans {
 
     public void setPeriodo(Periodo periodo) {
         this.periodo = periodo;
+    }
+
+    public List<Maestria> getListaMaestriaPeriodo() {
+        return listaMaestriaPeriodo;
+    }
+
+    public void setListaMaestriaPeriodo(List<Maestria> listaMaestriaPeriodo) {
+        this.listaMaestriaPeriodo = listaMaestriaPeriodo;
     }
 
     public void registrarMaestria() {
@@ -327,6 +341,25 @@ public class MaestriaMBeans {
 
     }
 
+    public void buscarMaestriaPeriodo() {
+        List<Maestria> busquedaM = new ArrayList<>();
+
+        if (maestriaBusqueda.getNombre() == null || "".equals(maestriaBusqueda.getNombre())) {
+            listaMaestriaPeriodo = busquedaMaestriaAuxP;
+        } else {
+            listaMaestriaPeriodo = busquedaMaestriaAuxP;
+            for (Maestria busqueda : listaMaestriaPeriodo) {
+                if (busqueda.getNombre().toUpperCase().contains(maestriaBusqueda.getNombre().toUpperCase())) {
+                    busquedaM.add(busqueda);
+                }
+            }
+            listaMaestriaPeriodo = busquedaM;
+            busquedaM = new ArrayList<>();
+//            maestriaBusqueda = new Maestria();
+        }
+
+    }
+
     public void registrarPeriodo() {
         try {
             if ("".equals(integracionMaestria.getNombre()) || integracionMaestria.getNombre() == null) {
@@ -339,11 +372,12 @@ public class MaestriaMBeans {
                 showWarn("Seleccione una fecha de finaalización.");
             } else if (periodo.getFechaFin().before(periodo.getFechaInicio())) {
                 showWarn("La fecha no puede ser anterior a la fecha de inicio del Periodo.");
-            }else if(periodo.getCantidadEstudiante()<1){
+            } else if (periodo.getCantidadEstudiante() < 1) {
                 showWarn("Ingrese una cantidad de estudiantes para el paralelo.");
-            }else {
+            } else {
                 if (maestriaDAO.registrarPeriodo(integracionMaestria, periodo) > 0) {
                     showInfo("Periodo registrado con exito.");
+                    PrimeFaces.current().executeScript("PF('dlgPlanificacion').hide()");
                     integracionMaestria = new Maestria();
                     periodo = new Periodo();
                     maestriaBusqueda = new Maestria();

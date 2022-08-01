@@ -200,5 +200,35 @@ public class MaestriaDAO {
             conexion.desconectar();
         }
     }
+    public int verificaCantidadDocente(Maestria maestria) {
+        int mensaje = 0;
+        sentencia = String.format("SELECT public.verifica_cantidad_docente("+maestria.getIdMaestria()+")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("verifica_cantidad_docente"));
+            }
+            return mensaje;
+        } catch (SQLException e) {
+            return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+    public List<Maestria> getEditListaMaestria(String cedula) {
+        List<Maestria> listadoMaestria = new ArrayList<>();
+        sentencia = String.format("SELECT * from public.get_lista_maestriaxdocente('"+cedula+"')");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoMaestria.add(new Maestria(resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"), resultSet.getString("_descripcion")));
+            }
+            return listadoMaestria;
+        } catch (SQLException e) {
+            return listadoMaestria;
+        } finally {
+            conexion.desconectar();
+        }
+    }
 
 }

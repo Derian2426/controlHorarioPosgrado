@@ -23,6 +23,7 @@ import org.primefaces.event.RowEditEvent;
  */
 public class DocenteMBeans {
 
+    private Docente editDocente;
     private Docente docente;
     private Docente docenteBusqueda;
     DocenteDAO docenteDAO;
@@ -33,11 +34,13 @@ public class DocenteMBeans {
     List<Maestria> busquedaMaestria;
     List<Maestria> busquedaMaestriaAux;
     private List<Maestria> seleccionMaestria;
+    private List<Maestria> editListMaestria;
     List<Docente> listaDocenteBusqueda;
     List<Docente> listaDocenteBusquedaAux;
 
     public DocenteMBeans() {
         docente = new Docente();
+        editDocente = new Docente();
         docenteDAO = new DocenteDAO();
         listaDocente = new ArrayList<>();
         listaMaestria = new ArrayList<>();
@@ -46,6 +49,7 @@ public class DocenteMBeans {
         busquedaMaestria = new ArrayList<>();
         busquedaMaestriaAux = new ArrayList<>();
         seleccionMaestria = new ArrayList<>();
+        editListMaestria = new ArrayList<>();
         docenteBusqueda = new Docente();
         listaDocenteBusqueda = new ArrayList<>();
         listaDocenteBusquedaAux = new ArrayList<>();
@@ -208,6 +212,24 @@ public class DocenteMBeans {
         }
     }
 
+    public void recibirEditDocente(Docente editarDocente) {
+        try {
+            editDocente = editarDocente;
+            editListMaestria=maestriaDAO.getEditListaMaestria(editDocente.getCedula_docente());
+            PrimeFaces.current().executeScript("PF('dlgEditDocente').show()");
+        } catch (Exception e) {
+            showWarn(e.getMessage());
+        }
+    }
+    public void deleteFila(Maestria mEliminar) {
+        editListMaestria.remove(mEliminar);
+        if(docenteDAO.eliminarMaestria(editDocente.getId_docente(), mEliminar.getIdMaestria())>0){
+            showInfo("Eliminado con Exito.");
+        }else{
+            showInfo("Ocurrio un error.");
+        }
+    }
+
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
         FacesContext.getCurrentInstance().
                 addMessage(null, new FacesMessage(severity, summary, detail));
@@ -267,6 +289,22 @@ public class DocenteMBeans {
 
     public void setDocenteBusqueda(Docente docenteBusqueda) {
         this.docenteBusqueda = docenteBusqueda;
+    }
+
+    public Docente getEditDocente() {
+        return editDocente;
+    }
+
+    public void setEditDocente(Docente editDocente) {
+        this.editDocente = editDocente;
+    }
+
+    public List<Maestria> getEditListMaestria() {
+        return editListMaestria;
+    }
+
+    public void setEditListMaestria(List<Maestria> editListMaestria) {
+        this.editListMaestria = editListMaestria;
     }
 
 }

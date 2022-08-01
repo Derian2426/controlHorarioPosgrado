@@ -53,7 +53,7 @@
 
                         <div class="p-field p-col-12 p-md-6">
                             <p:schedule timeZone="GMT-5" locale="es" id="calendarioAcademico" draggable="false" value="#{horarioMB.eventModel}" rightHeaderTemplate="dayGridMonth" 
-                                        minTime="#{horarioMB.periodo.fechaInicio}" maxTime="#{horarioMB.periodo.fechaFin}">
+                                        initialDate="#{horarioMB.periodo.fechaInicio}">
                                 <p:ajax event="dateSelect" listener="#{horarioMB.onDateSelect}" update=":form_horario:nuevoDocenteAsignado,:form_horario:messages ,:form_horario:nuevaPerido, calendarioAcademico" process="nuevaPerido @this"/>
                                 <p:ajax event="eventSelect" listener="#{horarioMB.onEventSelect}" update=":form_horario:editDocenteAsignado,:form_horario:messages ,:form_horario:nuevaPerido, calendarioAcademico" process="nuevaPerido @this"
                                         oncomplete="PF('seleccionEditFecha').show();"/>

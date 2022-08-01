@@ -99,7 +99,10 @@
                         </p:column>
 
                         <p:column headerText="Acciones" style="width:6rem">
-                            <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+                            <p:commandButton icon="pi pi-pencil" styleClass="rounded-button ui-button-flat">
+                                <p:ajax listener="#{docenteMB.recibirEditDocente(docente)}" 
+                                        update=":form_docentes:editDocente,:form_docentes:msgs"/>
+                            </p:commandButton>
                         </p:column>
 
                     </p:dataTable>
@@ -187,6 +190,80 @@
                             <h:outputText value="#{maestria.descripcion}"/>
                         </p:column>
                     </p:dataTable>
+                </p:dialog>
+                <!-- Editar los docentes -->
+                <p:dialog header="Modificar Docente" widgetVar="dlgEditDocente" width="850" showEffect="fade" modal="true" responsive="true" height="500">
+                    <p:outputPanel id="editDocente" class="ui-fluid">
+                        <div class="card">
+                            <div class="ui-fluid p-formgrid p-grid">
+                                <div class="p-field p-col-12 p-md-6">
+                                    <p:outputLabel value="Nombre: *"/>
+                                    <p:inputText maxlength="30" value="#{docenteMB.editDocente.nombre_docente}"/>
+                                </div>
+                                <div class="p-field p-col-12 p-md-6">
+                                    <p:outputLabel value="Apellido: *"/>
+                                    <p:inputText maxlength="30" value="#{docenteMB.editDocente.apellido_docente}"/>
+                                </div>
+                                <div class="p-field p-col-12 p-md-6">
+                                    <p:outputLabel value="Cédula:"/>
+                                    <p:inputText maxlength="15" value="#{docenteMB.editDocente.cedula_docente}">
+                                        <p:keyFilter mask="num"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="p-field p-col-12 p-md-6">
+                                    <p:outputLabel value="Teléfono: *"/>
+                                    <p:inputText maxlength="15" value="#{docenteMB.editDocente.telefono_docente}">
+                                        <p:keyFilter mask="num"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="p-field p-col-12 p-md-6">
+                                    <p:outputLabel value="Correo: *"/>
+                                    <p:inputText maxlength="50" value="#{docenteMB.editDocente.correo_docente}"/>
+                                </div>
+                                <div class="p-field p-col-12 p-md-6">
+                                    <p:outputLabel value="." style="color: white"/>
+                                    <p:commandButton value="Asignar Maestrías" icon="pi pi-search" styleClass="ui-button-secondary"  onclick="PF('listMaestriaSeleccion').show()"/>
+                                </div>
+
+                                <p:dataTable id="dtEditMaestriacheck" var="editamaestria" value="#{docenteMB.editListMaestria}" editable="true" paginatorPosition="bottom"
+                                             style="margin-bottom:20px" reflow="true" rows="2" paginator="true"
+                                             emptyMessage="No se encontro la maestría">
+                                    <p:column headerText="Nombre Maestría" style="text-align: justify">
+                                        <h:outputText value="#{editamaestria.nombre}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Descripción" style="text-align: justify">
+                                        <h:outputText value="#{editamaestria.descripcion}"/>
+                                    </p:column>
+                                    <p:column headerText="Acciones" style="text-align: center">
+                                        <p:commandButton icon="pi pi-trash" styleClass="rounded-button ui-button-danger" 
+                                                         action="#{docenteMB.deleteFila(editamaestria)}"
+                                                         update=":form_docentes:editDocente,:form_docentes:msgs">
+                                            <p:confirm header="Confirmación" message="Esta seguro de que quiere eliminar la maestria que puede impartir este docente?" 
+                                                       icon="pi pi-exclamation-triangle"/>
+
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
+                                </p:confirmDialog>
+
+                            </div>
+                            <!-- comment 
+                            <div class="p-grid p-justify-end">
+                                <div class="p-col-4">
+                                    <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{docenteMB.registrarDocente()}"
+                                                     update=":form_docentes:msgs,nuevoDocente,:form_docentes:dtDocente,:form_docentes:dtSeleccionMaestria"/>
+                                </div>
+                                <div class="p-field p-col-12 p-md-4">
+                                    <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgDocente').hide()" 
+                                                     actionListener="#{docenteMB.cancelarRegistro()}" update=":form_docentes:msgs,nuevoDocente,:form_docentes:dtDocente,:form_docentes:dtSeleccionMaestria"/>
+                                </div>
+                            </div>-->
+                        </div>
+                    </p:outputPanel>
                 </p:dialog>
             </h:form>
         </div>

@@ -202,9 +202,16 @@ public class MaestriaMBeans {
     }
 
     public void llenaMaestriaPeriodo(Maestria maestria) {
-        integracionMaestria.setIdMaestria(maestria.getIdMaestria());
-        integracionMaestria.setNombre(maestria.getNombre());
-        integracionMaestria.setDescripcion(maestria.getDescripcion());
+
+        if (maestriaDAO.verificaCantidadDocente(maestria) > 0) {
+            integracionMaestria.setIdMaestria(maestria.getIdMaestria());
+            integracionMaestria.setNombre(maestria.getNombre());
+            integracionMaestria.setDescripcion(maestria.getDescripcion());
+        }else{
+            //Cambiar presentacion
+            showWarn("La maestria no tiene asignado docentes suficientes ");
+        }
+
     }
 
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
@@ -306,13 +313,20 @@ public class MaestriaMBeans {
     }
 
     public void llenarLista() {
+        int indiceMaestria = 1;
+        int indiceModulo = 1;
         for (Maestria maestriaT : listaMaestriaxModulo) {
             maestriaTree = new DefaultTreeNode(new Maestria(maestriaT.getIdMaestria(),
-                    maestriaT.getNombre(), maestriaT.getDescripcion(), maestriaT.getTiempoMaestria()), this.rootIntegracion);
+                    (indiceMaestria) + ". " + maestriaT.getNombre(), maestriaT.getDescripcion(), maestriaT.getTiempoMaestria()), this.rootIntegracion);
             listaModulosNode = maestriaDAO.getListaModulo(maestriaT.getIdMaestria());
+
             for (Modulo moduloN : listaModulosNode) {
-                moduloNode = new DefaultTreeNode(new Maestria(moduloN.getIdMateria(), moduloN.getNombreMateria(), moduloN.getDescripcion(), moduloN.getHora_materia()), maestriaTree);
+                moduloNode = new DefaultTreeNode(new Maestria(moduloN.getIdMateria(), (indiceMaestria) + "." + (indiceModulo) + ". " + moduloN.getNombreMateria(), moduloN.getDescripcion(), moduloN.getHora_materia()), maestriaTree);
+                indiceModulo++;
             }
+            indiceModulo = 1;
+            indiceMaestria++;
+
         }
     }
 

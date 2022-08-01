@@ -97,4 +97,21 @@ public class DocenteDAO {
             conexion.desconectar();
         }
     }
+
+    public int eliminarMaestria(int id_docente, int id_maestria) {
+        int mensaje = 0;
+        sentencia = String.format("SELECT public.delete_maestria_lista("
+                + id_docente + "," + id_maestria + ")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                mensaje = resultSet.getInt("delete_maestria_lista");
+            }
+            return mensaje;
+        } catch (SQLException e) {
+            return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
 }

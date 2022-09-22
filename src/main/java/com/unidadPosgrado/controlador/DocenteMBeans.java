@@ -35,6 +35,7 @@ public class DocenteMBeans {
     List<Maestria> busquedaMaestriaAux;
     private List<Maestria> seleccionMaestria;
     private List<Maestria> editListMaestria;
+    List<Maestria> editListMaestriaConfirmada;
     List<Docente> listaDocenteBusqueda;
     List<Docente> listaDocenteBusquedaAux;
 
@@ -50,6 +51,7 @@ public class DocenteMBeans {
         busquedaMaestriaAux = new ArrayList<>();
         seleccionMaestria = new ArrayList<>();
         editListMaestria = new ArrayList<>();
+        editListMaestriaConfirmada = new ArrayList<>();
         docenteBusqueda = new Docente();
         listaDocenteBusqueda = new ArrayList<>();
         listaDocenteBusquedaAux = new ArrayList<>();
@@ -110,37 +112,36 @@ public class DocenteMBeans {
         listaMaestria = maestriaDAO.getListaMaestria();
         maestriaBusqueda = new Maestria();
         listaDocenteBusqueda = docenteDAO.getListaDocente();
+        editListMaestria = new ArrayList<>();
         showWarn("Registro cancelado.");
     }
 
-    public void onRowEdit(RowEditEvent<Docente> event) {
+    public void editarDocente() {
         try {
-            if ("".equals(event.getObject().getNombre_docente().trim())) {
+            if ("".equals(editDocente.getNombre_docente().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            } else if ("".equals(event.getObject().getApellido_docente().trim())) {
+            } else if ("".equals(editDocente.getApellido_docente().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            } else if ("".equals(event.getObject().getCedula_docente().trim())) {
+            } else if ("".equals(editDocente.getCedula_docente().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            } else if ("".equals(event.getObject().getTelefono_docente().trim())) {
+            } else if ("".equals(editDocente.getTelefono_docente().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            } else if ("".equals(event.getObject().getCorreo_docente().trim())) {
+            } else if ("".equals(editDocente.getCorreo_docente().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
             } else {
-                Docente editDocente = new Docente(event.getObject().getId_docente(),
-                        event.getObject().getNombre_docente(), event.getObject().getApellido_docente(),
-                        event.getObject().getCedula_docente(), event.getObject().getTelefono_docente(),
-                        event.getObject().getCorreo_docente());
-                int resultadoRegistro = docenteDAO.editarDocente(editDocente);
+                int resultadoRegistro = docenteDAO.editarDocente(editDocente, editListMaestriaConfirmada);
                 if (resultadoRegistro > 0) {
                     showInfo("Se actualizo con éxito, " + editDocente.getNombre_docente().trim());
                 } else {
-                    showWarn(editDocente.getNombre_docente().trim().replace(".", ",") + " Se actualizaron algunos campos.");
+                    showInfo(editDocente.getNombre_docente().trim().replace(".", ",") + " , algunos de sus datos fueron actualizados.");
                 }
             }
+            editListMaestriaConfirmada = new ArrayList<>();
             listaDocente = new ArrayList<>();
             docente = new Docente();
             listaDocente = docenteDAO.getListaDocente();
             listaDocenteBusqueda = listaDocente;
+            listaMaestria = maestriaDAO.getListaMaestria();
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
@@ -184,6 +185,31 @@ public class DocenteMBeans {
 
     }
 
+    public void addEditMaestria(Maestria maestria) {
+        try {
+            if (maestria.isVerifica() && verificaModulo(maestria.getIdMaestria()) && verificaListaRegistro(maestria.getIdMaestria())) {
+                editListMaestria.add(maestria);
+                editListMaestriaConfirmada.add(maestria);
+            } else {
+                editListMaestria.remove(maestria);
+            }
+        } catch (Exception e) {
+            showWarn("Error" + e.getMessage());
+        }
+
+    }
+
+    public boolean verificaListaRegistro(int idMaestria) {
+        boolean verifica = true;
+        for (Maestria maestriaVerifica : editListMaestria) {
+            if (maestriaVerifica.getIdMaestria() == idMaestria) {
+                verifica = false;
+                break;
+            }
+        }
+        return verifica;
+    }
+
     public boolean verificaModulo(int idMaestria) {
         boolean verifica = true;
         for (Maestria maestria : seleccionMaestria) {
@@ -215,17 +241,18 @@ public class DocenteMBeans {
     public void recibirEditDocente(Docente editarDocente) {
         try {
             editDocente = editarDocente;
-            editListMaestria=maestriaDAO.getEditListaMaestria(editDocente.getCedula_docente());
+            editListMaestria = maestriaDAO.getEditListaMaestria(editDocente.getCedula_docente());
             PrimeFaces.current().executeScript("PF('dlgEditDocente').show()");
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
     }
+
     public void deleteFila(Maestria mEliminar) {
         editListMaestria.remove(mEliminar);
-        if(docenteDAO.eliminarMaestria(editDocente.getId_docente(), mEliminar.getIdMaestria())>0){
+        if (docenteDAO.eliminarMaestria(editDocente.getId_docente(), mEliminar.getIdMaestria()) > 0) {
             showInfo("Eliminado con Exito.");
-        }else{
+        } else {
             showInfo("Ocurrio un error.");
         }
     }

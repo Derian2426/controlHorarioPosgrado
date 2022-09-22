@@ -108,7 +108,7 @@
                     </p:dataTable>
                 </div>
 
-                <p:dialog header="Registro de Docente" widgetVar="dlgDocente" width="850" showEffect="fade" modal="true" responsive="true" height="500">
+                <p:dialog header="Registro de Docente" widgetVar="dlgDocente" width="850" showEffect="fade" modal="true" responsive="true" height="500" closable="false">
                     <p:outputPanel id="nuevoDocente" class="ui-fluid">
                         <div class="card">
                             <div class="ui-fluid p-formgrid p-grid">
@@ -235,15 +235,6 @@
                                     <p:column headerText="Descripción" style="text-align: justify">
                                         <h:outputText value="#{editamaestria.descripcion}"/>
                                     </p:column>
-                                    <p:column headerText="Acciones" style="text-align: center">
-                                        <p:commandButton icon="pi pi-trash" styleClass="rounded-button ui-button-danger" 
-                                                         action="#{docenteMB.deleteFila(editamaestria)}"
-                                                         update=":form_docentes:editDocente,:form_docentes:msgs">
-                                            <p:confirm header="Confirmación" message="Esta seguro de que quiere eliminar la maestria que puede impartir este docente?" 
-                                                       icon="pi pi-exclamation-triangle"/>
-
-                                        </p:commandButton>
-                                    </p:column>
                                 </p:dataTable>
                                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
                                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
@@ -251,17 +242,17 @@
                                 </p:confirmDialog>
 
                             </div>
-                            <!-- comment 
+                            
                             <div class="p-grid p-justify-end">
                                 <div class="p-col-4">
-                                    <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{docenteMB.registrarDocente()}"
-                                                     update=":form_docentes:msgs,nuevoDocente,:form_docentes:dtDocente,:form_docentes:dtSeleccionMaestria"/>
+                                    <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{docenteMB.editarDocente()}" onclick="PF('dlgEditDocente').hide()"
+                                                     update=":form_docentes:msgs,editDocente,:form_docentes:dtDocente,:form_docentes:dtSeleccionMaestriaEdit"/>
                                 </div>
                                 <div class="p-field p-col-12 p-md-4">
-                                    <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgDocente').hide()" 
-                                                     actionListener="#{docenteMB.cancelarRegistro()}" update=":form_docentes:msgs,nuevoDocente,:form_docentes:dtDocente,:form_docentes:dtSeleccionMaestria"/>
+                                    <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgEditDocente').hide()" 
+                                                     actionListener="#{docenteMB.cancelarRegistro()}" update=":form_docentes:msgs,editDocente,:form_docentes:dtDocente,:form_docentes:dtSeleccionMaestriaEdit"/>
                                 </div>
-                            </div>-->
+                            </div>
                         </div>
                     </p:outputPanel>
                 </p:dialog>
@@ -274,12 +265,12 @@
                             <span class="ui-input-icon-left">
                                 <p:inputText placeholder="Buscar Maestría" value="#{docenteMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
                                 </p:inputText>
-                                <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-secondary" actionListener="#{docenteMB.buscarMaestria(docenteMB.listaMaestria,docenteMB.maestriaBusqueda.nombre)}" update=":form_docentes:dtSeleccionMaestriaEdit" process="dtSeleccionMaestriaEdit @this"/>
+                                <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-secondary" actionListener="#{docenteMB.buscarMaestria()}" update=":form_docentes:dtSeleccionMaestriaEdit" process="dtSeleccionMaestriaEdit @this"/>
                             </span>
                         </f:facet>
                         <p:column headerText="Acciones" style="width:6rem">
                             <p:selectBooleanCheckbox value="#{maestriaEdit.verifica}">
-                                <p:ajax listener="#{docenteMB.addMaestria(maestriaEdit)}" update=":form_docentes:dtMaestriacheck"/>
+                                <p:ajax listener="#{docenteMB.addEditMaestria(maestriaEdit)}" update=":form_docentes:dtEditMaestriacheck"/>
                             </p:selectBooleanCheckbox>
                         </p:column>
                         <p:column headerText="Nombre Maestría" style="text-align: justify">

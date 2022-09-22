@@ -75,15 +75,25 @@ public class DocenteDAO {
         }
     }
 
-    public int editarDocente(Docente docent) {
+    public int editarDocente(Docente docent, List<Maestria> maestrias) {
         int mensaje = 0;
-        sentencia = String.format("SELECT public.\"actualizarDocente\"(\n"
+        String json = "[";
+        for (Maestria datos : maestrias) {
+            json += "{\n"
+                    + "  \"idMaestria\": " + datos.getIdMaestria()
+                    + ",  \"idDocente\": " + docent.getId_docente()
+                    + "},";
+        }
+        json = json.substring(0, json.length() - 1);
+        json += "]";
+        sentencia = String.format("SELECT public.\"actualizarDocenteJson\"(\n"
                 + "	" + docent.getId_docente() + ", \n"
                 + "	'" + docent.getNombre_docente() + "', \n"
                 + "	'" + docent.getApellido_docente() + "', \n"
                 + "	'" + docent.getCedula_docente() + "', \n"
                 + "	'" + docent.getTelefono_docente() + "', \n"
-                + "	'" + docent.getCorreo_docente() + "'\n"
+                + "	'" + docent.getCorreo_docente() + "',\n"
+                + "	'" + json+ "'\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);

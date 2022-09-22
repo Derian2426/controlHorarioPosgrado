@@ -20,6 +20,13 @@ public class Modulo {
     public Modulo() {
     }
 
+    public Modulo(int idMateria, String nombreMateria, String descripcion) {
+        this.idMateria = idMateria;
+        this.nombreMateria = nombreMateria;
+        this.descripcion = descripcion;
+        
+    }
+
     public Modulo(int idMateria, String nombreMateria, String descripcion, float hora_materia) {
         this.idMateria = idMateria;
         this.nombreMateria = nombreMateria;

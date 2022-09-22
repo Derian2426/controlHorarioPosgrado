@@ -42,6 +42,7 @@ public class MaestriaMBeans {
     List<Maestria> busquedaMaestriaAux;
     private List<Maestria> listaMaestriaPeriodo;
     List<Maestria> busquedaMaestriaAuxP;
+    
 
     public MaestriaMBeans() {
         maestria = new Maestria();
@@ -155,6 +156,17 @@ public class MaestriaMBeans {
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+    }
+    
+    public void actualizaTiempo(){
+        float tiempoAcumulado=0;
+        for(Modulo total:listaModulos){
+            if(total.getHora_materia()<0){
+                total.setHora_materia(total.getHora_materia()*-1);
+            }
+            tiempoAcumulado+=total.getHora_materia();
+        }
+        integracionMaestria.setTiempoMaestria(tiempoAcumulado);
     }
 
     public void onRowEdit(RowEditEvent<Maestria> event) {
@@ -291,8 +303,10 @@ public class MaestriaMBeans {
                 showWarn("Seleccione una Maestría.");
             } else if (listaModulos.size() < 1) {
                 showWarn("Seleccione al menos un módulo.");
+            }if(!verificaHoras()){
+                showWarn("Ingrese las horas en los módulos.");
             }
-            if (maestriaDAO.registrarIntegracionModulo(integracionMaestria, listaModulos) > 0) {
+            else if (maestriaDAO.registrarIntegracionModulo(integracionMaestria, listaModulos) > 0) {
                 showInfo("Integración de Módulos registrado con éxito.");
                 integracionMaestria = new Maestria();
                 listaModulos = new ArrayList<>();
@@ -302,6 +316,7 @@ public class MaestriaMBeans {
                 maestriaBusqueda = new Maestria();
                 listaMaestria = busquedaMaestriaAux;
                 listaMaestriaxModulo = maestriaDAO.getListaMaestriaxModulo();
+                listaMaestriaPeriodo = maestriaDAO.getListaMaestria_Periodo();
                 PrimeFaces.current().executeScript("PF('listadoModuloMaestria').hide()");
                 llenarLista();
             } else {
@@ -310,6 +325,14 @@ public class MaestriaMBeans {
         } catch (Exception e) {
             showWarn("Error" + e.getMessage());
         }
+    }
+    public boolean verificaHoras(){
+        boolean verifica=true;
+        for(Modulo modulo:listaModulos){
+            if(modulo.getHora_materia()<1)
+                verifica=false;
+        }
+        return verifica;
     }
 
     public void llenarLista() {

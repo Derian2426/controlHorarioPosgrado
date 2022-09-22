@@ -14,25 +14,38 @@
         <div class="card ">
             <h:form id="form_maestria">
                 <p:growl id="msgs" showDetail="true"/>
-                <p:toolbar>
-                    <p:toolbarGroup>
-                        <div class="p-d-flex p-jc-between p-ai-center">
-                            <p:commandButton value="Nueva Maestría" type="button" icon="pi pi-plus" onclick="PF('dlgMaestria').show()"  style="margin-right: 1vh;"/>
-                            <p:commandButton value="Listado de Maestrías" type="button" icon="pi pi-list" onclick="PF('listadoMaestria').show()" style="margin-right: 1vh;" update=":form_maestria:dtMaestrias"/>
-                            <p:commandButton value="Nuevo Módulo" type="button" icon="pi pi-plus" onclick="PF('dlgModulo').show()" style="margin-right: 1vh;"/>
-                            <p:commandButton value="Listado de Módulos" type="button" icon="pi pi-list" onclick="PF('listadoModulo').show()" style="margin-right: 1vh;"/>
-                            <p:commandButton value="Integración de Módulos" type="button" icon="pi pi-book" onclick="PF('listadoModuloMaestria').show()" style="margin-right: 1vh;"/>
-                            <p:commandButton value="Planificación Periodo" type="button" icon="pi pi-calendar-plus" onclick="PF('dlgPlanificacion').show()" style="margin-right: 1vh;"/>
-                        </div>
-                    </p:toolbarGroup>
 
-                </p:toolbar>
+                <div class="card">
+                    <p:tabMenu activeIndex="#{param.i}">
+                        <p:menuitem value="Inicio" icon="pi pi-fw pi-home">
+                            <f:param name="i" value="0"/>
+                        </p:menuitem>
+                        <p:menuitem value="Nueva Maestría" icon="pi pi-plus" onclick="PF('dlgMaestria').show()" >
+                            <f:param name="i" value="1"/>
+                        </p:menuitem>
+                        <p:menuitem value="Listado de Maestrías" icon="pi pi-list" onclick="PF('listadoMaestria').show()">
+                            <f:param name="i" value="2"/>
+                        </p:menuitem>
+                        <p:menuitem value="Nuevo Módulo" icon="pi pi-plus" onclick="PF('dlgModulo').show()">
+                            <f:param name="i" value="3"/>
+                        </p:menuitem>
+                        <p:menuitem value="Listado de Módulos" icon="pi pi-list" onclick="PF('listadoModulo').show()">
+                            <f:param name="i" value="4"/>
+                        </p:menuitem>
+                        <p:menuitem value="Integración de Módulos" icon="pi pi-book" onclick="PF('listadoModuloMaestria').show()">
+                            <f:param name="i" value="5"/>
+                        </p:menuitem>
+                        <p:menuitem value="Planificación Periodo" icon="pi pi-calendar-plus" onclick="PF('dlgPlanificacion').show()">
+                            <f:param name="i" value="6"/>
+                        </p:menuitem>
+                    </p:tabMenu>
+                </div>
                 <div class="card">
                     <p:toolbar>
                         <p:toolbarGroup>
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 <span style="font-weight: bold; margin-right: 6px; 
-                                      font-size: 24px">Programas de maestría</span>
+                                      font-size: 24px">Programas de maestrías</span>
                             </div>
                         </p:toolbarGroup>
                     </p:toolbar>
@@ -216,10 +229,6 @@
                                 <p:outputLabel value="Descripción:"/>
                                 <p:inputTextarea maxlength="100" rows="5" cols="6" value="#{moduloMB.modulo.descripcion}"/>
                             </div>
-                            <div class="p-field p-col-12 p-md-12">
-                                <p:outputLabel value="Número de horas:"/>
-                                <p:inputNumber maxlength="10" value="#{moduloMB.modulo.hora_materia}"/>
-                            </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{moduloMB.registrarModulo()}"
                                                  update=":form_maestria:msgs,nuevoModulo,:form_maestria:dtModulo,:form_maestria:dtSeleccionModulo"/>
@@ -267,16 +276,6 @@
                                     </f:facet>
                                 </p:cellEditor>
                             </p:column>
-                            <p:column headerText="Horas" style="text-align: justify">
-                                <p:cellEditor>
-                                    <f:facet name="output">
-                                        <h:outputText value="#{modulo.hora_materia}"/>
-                                    </f:facet>
-                                    <f:facet name="input">
-                                        <p:inputNumber value="#{modulo.hora_materia}" maxlength="10" style="width:100%" label="Name"/>
-                                    </f:facet>
-                                </p:cellEditor>
-                            </p:column>
                             <p:column headerText="Acciones" style="width:6rem">
                                 <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
                             </p:column>
@@ -317,7 +316,9 @@
                                     <h:outputText value="#{modulocheck.descripcion}"/>
                                 </p:column>
                                 <p:column headerText="Tiempo" style="text-align: justify">
-                                    <h:outputText value="#{modulocheck.hora_materia}"/>
+                                    <p:inputNumber value="#{modulocheck.hora_materia}">
+                                        <p:ajax event="keyup" update=":form_maestria:nuevaIntegracionModulo" process="@this" listener="#{maestriaMB.actualizaTiempo()}"/>
+                                    </p:inputNumber>
                                 </p:column>
                                 <!-- comment 
                                 <p:column headerText="Acciones" style="text-align: justify">
@@ -399,9 +400,6 @@
 
                         <p:column headerText="Descripción" style="text-align: justify">
                             <h:outputText value="#{modulo.descripcion}"/>
-                        </p:column>
-                        <p:column headerText="Tiempo" style="text-align: justify">
-                            <h:outputText value="#{modulo.hora_materia}"/>
                         </p:column>
                     </p:dataTable>
                 </p:dialog>

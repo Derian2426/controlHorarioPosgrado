@@ -32,7 +32,7 @@ public class ModuloDAO {
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                listadoMaestria.add(new Modulo(resultSet.getInt("_id_materia"), resultSet.getString("_nombre_materia"), resultSet.getString("_descripcion"),resultSet.getFloat("_hora")));
+                listadoMaestria.add(new Modulo(resultSet.getInt("_id_materia"), resultSet.getString("_nombre_materia"), resultSet.getString("_descripcion")));
             }
             return listadoMaestria;
         } catch (SQLException e) {
@@ -46,8 +46,7 @@ public class ModuloDAO {
         int mensaje = 0;
         sentencia = String.format("SELECT public.\"registrarModulo\"(\n"
                 + "	'" + modulo.getNombreMateria() + "', \n"
-                + "	'" + modulo.getDescripcion() + "', \n"
-                + "	" + modulo.getHora_materia() + "\n"
+                + "	'" + modulo.getDescripcion() + "' \n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
@@ -68,7 +67,6 @@ public class ModuloDAO {
                 + "	"+modulo.getIdMateria()+", \n"
                 + "	'"+modulo.getNombreMateria()+"', \n"
                 + "	'"+modulo.getDescripcion()+"', \n"
-                + "	"+modulo.getHora_materia()+"\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);

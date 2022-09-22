@@ -140,7 +140,8 @@ public class MaestriaDAO {
             for (Modulo modulo : listaModulos) {
                 sentencia += "{\n"
                         + "  \"idMatera\": " + modulo.getIdMateria() + ",\n"
-                        + "  \"idMaestria\": " + integracionMaestria.getIdMaestria() + "\n"
+                        + "  \"idMaestria\": " + integracionMaestria.getIdMaestria() + ",\n"
+                        + "  \"hora\": " + modulo.getHora_materia() + "\n"
                         + "},";
             }
             sentencia = sentencia.substring(0, sentencia.length() - 1);

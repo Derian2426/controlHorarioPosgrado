@@ -72,8 +72,6 @@ public class ModuloMBeans {
                 showWarn("Ingrese un nombre al módulo");
             } else if ("".equals(modulo.getDescripcion())) {
                 showWarn("Ingrese una descripción al módulo");
-            } else if (modulo.getHora_materia() < 1) {
-                showWarn("Ingrese el tiempo que tardara el módulo en terminar.");
             } else {
                 int resultadoRegistro = moduloDAO.registrarModulo(modulo);
                 if (resultadoRegistro > 0) {
@@ -98,11 +96,9 @@ public class ModuloMBeans {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
             } else if ("".equals(event.getObject().getDescripcion())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            } else if (event.getObject().getHora_materia() < 1) {
-                showWarn("No se puede modificar el registro porque el campo esta vacio o es un número negativo.");
-            } else {
+            }else {
                 Modulo editModulo = new Modulo(event.getObject().getIdMateria(),
-                        event.getObject().getNombreMateria(), event.getObject().getDescripcion(), event.getObject().getHora_materia());
+                        event.getObject().getNombreMateria(), event.getObject().getDescripcion());
                 int resultadoRegistro = moduloDAO.editarModulo(editModulo);
                 if (resultadoRegistro > 0) {
                     showInfo("Se actualizo con éxito, " + editModulo.getNombreMateria().trim());

@@ -222,7 +222,7 @@
                                 </div>
                                 <div class="p-field p-col-12 p-md-6">
                                     <p:outputLabel value="." style="color: white"/>
-                                    <p:commandButton value="Asignar Maestrías" icon="pi pi-search" styleClass="ui-button-secondary"  onclick="PF('listMaestriaSeleccion').show()"/>
+                                    <p:commandButton value="Asignar Maestrías" icon="pi pi-search" styleClass="ui-button-secondary"  onclick="PF('listMaestriaSeleccionEdit').show()"/>
                                 </div>
 
                                 <p:dataTable id="dtEditMaestriacheck" var="editamaestria" value="#{docenteMB.editListMaestria}" editable="true" paginatorPosition="bottom"
@@ -264,6 +264,32 @@
                             </div>-->
                         </div>
                     </p:outputPanel>
+                </p:dialog>
+                <!-- Lista editar los docentes -->
+                <p:dialog header="Seleccione las Maestrías" widgetVar="listMaestriaSeleccionEdit" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
+                    <p:dataTable id="dtSeleccionMaestriaEdit" var="maestriaEdit" value="#{docenteMB.listaMaestria}" editable="true" paginatorPosition="bottom"
+                                 style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                 emptyMessage="No se encontro la maestría">
+                        <f:facet name="header">
+                            <span class="ui-input-icon-left">
+                                <p:inputText placeholder="Buscar Maestría" value="#{docenteMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
+                                </p:inputText>
+                                <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-secondary" actionListener="#{docenteMB.buscarMaestria(docenteMB.listaMaestria,docenteMB.maestriaBusqueda.nombre)}" update=":form_docentes:dtSeleccionMaestriaEdit" process="dtSeleccionMaestriaEdit @this"/>
+                            </span>
+                        </f:facet>
+                        <p:column headerText="Acciones" style="width:6rem">
+                            <p:selectBooleanCheckbox value="#{maestriaEdit.verifica}">
+                                <p:ajax listener="#{docenteMB.addMaestria(maestriaEdit)}" update=":form_docentes:dtMaestriacheck"/>
+                            </p:selectBooleanCheckbox>
+                        </p:column>
+                        <p:column headerText="Nombre Maestría" style="text-align: justify">
+                            <h:outputText value="#{maestriaEdit.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="Descripción" style="text-align: justify">
+                            <h:outputText value="#{maestriaEdit.descripcion}"/>
+                        </p:column>
+                    </p:dataTable>
                 </p:dialog>
             </h:form>
         </div>

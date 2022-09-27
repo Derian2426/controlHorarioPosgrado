@@ -431,6 +431,8 @@ public class HorarioMBeans {
     }
 
     public void onDateSelect(SelectEvent<LocalDateTime> selectEvent) {
+        //Quitar si no funciona
+        tiempoModulo = new TiempoModulo();
         if (integracionMaestria.getIdMaestria() < 1) {
             showWarn("Seleccione una de las maestría.");
         } else if ("".equals(integracionMaestria.getDescripcion())) {

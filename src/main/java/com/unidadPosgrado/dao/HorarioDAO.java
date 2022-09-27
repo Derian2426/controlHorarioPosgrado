@@ -13,6 +13,7 @@ import com.unidadPosgrado.modelo.TiempoModulo;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,7 +39,7 @@ public class HorarioDAO {
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                listadoDocente.add(new Docente(resultSet.getInt("_id_docente"), resultSet.getString("_nombre_docente"), resultSet.getString("_apellido_docente"),
+                listadoDocente.add(new Docente(resultSet.getInt("_id_docente"), resultSet.getString("_nombre_docente") + " " + resultSet.getString("_apellido_docente") + "-" + resultSet.getString("_cedula_docente"), resultSet.getString("_apellido_docente"),
                         resultSet.getString("_cedula_docente"), resultSet.getString("_telefono_docente"), resultSet.getString("_correo_docente"), resultSet.getBoolean("_estado")));
             }
             return listadoDocente;
@@ -96,13 +97,13 @@ public class HorarioDAO {
         }
     }
 
-    public List<TiempoModulo> registrarHorarioAsignaciones(Modulo modulo, Docente docente, Maestria maestria, TiempoModulo tiempoModulo, List<TiempoModulo> tiempo) {
+    public List<TiempoModulo> registrarHorarioAsignaciones(Modulo modulo, Docente docente, Maestria maestria, TiempoModulo tiempoModulo, List<Date> tiempo) {
         int mensaje = 0;
         List<TiempoModulo> listadoFecha = new ArrayList<>();
         String json = "[";
-        for (TiempoModulo moduloT : tiempo) {
+        for (Date moduloT : tiempo) {
             json += "{\n"
-                    + "  \"fechainicio\": \"" + moduloT.getFechaAsignacion() + "\"\n"
+                    + "  \"fechainicio\": \"" + moduloT + "\"\n"
                     + "},";
         }
         json = json.substring(0, json.length() - 1);
@@ -118,7 +119,7 @@ public class HorarioDAO {
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                listadoFecha.add(new TiempoModulo(resultSet.getInt("validacion"),resultSet.getDate("_fecharetorno")));
+                listadoFecha.add(new TiempoModulo(resultSet.getInt("validacion"), resultSet.getDate("_fecharetorno")));
             }
             return listadoFecha;
         } catch (SQLException e) {

@@ -11,146 +11,192 @@
     </ui:define>
     <ui:define name="content">
         <div class="card" style="position: initial">
-            <h:form id="form_horario">
+            <h:form id="form_horario"> 
+                <h:outputStylesheet library="webjars" name="primeflex/3.2.0/primeflex.min.css" />
+
                 <p:growl id="messages" showDetail="true"/>
-                <p:outputPanel id="nuevaPerido" class="ui-fluid">
-                    <div class="ui-fluid p-formgrid p-grid">
-                        <!-- Lado Izquierdo -->
-                        <p:toolbar style="width: 600px; height: 530px">
-                            <p:toolbarGroup style="width: 100%; margin-bottom: 200px">
+                <div class="card">
+                    <p:tabView id="planificacionHorario">
+                        <p:tab title="Planificación de Horarios">
 
-                                <div class="p-field p-md-12">
-                                    <span style="font-weight: bold; 
-                                          font-size: 24px">Planificación de Horarios</span>
+                            <p:outputPanel id="nuevaPerido" class="ui-fluid">
+                                <div class="card">
+                                    <div class="ui-fluid formgrid grid">
+                                        <div class="field col-12 md:col-6">
+                                            <p:toolbar>
+                                                <p:toolbarGroup>
+                                                    <p:staticMessage severity="info" summary="Informativo" detail="Planifique el perido por maestría en caso de no tener la maestría disponible para la planificaión del horario." style="width: 100%"/>
+                                                    <div class="p-field p-md-12">
+                                                        <span style="font-weight: bold; 
+                                                              font-size: 24px">Planificación de Horarios</span>
+                                                    </div>
+                                                    <div class="ui-fluid formgrid grid">
+                                                        <div class="field col-12 md:col-8">
+                                                            <p:outputLabel for="@next" value="Nombre Maestría" />
+                                                            <p:inputText maxlength="150" value="#{horarioMB.integracionMaestria.nombre}" readonly="true" style="margin-right: 1vh;"/>
+                                                        </div>
+                                                        <div class="field col-12 md:col-4">
+                                                            <p:outputLabel for="@next" value="." />
+                                                            <p:commandButton value="Buscar Maestría" 
+                                                                             styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestriaPeriodo').show()"/>
+                                                        </div>
+                                                        <div class="field col-12 md:col-12">
+                                                            <p:outputLabel value="Descripción:"/>
+                                                            <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.integracionMaestria.descripcion}" readonly="true"/>
+                                                        </div>
+                                                        <div class="field col-12 md:col-6">
+                                                            <p:outputLabel value="Fecha de inicio:"/>
+                                                            <p:calendar value="#{horarioMB.integracionMaestria.fechaInicio}" readonly="true"/>
+                                                        </div>
+                                                        <div class="field col-12 md:col-6">
+                                                            <p:outputLabel value="Fecha de finalización:"/>
+                                                            <p:calendar value="#{horarioMB.integracionMaestria.fechaFin}" readonly="true"/>
+                                                        </div>
+                                                    </div>
+                                                </p:toolbarGroup>
+                                            </p:toolbar>
+                                        </div>
+                                        <div class="field col-12 md:col-6">
+                                            <p:schedule timeZone="GMT-5" locale="es" id="calendarioAcademico" draggable="false" value="#{horarioMB.eventModel}" rightHeaderTemplate="dayGridMonth" 
+                                                        initialDate="#{horarioMB.periodo.fechaInicio}">
+                                                <p:ajax event="dateSelect" listener="#{horarioMB.onDateSelect}" update=":form_horario:planificacionHorario:nuevoDocenteAsignado,:form_horario:messages ,:form_horario:planificacionHorario:nuevaPerido,:form_horario:planificacionHorario:calendarioAcademico" process="nuevaPerido @this"/>
+                                                <p:ajax event="eventSelect" listener="#{horarioMB.onEventSelect}" update=":form_horario:planificacionHorario:editDocenteAsignado,:form_horario:messages ,:form_horario:planificacionHorario:nuevaPerido,:form_horario:planificacionHorario:calendarioAcademico" process="nuevaPerido @this"
+                                                        oncomplete="PF('seleccionEditFecha').show();"/>
+                                            </p:schedule>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="p-col-12 p-md-4">
-                                    <p:outputLabel value="Nombre Maestría"/>
+                            </p:outputPanel>
+                            <p:dialog header="Seleccione una de las  Maestrías" widgetVar="listMaestriaPeriodo" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
+                                <div class="card">
+                                    <p:dataTable id="dtSeleccionMaestriaPeriodo" var="maestrias" value="#{horarioMB.listaMaestria}" editable="true" paginatorPosition="bottom"
+                                                 style="margin-bottom:20px" reflow="true" rows="2" paginator="true"
+                                                 emptyMessage="No se encontro la maestría">
+                                        <f:facet name="header">
+                                            <span class="ui-input-icon-left">
+                                                <p:inputText placeholder="Buscar Maestría" value="#{horarioMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
+                                                </p:inputText>
+                                                <p:commandButton icon="pi pi-search" update=":form_horario:planificacionHorario:dtSeleccionMaestriaPeriodo" styleClass="rounded-button" actionListener="#{horarioMB.buscarMaestria()}" process="dtSeleccionMaestriaPeriodo @this"/>
+                                            </span>
+                                        </f:facet>
+                                        <p:column headerText="Acciones" style="width:6rem">
+                                            <p:commandButton
+                                                class="rounded-button"
+                                                icon="pi pi-check">
+                                                <p:ajax listener="#{horarioMB.llenaMaestriaPeriodo(maestrias)}" 
+                                                        update=":form_horario:planificacionHorario:nuevaPerido,:form_horario:messages,:form_horario:planificacionHorario:nuevoDocenteAsignado,:form_horario:planificacionHorario:calendarioAcademico"
+                                                        oncomplete="PF('listMaestriaPeriodo').hide()"/>
+                                            </p:commandButton>
+                                        </p:column>
+                                        <p:column headerText="Nombre Maestría" style="text-align: justify">
+                                            <h:outputText value="#{maestrias.nombre}"/>
+                                        </p:column>
+                                        <p:column headerText="Fecha Inicio" style="text-align: justify">
+                                            <h:outputText value="#{maestrias.fechaInicio}"/>
+                                        </p:column>
+                                        <p:column headerText="Fecha Fin" style="text-align: justify">
+                                            <h:outputText value="#{maestrias.fechaFin}"/>
+                                        </p:column>
+                                    </p:dataTable>
                                 </div>
-                                <div class="p-d-flex p-md-12">
-                                    <p:inputText maxlength="150" value="#{horarioMB.integracionMaestria.nombre}" readonly="true" style="margin-right: 1vh;"/>
-                                    <p:commandButton value="Buscar Maestría" 
-                                                     styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestriaPeriodo').show()"/>
-                                </div>
-
-                                <div class="p-field p-col-12 p-md-12">
-                                    <p:outputLabel value="Descripción:"/>
-                                    <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.integracionMaestria.descripcion}" readonly="true"/>
-                                </div>
-                                <div class="p-md-12">
-                                    <p:outputLabel value="Fecha de inicio:"/>
-                                    <p:outputLabel value="Fecha de finalización:" style="margin-left:29vh;"/>
-                                </div>
-
-                                <div class="p-d-flex p-md-12">
-                                    <p:calendar value="#{horarioMB.integracionMaestria.fechaInicio}" style="margin-right: 1vh;" readonly="true"/>
-                                    <p:calendar value="#{horarioMB.integracionMaestria.fechaFin}" readonly="true"/>
-                                </div>
-                            </p:toolbarGroup>
-                        </p:toolbar>
-
-
-                        <!-- Lado Derecho -->
-
-                        <div class="p-field p-col-12 p-md-6">
-                            <p:schedule timeZone="GMT-5" locale="es" id="calendarioAcademico" draggable="false" value="#{horarioMB.eventModel}" rightHeaderTemplate="dayGridMonth" 
-                                        initialDate="#{horarioMB.periodo.fechaInicio}">
-                                <p:ajax event="dateSelect" listener="#{horarioMB.onDateSelect}" update=":form_horario:nuevoDocenteAsignado,:form_horario:messages ,:form_horario:nuevaPerido, calendarioAcademico" process="nuevaPerido @this"/>
-                                <p:ajax event="eventSelect" listener="#{horarioMB.onEventSelect}" update=":form_horario:editDocenteAsignado,:form_horario:messages ,:form_horario:nuevaPerido, calendarioAcademico" process="nuevaPerido @this"
-                                        oncomplete="PF('seleccionEditFecha').show();"/>
-                            </p:schedule>
-                        </div>
-
-                    </div>
-                </p:outputPanel>
+                            </p:dialog>
+                            <p:dialog widgetVar="seleccionFecha" header="Asignación Horario" showEffect="fade" height="50%" width="50%" modal="true" responsive="true">
+                                <p:outputPanel id="nuevoDocenteAsignado" class="ui-fluid">
+                                    <p:outputLabel value="Módulos" for="@next" styleClass="p-text-bold"/>
+                                    <p:selectOneMenu editable="false" value="#{horarioMB.modulo.idMateria}" disabled="#{horarioMB.estadoAsignacion}">
+                                        <f:selectItem itemLabel="Seleccione un Módulo" noSelectionOption="true"/>
+                                        <f:selectItems value="#{horarioMB.listaModulo}" var="moduloAsignado" 
+                                                       itemLabel="#{moduloAsignado.nombreMateria}" 
+                                                       itemValue="#{moduloAsignado.idMateria}"></f:selectItems>
+                                    </p:selectOneMenu>
+                                    <p:outputLabel value="Docentes" for="@next" styleClass="p-text-bold"/>
+                                    <p:selectOneMenu editable="false" disabled="#{horarioMB.estadoAsignacion}" value="#{horarioMB.docente.id_docente}">
+                                        <f:selectItem itemLabel="Seleccione un Docente" noSelectionOption="true"/>
+                                        <f:selectItems value="#{horarioMB.listaDocente}" var="docenteAsignado" 
+                                                       itemLabel="#{docenteAsignado.nombre_docente}" 
+                                                       itemValue="#{docenteAsignado.id_docente}"></f:selectItems>
+                                        <p:ajax listener="#{horarioMB.obtenerValidacionHorario()}" update=":form_horario:planificacionHorario:nuevoDocenteAsignado" process="nuevoDocenteAsignado @this"/>
+                                    </p:selectOneMenu>
+                                    <p:outputLabel value="Descripción:" styleClass="p-text-bold"/>
+                                    <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.tiempoModulo.descripcion}" disabled="#{horarioMB.estadoAsignacion}"/>
+                                    <p:outputLabel value="Fecha de asignación:" styleClass="p-text-bold"/>
+                                    <p:datePicker value="#{horarioMB.tiempoModulo.fechaAsignacion}" pattern="yyyy/dd/MM" style="margin-bottom: 1vh;" disabled="true"/>
+                                    
 
 
-                <p:dialog header="Seleccione una de las  Maestrías" widgetVar="listMaestriaPeriodo" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
-                    <div class="card">
-                        <p:dataTable id="dtSeleccionMaestriaPeriodo" var="maestrias" value="#{horarioMB.listaMaestria}" editable="true" paginatorPosition="bottom"
-                                     style="margin-bottom:20px" reflow="true" rows="2" paginator="true"
-                                     emptyMessage="No se encontro la maestría">
-                            <f:facet name="header">
-                                <span class="ui-input-icon-left">
-                                    <p:inputText placeholder="Buscar Maestría" value="#{horarioMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
-                                    </p:inputText>
-                                    <p:commandButton icon="pi pi-search" update=":form_horario:dtSeleccionMaestriaPeriodo" styleClass="rounded-button" actionListener="#{horarioMB.buscarMaestria()}" process="dtSeleccionMaestriaPeriodo @this"/>
-                                </span>
-                            </f:facet>
-                            <p:column headerText="Acciones" style="width:6rem">
-                                <p:commandButton
-                                    class="rounded-button"
-                                    icon="pi pi-check">
-                                    <p:ajax listener="#{horarioMB.llenaMaestriaPeriodo(maestrias)}" 
-                                            update=":form_horario:nuevaPerido,:form_horario:messages,:form_horario:nuevoDocenteAsignado,:form_horario:calendarioAcademico"
-                                            oncomplete="PF('listMaestriaPeriodo').hide()"/>
 
-                                </p:commandButton>
-                            </p:column>
-                            <p:column headerText="Nombre Maestría" style="text-align: justify">
-                                <h:outputText value="#{maestrias.nombre}"/>
-                            </p:column>
-                            <p:column headerText="Fecha Inicio" style="text-align: justify">
-                                <h:outputText value="#{maestrias.fechaInicio}"/>
-                            </p:column>
-                            <p:column headerText="Fecha Fin" style="text-align: justify">
-                                <h:outputText value="#{maestrias.fechaFin}"/>
-                            </p:column>
-                        </p:dataTable>
-                    </div>
-                </p:dialog>
-                <p:dialog widgetVar="seleccionFecha" header="Asignación Horario" showEffect="fade" height="50%" width="50%" modal="true" responsive="true">
-                    <p:outputPanel id="nuevoDocenteAsignado" class="ui-fluid">
-                        <p:outputLabel value="Módulos" for="@next" styleClass="p-text-bold"/>
-                        <p:selectOneMenu editable="false" value="#{horarioMB.modulo.idMateria}" disabled="#{horarioMB.estadoAsignacion}">
-                            <f:selectItem itemLabel="Seleccione un Módulo" noSelectionOption="true"/>
-                            <f:selectItems value="#{horarioMB.listaModulo}" var="moduloAsignado" 
-                                           itemLabel="#{moduloAsignado.nombreMateria}" 
-                                           itemValue="#{moduloAsignado.idMateria}"></f:selectItems>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="Docentes" for="@next" styleClass="p-text-bold"/>
-                        <p:selectOneMenu editable="false" disabled="#{horarioMB.estadoAsignacion}" value="#{horarioMB.docente.id_docente}">
-                            <f:selectItem itemLabel="Seleccione una Docente" noSelectionOption="true"/>
-                            <f:selectItems value="#{horarioMB.listaDocente}" var="docenteAsignado" 
-                                           itemLabel="#{docenteAsignado.nombre_docente}" 
-                                           itemValue="#{docenteAsignado.id_docente}"></f:selectItems>
-                            <p:ajax listener="#{horarioMB.obtenerValidacionHorario()}" process="nuevoDocenteAsignado @this"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="Descripción:" styleClass="p-text-bold"/>
-                        <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.tiempoModulo.descripcion}" disabled="#{horarioMB.estadoAsignacion}"/>
-                        <p:outputLabel value="Fecha de asignación:" styleClass="p-text-bold"/>
-                        <p:datePicker value="#{horarioMB.tiempoModulo.fechaAsignacion}" pattern="yyyy/dd/MM" style="margin-bottom: 1vh;" disabled="true"/>
-                        <p:commandButton value="Asignar otra Fecha" action="#{horarioMB.confirm}" update=":form_horario:calendarioAcademico,:form_horario:nuevoDocenteAsignado,:form_horario:messages" styleClass="p-mr-2" style="margin-bottom: 1vh;">
-                            <p:confirm header="Confirmación" message="Esta seguro de que quiere asignar está fecha?
-                                       Se recuerda que una vez que se asigna una fecha no podra ser cambiada." icon="pi pi-exclamation-triangle"/>
-                        </p:commandButton>
-                        <p:commandButton action="#{horarioMB.registrarPeriodo()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" update=":form_horario:calendarioAcademico,:form_horario:nuevoDocenteAsignado,:form_horario:messages" style="margin-bottom: 1vh;"/>
+                                    <p:outputLabel value="Fechas disponibles para las asignaciones:" styleClass="p-text-bold"/>
+
+                                    <div class="ui-fluid formgrid grid">
+                                        <div class="field col-12 md:col-6">
+                                            <p:pickList id="pickList" value="#{horarioMB.tiempoHorario}" var="fechaPeriodo" itemLabel="#{fechaPeriodo}" itemValue="#{fechaPeriodo}">
+                                                <p:ajax event="transfer" listener="#{horarioMB.onTransfer}"/>
+                                            </p:pickList>
+                                        </div>
+                                        <div class="field col-12 md:col-6">
+                                            <div class="ui-fluid formgrid grid">
+                                                <div class="field col-12 md:col-12">
+                                                    <p:commandButton id="fechaBtnDocente" value="Fechas de asignaciones del docente" type="button" icon="pi pi-calendar" />
+                                                    <p:overlayPanel for="fechaBtnDocente" dynamic="true" style="width:25%">
+                                                        <p:dataTable var="fechaDocenteAsignada" value="#{horarioMB.listaVerificacionTiempo}" rows="5" paginator="true">
+                                                            <p:column headerText="Fecha de asignación">
+                                                                <h:outputText value="#{fechaDocenteAsignada.fechaAsignacion}"/>
+                                                            </p:column>
+                                                        </p:dataTable>
+                                                    </p:overlayPanel>
+                                                    <p:tooltip for="fechaBtnDocente" value="Puede visualizar las fechas que el docente ya tiene asignadas." showEffect="clip" hideEffect="fold" />
+                                                </div>
+                                                <div class="field col-12 md:col-12">
+                                                    <p:commandButton id="fechaBtnMaestria" value="Fechas de asignaciones de la maestría" type="button" icon="pi pi-calendar" />
+                                                    <p:overlayPanel for="fechaBtnMaestria" dynamic="true" style="width:25%">
+                                                        <p:dataTable var="fechaMaestriaAsignada" value="#{horarioMB.listaHorario}" rows="5" paginator="true">
+                                                            <p:column headerText="Maestría">
+                                                                <h:outputText value="#{horarioMB.integracionMaestria.nombre}"/>
+                                                            </p:column>
+                                                            <p:column headerText="Fecha de asignación">
+                                                                <h:outputText value="#{fechaMaestriaAsignada.fechaInicio}"/>
+                                                            </p:column>
+                                                        </p:dataTable>
+                                                    </p:overlayPanel>
+                                                    <p:tooltip for="fechaBtnMaestria" value="Puede visualizar las fechas que ya estan asignadas para la maestría." showEffect="clip" hideEffect="fold" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p:commandButton action="#{horarioMB.registrarPeriodo()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" update=":form_horario:planificacionHorario:calendarioAcademico,:form_horario:planificacionHorario:nuevoDocenteAsignado,:form_horario:messages" style="margin-bottom: 1vh;"/>
+                                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
+                                    </p:confirmDialog>
+                                </p:outputPanel>
+                            </p:dialog>
+                            <p:dialog widgetVar="seleccionEditFecha" header="Asignación Horario" showEffect="fade" height="50%" width="50%" modal="true" responsive="true">
+                                <p:outputPanel id="editDocenteAsignado" class="ui-fluid">
+                                    <p:outputLabel value="Módulo" for="@next" styleClass="p-text-bold"/>
+                                    <p:inputText value="#{horarioMB.modulo.nombreMateria}" readonly="true"/>
+                                    <p:outputLabel value="Docente" for="@next" styleClass="p-text-bold"/>
+                                    <p:inputText value="#{horarioMB.docente.nombre_docente}" readonly="true"/>
+                                    <p:outputLabel value="Descripción:" styleClass="p-text-bold"/>
+                                    <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.tiempoModulo.descripcion}" readonly="true"/>
+                                    <p:outputLabel value="Fecha de asignación:" styleClass="p-text-bold"/>
+                                    <p:datePicker value="#{horarioMB.tiempoModulo.fechaAsignacion}" pattern="yyyy/dd/MM" style="margin-bottom: 1vh;" disabled="true"/>
+                                </p:outputPanel>
+                            </p:dialog>
+                        </p:tab>
+                        <p:tab title="Horarios">
+                            Trabajando en mejoras
 
 
 
 
+                        </p:tab>
+                        <p:tab title="Configuración">
 
+                        </p:tab>
+                    </p:tabView>
+                </div>
 
-
-
-
-                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
-                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
-                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
-                        </p:confirmDialog>
-                    </p:outputPanel>
-                </p:dialog>
-                <p:dialog widgetVar="seleccionEditFecha" header="Asignación Horario" showEffect="fade" height="50%" width="50%" modal="true" responsive="true">
-                    <p:outputPanel id="editDocenteAsignado" class="ui-fluid">
-                        <p:outputLabel value="Módulo" for="@next" styleClass="p-text-bold"/>
-                        <p:inputText value="#{horarioMB.modulo.nombreMateria}" readonly="true"/>
-                        <p:outputLabel value="Docente" for="@next" styleClass="p-text-bold"/>
-                        <p:inputText value="#{horarioMB.docente.nombre_docente}" readonly="true"/>
-                        <p:outputLabel value="Descripción:" styleClass="p-text-bold"/>
-                        <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.tiempoModulo.descripcion}" readonly="true"/>
-                        <p:outputLabel value="Fecha de asignación:" styleClass="p-text-bold"/>
-                        <p:datePicker value="#{horarioMB.tiempoModulo.fechaAsignacion}" pattern="yyyy/dd/MM" style="margin-bottom: 1vh;" disabled="true"/>
-                    </p:outputPanel>
-                </p:dialog>
             </h:form>
         </div>
     </ui:define>

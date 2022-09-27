@@ -13,18 +13,26 @@ import com.unidadPosgrado.modelo.Modulo;
 import com.unidadPosgrado.modelo.Periodo;
 import com.unidadPosgrado.modelo.TiempoModulo;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.DualListModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 
@@ -37,6 +45,10 @@ public class HorarioMBeans {
     /**
      * Creates a new instance of HorarioMBeans
      */
+    private DualListModel<Date> tiempoHorario;
+    List<Date> horaSource;
+    List<Date> horaTarget;
+
     private ScheduleModel eventModel;
     private Periodo periodo;
     private Maestria integracionMaestria;
@@ -77,7 +89,11 @@ public class HorarioMBeans {
         listaVerificacionTiempo = new ArrayList<>();
         listaTiempoAsignados = new ArrayList<>();
         listaHorario = new ArrayList<>();
+        listaModulo = new ArrayList<>();
         aux = new ArrayList<>();
+        horaSource = new ArrayList<>();
+        horaTarget = new ArrayList<>();
+        tiempoHorario = new DualListModel<>(horaSource, horaTarget);
     }
 
     @PostConstruct
@@ -85,6 +101,7 @@ public class HorarioMBeans {
         eventModel = new DefaultScheduleModel();
         listaMaestria = maestriaDAO.getListaMaestriaPeriodo();
         busquedaMaestriaAux = listaMaestria;
+
     }
 
     public ScheduleModel getEventModel() {
@@ -201,16 +218,6 @@ public class HorarioMBeans {
 
     public void registrarPeriodo() {
         try {
-            if (!verificaTiempoAsignacion() && !verificaTiempoSeleccion()) {
-                listaTiempoModulo.add(tiempoModulo);
-                event = DefaultScheduleEvent.builder()
-                        .title(tiempoModulo.getDescripcion())
-                        .startDate(convertToLocalDateTimeViaInstant(tiempoModulo.getFechaAsignacion()))
-                        .endDate(convertToLocalDateTimeViaInstant(tiempoModulo.getFechaAsignacion()))
-                        .borderColor("orange")
-                        .build();
-                eventModel.addEvent(event);
-            }
             if ("".equals(integracionMaestria.getNombre()) || integracionMaestria.getNombre() == null) {
                 showWarn("Seleccione una maestría.");
             } else if ("".equals(integracionMaestria.getDescripcion())) {
@@ -221,7 +228,7 @@ public class HorarioMBeans {
                 showWarn("Seleccione una fecha de finaalización.");
             } else if (integracionMaestria.getFechaFin().before(integracionMaestria.getFechaInicio())) {
                 showWarn("La fecha no puede ser anterior a la fecha de inicio del Periodo.");
-            } else if (listaTiempoModulo.size() < 1) {
+            } else if (horaTarget.size() < 1) {
                 showWarn("Seleccione al menos una fecha para la asignación del docente.");
             } else if (modulo.getIdMateria() < 1) {
                 showWarn("Seleccione uno de los módulos.");
@@ -232,8 +239,7 @@ public class HorarioMBeans {
             } else {
                 String mensaje = "Estas fechas ya se encuentran asignadas -->";
                 int estado = -1;
-                aux = horarioDAO.registrarHorarioAsignaciones(modulo, docente, integracionMaestria, tiempoModulo, listaTiempoModulo);
-
+                aux = horarioDAO.registrarHorarioAsignaciones(modulo, docente, integracionMaestria, tiempoModulo, horaTarget);
                 for (TiempoModulo tm : aux) {
                     if (tm.getIdTiempo() == 1) {
                         mensaje += tm.getFechaAsignacion() + " ,";
@@ -260,6 +266,9 @@ public class HorarioMBeans {
                     listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
 
                     listaTiempoModulo = new ArrayList<>();
+                    horaSource = new ArrayList<>();
+                    horaTarget = new ArrayList<>();
+                    tiempoHorario = new DualListModel<>(horaSource, horaTarget);
                     PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
 
                 } else {
@@ -275,6 +284,10 @@ public class HorarioMBeans {
                     listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
                     listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
                     listaTiempoModulo = new ArrayList<>();
+                    
+                    horaSource = new ArrayList<>();
+                    horaTarget = new ArrayList<>();
+                    tiempoHorario = new DualListModel<>(horaSource, horaTarget);
                     PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
                     llenaFechasHorario();
                 }
@@ -376,6 +389,45 @@ public class HorarioMBeans {
 
     public void obtenerValidacionHorario() {
         listaVerificacionTiempo = horarioDAO.getListaValidacion(docente.getId_docente());
+        horaSource = getListaEntreFechas(integracionMaestria.getFechaInicio(), integracionMaestria.getFechaFin());
+        eliminaFechaRepetidas();
+        asignaFecha(tiempoModulo.getFechaAsignacion());
+        tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+    }
+
+    public void eliminaFechaRepetidas() {
+        for (TiempoModulo tiempo : listaVerificacionTiempo) {
+            for (Date tiempoDisponible : horaSource) {
+                if (tiempo.getFechaAsignacion().getDate() == tiempoDisponible.getDate()
+                        && tiempo.getFechaAsignacion().getMonth() == tiempoDisponible.getMonth()
+                        && tiempo.getFechaAsignacion().getDay() == tiempoDisponible.getDay()) {
+                    horaSource.remove(tiempoDisponible);
+                    break;
+                }
+            }
+        }
+        for (Maestria date : listaHorario) {
+            for (Date tiempoDisponible : horaSource) {
+                if (date.getFechaInicio().getDate() == tiempoDisponible.getDate()
+                        && date.getFechaInicio().getMonth() == tiempoDisponible.getMonth()
+                        && date.getFechaInicio().getDay() == tiempoDisponible.getDay()) {
+                    horaSource.remove(tiempoDisponible);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void asignaFecha(Date fecha) {
+        for (Date tiempoDisponible : horaSource) {
+            if (fecha.getDate() == tiempoDisponible.getDate()
+                    && fecha.getMonth() == tiempoDisponible.getMonth()
+                    && fecha.getDay() == tiempoDisponible.getDay()) {
+                horaTarget.add(tiempoDisponible);
+                horaSource.remove(tiempoDisponible);
+                break;
+            }
+        }
     }
 
     public void onDateSelect(SelectEvent<LocalDateTime> selectEvent) {
@@ -401,6 +453,19 @@ public class HorarioMBeans {
             tiempoModulo.setFechaAsignacion(convertToDateViaSqlTimestamp(selectEvent.getObject()));
             PrimeFaces.current().executeScript("PF('seleccionFecha').show()");
             estado = true;
+        }
+
+    }
+
+    public void verificaFecha(Date dateHorario) {
+        for (Date fecha : horaSource) {
+            if (dateHorario.getDate() == fecha.getDate() && dateHorario.getDay() == fecha.getDay()
+                    && dateHorario.getMonth() == fecha.getMonth()) {
+                horaTarget.add(dateHorario);
+                tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+                horaSource.remove(fecha);
+                break;
+            }
         }
 
     }
@@ -542,6 +607,63 @@ public class HorarioMBeans {
 
     }
 
+    public List<Date> getListaEntreFechas(Date fechaInicio, Date fechaFin) {
+        // Convertimos la fecha a Calendar, mucho más cómodo para realizar
+        // operaciones a las fechas
+        Calendar c1 = Calendar.getInstance();
+        c1.setTime(fechaInicio);
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(fechaFin);
+
+        // Lista donde se irán almacenando las fechas
+        List<Date> listaFechas = new ArrayList<Date>();
+
+        // Bucle para recorrer el intervalo, en cada paso se le suma un día.
+        while (!c1.after(c2)) {
+            listaFechas.add(c1.getTime());
+            c1.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return listaFechas;
+    }
+
+    public void onTransfer(TransferEvent event) {
+        SimpleDateFormat formato = new SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+        Date fechaDate = null;
+        for (Object item : event.getItems()) {
+            String fecha = item.toString();
+            System.out.println("");
+            try {
+                fechaDate = formato.parse(fecha);
+                if (!busquedaFechaSource(fechaDate)) {
+                    for (Date fechaTarget : horaTarget) {
+                        if (fechaTarget.getMonth() == fechaDate.getMonth() && fechaTarget.getDay() == fechaDate.getDay()
+                                && fechaTarget.getYear() == fechaDate.getYear()) {
+                            horaSource.add(fechaTarget);
+                            horaTarget.remove(fechaTarget);
+                            break;
+                        }
+                    }
+                }
+            } catch (ParseException ex) {
+                Logger.getLogger(HorarioMBeans.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public boolean busquedaFechaSource(Date fechaDate) {
+        boolean verifica = false;
+        for (Date fechaSource : horaSource) {
+            if (fechaSource.getMonth() == fechaDate.getMonth() && fechaSource.getDay() == fechaDate.getDay()
+                    && fechaSource.getYear() == fechaDate.getYear()) {
+                horaTarget.add(fechaSource);
+                horaSource.remove(fechaSource);
+                verifica = true;
+                break;
+            }
+        }
+        return verifica;
+    }
+
     public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
         return dateToConvert.toInstant()
                 .atZone(ZoneId.systemDefault())
@@ -563,6 +685,22 @@ public class HorarioMBeans {
 
     public void showError(String message) {
         addMessage(FacesMessage.SEVERITY_WARN, "Error", message);
+    }
+
+    public DualListModel<Date> getTiempoHorario() {
+        return tiempoHorario;
+    }
+
+    public void setTiempoHorario(DualListModel<Date> tiempoHorario) {
+        this.tiempoHorario = tiempoHorario;
+    }
+
+    public List<TiempoModulo> getListaVerificacionTiempo() {
+        return listaVerificacionTiempo;
+    }
+
+    public void setListaVerificacionTiempo(List<TiempoModulo> listaVerificacionTiempo) {
+        this.listaVerificacionTiempo = listaVerificacionTiempo;
     }
 
 }

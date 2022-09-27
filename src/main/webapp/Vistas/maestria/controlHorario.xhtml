@@ -121,7 +121,7 @@
                                     <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.tiempoModulo.descripcion}" disabled="#{horarioMB.estadoAsignacion}"/>
                                     <p:outputLabel value="Fecha de asignación:" styleClass="p-text-bold"/>
                                     <p:datePicker value="#{horarioMB.tiempoModulo.fechaAsignacion}" pattern="yyyy/dd/MM" style="margin-bottom: 1vh;" disabled="true"/>
-                                    
+
 
 
 
@@ -129,14 +129,16 @@
 
                                     <div class="ui-fluid formgrid grid">
                                         <div class="field col-12 md:col-6">
-                                            <p:pickList id="pickList" value="#{horarioMB.tiempoHorario}" var="fechaPeriodo" itemLabel="#{fechaPeriodo}" itemValue="#{fechaPeriodo}">
+                                            <p:pickList id="pickList" value="#{horarioMB.tiempoHorario}" var="fechaPeriodo" itemLabel="#{fechaPeriodo}" itemValue="#{fechaPeriodo}" responsive="true">
                                                 <p:ajax event="transfer" listener="#{horarioMB.onTransfer}"/>
+                                                <f:facet name="sourceCaption">Fechas disponibles</f:facet>
+                                                <f:facet name="targetCaption">Fechas asignadas</f:facet>
                                             </p:pickList>
                                         </div>
                                         <div class="field col-12 md:col-6">
                                             <div class="ui-fluid formgrid grid">
                                                 <div class="field col-12 md:col-12">
-                                                    <p:commandButton id="fechaBtnDocente" value="Fechas de asignaciones del docente" type="button" icon="pi pi-calendar" />
+                                                    <p:commandButton id="fechaBtnDocente" value="Fechas de asignaciones del docente" type="button" icon="pi pi-calendar"/>
                                                     <p:overlayPanel for="fechaBtnDocente" dynamic="true" style="width:25%">
                                                         <p:dataTable var="fechaDocenteAsignada" value="#{horarioMB.listaVerificacionTiempo}" rows="5" paginator="true">
                                                             <p:column headerText="Fecha de asignación">

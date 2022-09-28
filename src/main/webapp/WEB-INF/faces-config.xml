@@ -78,4 +78,9 @@
         <managed-bean-class>com.seguridad.controlador.RolMBeans</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>GeneradorHorarioMB</managed-bean-name>
+        <managed-bean-class>com.unidadPosgrado.controlador.GeneragorHorarioMBeans</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
 </faces-config>

@@ -13,7 +13,6 @@
         <div class="card" style="position: initial">
             <h:form id="form_horario"> 
                 <h:outputStylesheet library="webjars" name="primeflex/3.2.0/primeflex.min.css" />
-
                 <p:growl id="messages" showDetail="true"/>
                 <div class="card">
                     <p:tabView id="planificacionHorario">
@@ -101,6 +100,7 @@
                                 </div>
                             </p:dialog>
                             <p:dialog widgetVar="seleccionFecha" header="Asignación Horario" showEffect="fade" height="50%" width="50%" modal="true" responsive="true">
+                                <p:ajax event="close" listener="#{horarioMB.cerrarDialigo()}" update=":form_horario:planificacionHorario:nuevoDocenteAsignado"/>
                                 <p:outputPanel id="nuevoDocenteAsignado" class="ui-fluid">
                                     <p:outputLabel value="Módulos" for="@next" styleClass="p-text-bold"/>
                                     <p:selectOneMenu editable="false" value="#{horarioMB.modulo.idMateria}" disabled="#{horarioMB.estadoAsignacion}">
@@ -115,7 +115,7 @@
                                         <f:selectItems value="#{horarioMB.listaDocente}" var="docenteAsignado" 
                                                        itemLabel="#{docenteAsignado.nombre_docente}" 
                                                        itemValue="#{docenteAsignado.id_docente}"></f:selectItems>
-                                        <p:ajax listener="#{horarioMB.obtenerValidacionHorario()}" update=":form_horario:planificacionHorario:nuevoDocenteAsignado" process="nuevoDocenteAsignado @this"/>
+                                        <p:ajax listener="#{horarioMB.obtenerValidacionHorario}" update=":form_horario:planificacionHorario:nuevoDocenteAsignado" process="nuevoDocenteAsignado @this"/>
                                     </p:selectOneMenu>
                                     <p:outputLabel value="Descripción:" styleClass="p-text-bold"/>
                                     <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.tiempoModulo.descripcion}" disabled="#{horarioMB.estadoAsignacion}"/>
@@ -187,10 +187,39 @@
                             </p:dialog>
                         </p:tab>
                         <p:tab title="Horarios">
-                            Trabajando en mejoras
-                        </p:tab>
-                        <p:tab title="Configuración">
+                            <p:dataTable var="horario" value="#{GeneradorHorarioMB.listaMaestria}" rows="5" paginator="true" paginatorPosition="bottom">
+                                <f:facet name="header">
+                                    CALENDARIO ACADEMICO
+                                </f:facet>
 
+                                <p:column headerText="Nombre de la Maestría">
+                                    <h:outputText value="#{horario.nombre}" />
+                                </p:column>
+                                <p:column headerText="Fecha Inicio">
+                                    <h:outputText value="#{horario.fechaInicio}" />
+                                </p:column>
+                                <p:column headerText="Fecha Fin">
+                                    <h:outputText value="#{horario.fechaFin}" />
+                                </p:column>
+                                <p:column headerText="Estado" sortBy="#{horario.estado}">
+                                    <p:tag severity="success" value="#{horario.estado}" rendered="#{horario.estado eq 'Activo'}"/>
+                                    <p:tag severity="warning" value="#{horario.estado}" rendered="#{horario.estado eq 'Pendiente'}"/>
+                                    <p:tag severity="danger" value="#{horario.estado}" rendered="#{horario.estado eq 'Terminado'}"/>
+                                </p:column>
+                                <p:column headerText="Archivo">
+                                    <p:commandButton value="Descargar" type="button" icon="pi pi-download" styleClass="ui-button-outlined ui-button-success" />
+                                </p:column>
+                                <p:column headerText="Acciones">
+                                    <p:commandButton id="accionesHorario" value="Acciones" type="button" icon="pi pi-chevron-down" styleClass="ui-button-outlined" />
+                                    <p:menu overlay="true" trigger="accionesHorario" my="left top" at="left bottom">
+                                        <p:submenu label="Acciones">
+                                            <p:menuitem value="Detalle" icon="pi pi-file-o"/>
+                                            <p:menuitem value="Editar" icon="pi pi-pencil"/>
+
+                                        </p:submenu>
+                                    </p:menu>
+                                </p:column>
+                            </p:dataTable>
                         </p:tab>
                     </p:tabView>
                 </div>

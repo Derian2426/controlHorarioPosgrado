@@ -323,6 +323,14 @@ public class HorarioMBeans {
 
     }
 
+    public void cerrarDialigo() {
+        horaSource = new ArrayList<>();
+        horaTarget = new ArrayList<>();
+        tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+        listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+        listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+    }
+
     public List<TiempoModulo> verificaTiempo() {
         listaTiempoAsignados = new ArrayList<>();
         listaVerificacionTiempo = horarioDAO.getListaValidacion(docente.getId_docente());
@@ -388,6 +396,8 @@ public class HorarioMBeans {
     }
 
     public void obtenerValidacionHorario() {
+        horaTarget = new ArrayList<>();
+        horaSource = new ArrayList<>();
         listaVerificacionTiempo = horarioDAO.getListaValidacion(docente.getId_docente());
         horaSource = getListaEntreFechas(integracionMaestria.getFechaInicio(), integracionMaestria.getFechaFin());
         eliminaFechaRepetidas();
@@ -419,15 +429,45 @@ public class HorarioMBeans {
     }
 
     public void asignaFecha(Date fecha) {
-        for (Date tiempoDisponible : horaSource) {
-            if (fecha.getDate() == tiempoDisponible.getDate()
-                    && fecha.getMonth() == tiempoDisponible.getMonth()
-                    && fecha.getDay() == tiempoDisponible.getDay()) {
-                horaTarget.add(tiempoDisponible);
-                horaSource.remove(tiempoDisponible);
+        if (!busquedaFechaTarget(fecha)) {
+            for (Date tiempoDisponible : horaSource) {
+                if (fecha.getYear() == tiempoDisponible.getYear()
+                        && fecha.getMonth() == tiempoDisponible.getMonth()
+                        && fecha.getDay() == tiempoDisponible.getDay()) {
+                    horaTarget.add(tiempoDisponible);
+                    horaSource.remove(tiempoDisponible);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    public boolean busquedaFechaTarget(Date fechaDate) {
+        boolean verifica = false;
+        for (Date fechaSource : horaTarget) {
+            if (fechaSource.getMonth() == fechaDate.getMonth() && fechaSource.getDay() == fechaDate.getDay()
+                    && fechaSource.getYear() == fechaDate.getYear()) {
+                if (busquedaFecha(fechaDate)) {
+                    horaSource.remove(fechaSource);
+                }
+                verifica = true;
                 break;
             }
         }
+        return verifica;
+    }
+
+    public boolean busquedaFecha(Date fechaDate) {
+        boolean verifica = false;
+        for (Date fechaSource : horaSource) {
+            if (fechaSource.getMonth() == fechaDate.getMonth() && fechaSource.getDay() == fechaDate.getDay()
+                    && fechaSource.getYear() == fechaDate.getYear()) {
+                verifica = true;
+                break;
+            }
+        }
+        return verifica;
     }
 
     public void onDateSelect(SelectEvent<LocalDateTime> selectEvent) {

@@ -165,4 +165,37 @@ public class HorarioDAO {
         }
     }
 
+    public List<Maestria> getListaMaestriaPeriodo() {
+        String estado="";
+        List<Maestria> listadoMaestria = new ArrayList<>();
+        sentencia = String.format("SELECT * from public.\"getListaHorariosMaestrias\"()");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                if(null != resultSet.getString("_estado"))
+                    switch (resultSet.getString("_estado")) {
+                    case "A":
+                        estado="Activo";
+                        break;
+                    case "T":
+                        estado="Terminado";
+                        break;
+                    case "P":
+                        estado="Pendiente";
+                        break;
+                    default:
+                        estado="Activo";
+                        break;
+                }
+                listadoMaestria.add(new Maestria(resultSet.getInt("_id_curso"), resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"),
+                        resultSet.getDate("_fecha_inicio"), resultSet.getDate("_fecha_fin"), estado));
+            }
+            return listadoMaestria;
+        } catch (SQLException e) {
+            return listadoMaestria;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
 }

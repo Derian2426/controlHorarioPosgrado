@@ -24,8 +24,18 @@ public class Maestria {
     private Date fechaFin;
     private int idDocente;
     private String nombreDocente;
+    private String estado;
 
     public Maestria() {
+    }
+
+    public Maestria(int idCurso, int idMaestria, String nombre, Date fechaInicio, Date fechaFin, String estado) {
+        this.idCurso = idCurso;
+        this.idMaestria = idMaestria;
+        this.nombre = nombre;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.estado = estado;
     }
 
     public Maestria(int idCurso, int idMaestria, String nombre, String nombreParalelo, String descripcion, Date fechaInicio, int idDocente, String nombreDocente) {
@@ -148,6 +158,14 @@ public class Maestria {
 
     public void setNombreDocente(String nombreDocente) {
         this.nombreDocente = nombreDocente;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
 }

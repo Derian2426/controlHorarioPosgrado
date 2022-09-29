@@ -91,41 +91,42 @@ public class GeneragorHorarioMBeans {
         int columna = 4;
         int contador=0;
         for (Date mes : mesesFormado) {
-            switch (mes.getMonth()) {
-                case 1:
+            int mesI=mes.getMonth();
+            switch (mesI) {
+                case 0:
                     fila.createCell(columna).setCellValue("ENERO");
                     break;
-                case 2:
+                case 1:
                     fila.createCell(columna).setCellValue("FEBRERO");
                     break;
-                case 3:
+                case 2:
                     fila.createCell(columna).setCellValue("MARZO");
                     break;
-                case 4:
+                case 3:
                     fila.createCell(columna).setCellValue("ABRIL");
                     break;
-                case 5:
+                case 4:
                     fila.createCell(columna).setCellValue("MAYO");
                     break;
-                case 6:
+                case 5:
                     fila.createCell(columna).setCellValue("JUNIO");
                     break;
-                case 7:
+                case 6:
                     fila.createCell(columna).setCellValue("JULIO");
                     break;
-                case 8:
+                case 7:
                     fila.createCell(columna).setCellValue("AGOSTO");
                     break;
-                case 9:
+                case 8:
                     fila.createCell(columna).setCellValue("SEPTIEMBRE");
                     break;
-                case 10:
+                case 9:
                     fila.createCell(columna).setCellValue("OCTUBRE");
                     break;
-                case 11:
+                case 10:
                     fila.createCell(columna).setCellValue("NOVIEMBRE");
                     break;
-                case 12:
+                case 11:
                     fila.createCell(columna).setCellValue("DICIEMBRE");
                     contador++;
                     if(anioFormato.size()>1){

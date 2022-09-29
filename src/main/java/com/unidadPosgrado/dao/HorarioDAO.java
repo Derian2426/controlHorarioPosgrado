@@ -130,9 +130,9 @@ public class HorarioDAO {
         }
     }
 
-    public List<TiempoModulo> getListaValidacion(int idDocente,Date fechaInicio,Date fechaFin) {
+    public List<TiempoModulo> getListaValidacion(int idDocente, Date fechaInicio, Date fechaFin) {
         List<TiempoModulo> listadoFecha = new ArrayList<>();
-        sentencia = String.format("SELECT public.\"validacionFechaHorario\"("+idDocente+", '"+fechaInicio+"', '"+fechaFin+"');");
+        sentencia = String.format("SELECT public.\"validacionFechaHorario\"(" + idDocente + ", '" + fechaInicio + "', '" + fechaFin + "');");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
@@ -212,6 +212,22 @@ public class HorarioDAO {
                 listadoModulo.add(new Horario(resultSet.getInt("_id_periodo"), resultSet.getInt("_id_curso"),
                         resultSet.getInt("_id_docente"), resultSet.getString("_nombre_materia"),
                         resultSet.getString("_nombre_docente"), resultSet.getFloat("_hora")));
+            }
+            return listadoModulo;
+        } catch (SQLException e) {
+            return listadoModulo;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public List<Horario> getListaAsignacionDocente(int idCurso, int idDocente) {
+        List<Horario> listadoModulo = new ArrayList<>();
+        sentencia = String.format("SELECT* from public.fecha_asignacion_docente("+idCurso+", "+idDocente+");");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoModulo.add(new Horario(resultSet.getDate("_fecha")));
             }
             return listadoModulo;
         } catch (SQLException e) {

@@ -5,6 +5,8 @@
  */
 package com.unidadPosgrado.modelo;
 
+import java.util.Date;
+
 /**
  *
  * @author HP
@@ -17,8 +19,13 @@ public class Horario {
     private String nombreModulo;
     private String nombreDocente;
     private float hora;
+    private Date fechaAsignacion;
 
     public Horario() {
+    }
+
+    public Horario(Date fechaAsignacion) {
+        this.fechaAsignacion = fechaAsignacion;
     }
 
     public Horario(int idPeriodo, int idCurso, int idDocente, String nombreModulo, String nombreDocente, float hora) {
@@ -76,6 +83,14 @@ public class Horario {
 
     public void setHora(float hora) {
         this.hora = hora;
+    }
+
+    public Date getFechaAsignacion() {
+        return fechaAsignacion;
+    }
+
+    public void setFechaAsignacion(Date fechaAsignacion) {
+        this.fechaAsignacion = fechaAsignacion;
     }
 
 }

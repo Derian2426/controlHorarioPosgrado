@@ -11,6 +11,7 @@ import com.unidadPosgrado.modelo.Maestria;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,11 +19,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.primefaces.component.export.ExcelOptions;
 
 /**
  *
@@ -33,11 +37,13 @@ public class GeneragorHorarioMBeans {
     HorarioDAO horarioDAO;
     private List<Maestria> listaMaestria;
     private List<Horario> listadoModulo;
+    private ExcelOptions excelOpt;
 
     public GeneragorHorarioMBeans() {
         horarioDAO = new HorarioDAO();
         listaMaestria = new ArrayList<>();
         listadoModulo = new ArrayList<>();
+        excelOpt = new ExcelOptions();
     }
 
     @PostConstruct
@@ -61,9 +67,22 @@ public class GeneragorHorarioMBeans {
         this.listadoModulo = listadoModulo;
     }
 
+    public ExcelOptions getExcelOpt() {
+        return excelOpt;
+    }
+
+    public void setExcelOpt(ExcelOptions excelOpt) {
+        this.excelOpt = excelOpt;
+    }
+
     public void generarArchivoExcel(int idCurso, String maestria, Date fechaInicio, Date fechaFin) {
+        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().
+                getResponse();
+        response.addHeader("Content-disposition", "attachment; filename=Planificacion" + maestria.toUpperCase() + ".xlsx");
+        response.setContentType("application/vnd.ms-excel");
         List<Date> mesesFormado;
         List<Date> anioFormato;
+
         listadoModulo = horarioDAO.getListaModulo(idCurso);
         Workbook libroExcel = new XSSFWorkbook();
         Sheet hojaNueva = (Sheet) libroExcel.createSheet("CRONOGRAMA " + maestria);
@@ -89,9 +108,9 @@ public class GeneragorHorarioMBeans {
         mesesFormado = getListaEntreFechas(fechaInicio, fechaFin);
         anioFormato = getListaEntreAños(fechaInicio, fechaFin);
         int columna = 4;
-        int contador=0;
+        int contador = 0;
         for (Date mes : mesesFormado) {
-            int mesI=mes.getMonth();
+            int mesI = mes.getMonth();
             switch (mesI) {
                 case 0:
                     fila.createCell(columna).setCellValue("ENERO");
@@ -129,8 +148,8 @@ public class GeneragorHorarioMBeans {
                 case 11:
                     fila.createCell(columna).setCellValue("DICIEMBRE");
                     contador++;
-                    if(anioFormato.size()>1){
-                        if(contador>1){
+                    if (anioFormato.size() > 1) {
+                        if (contador > 1) {
                             fila.createCell(contador).setCellValue(fechaFin.getYear());
                         }
                     }
@@ -153,16 +172,15 @@ public class GeneragorHorarioMBeans {
             orden++;
         }
         filaExcel = 0;
-
         try {
-            FileOutputStream fileOut = new FileOutputStream("C:\\Users\\HP\\Desktop\\backup_bdPosgrado\\Planificacion" + maestria.toUpperCase() + ".xlsx");
+            OutputStream fileOut= response.getOutputStream();
             libroExcel.write(fileOut);
-            fileOut.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(GeneragorHorarioMBeans.class.getName()).log(Level.SEVERE, null, ex);
+            response.getOutputStream().flush();
+            FacesContext.getCurrentInstance().responseComplete();
         } catch (IOException ex) {
             Logger.getLogger(GeneragorHorarioMBeans.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
 
     public List<Date> getListaEntreFechas(Date fechaInicio, Date fechaFin) {

@@ -209,7 +209,7 @@
                                     </p:column>
                                     <p:column headerText="Archivo">
                                         <p:commandButton value="Descargar" icon="pi pi-download" styleClass="ui-button-outlined ui-button-success" 
-                                                         actionListener="#{GeneradorHorarioMB.generarArchivoExcel(horario.idCurso,horario.nombre,horario.fechaInicio,horario.fechaFin)}"/>
+                                                         action="#{GeneradorHorarioMB.generarArchivoExcel(horario.idCurso,horario.nombre,horario.fechaInicio,horario.fechaFin)}" ajax="false"/>
                                     </p:column>
                                     <p:column headerText="Acciones">
                                         <p:commandButton id="accionesHorario" value="Acciones" type="button" icon="pi pi-chevron-down" styleClass="ui-button-outlined" />

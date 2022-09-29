@@ -187,39 +187,42 @@
                             </p:dialog>
                         </p:tab>
                         <p:tab title="Horarios">
-                            <p:dataTable var="horario" value="#{GeneradorHorarioMB.listaMaestria}" rows="5" paginator="true" paginatorPosition="bottom">
-                                <f:facet name="header">
-                                    CALENDARIO ACADEMICO
-                                </f:facet>
+                            <p:outputPanel id="HorarioGenerador" class="ui-fluid">
+                                <p:dataTable id="horarioMaestria" var="horario" value="#{GeneradorHorarioMB.listaMaestria}" rows="5" paginator="true" paginatorPosition="bottom">
+                                    <f:facet name="header">
+                                        CALENDARIO ACADEMICO
+                                    </f:facet>
 
-                                <p:column headerText="Nombre de la Maestría">
-                                    <h:outputText value="#{horario.nombre}" />
-                                </p:column>
-                                <p:column headerText="Fecha Inicio">
-                                    <h:outputText value="#{horario.fechaInicio}" />
-                                </p:column>
-                                <p:column headerText="Fecha Fin">
-                                    <h:outputText value="#{horario.fechaFin}" />
-                                </p:column>
-                                <p:column headerText="Estado" sortBy="#{horario.estado}">
-                                    <p:tag severity="success" value="#{horario.estado}" rendered="#{horario.estado eq 'Activo'}"/>
-                                    <p:tag severity="warning" value="#{horario.estado}" rendered="#{horario.estado eq 'Pendiente'}"/>
-                                    <p:tag severity="danger" value="#{horario.estado}" rendered="#{horario.estado eq 'Terminado'}"/>
-                                </p:column>
-                                <p:column headerText="Archivo">
-                                    <p:commandButton value="Descargar" type="button" icon="pi pi-download" styleClass="ui-button-outlined ui-button-success" />
-                                </p:column>
-                                <p:column headerText="Acciones">
-                                    <p:commandButton id="accionesHorario" value="Acciones" type="button" icon="pi pi-chevron-down" styleClass="ui-button-outlined" />
-                                    <p:menu overlay="true" trigger="accionesHorario" my="left top" at="left bottom">
-                                        <p:submenu label="Acciones">
-                                            <p:menuitem value="Detalle" icon="pi pi-file-o"/>
-                                            <p:menuitem value="Editar" icon="pi pi-pencil"/>
+                                    <p:column headerText="Nombre de la Maestría">
+                                        <h:outputText value="#{horario.nombre}" />
+                                    </p:column>
+                                    <p:column headerText="Fecha Inicio">
+                                        <h:outputText value="#{horario.fechaInicio}" />
+                                    </p:column>
+                                    <p:column headerText="Fecha Fin">
+                                        <h:outputText value="#{horario.fechaFin}" />
+                                    </p:column>
+                                    <p:column headerText="Estado" sortBy="#{horario.estado}">
+                                        <p:tag severity="success" value="#{horario.estado}" rendered="#{horario.estado eq 'Activo'}"/>
+                                        <p:tag value="#{horario.estado}" rendered="#{horario.estado eq 'Planificado'}"/>
+                                        <p:tag severity="danger" value="#{horario.estado}" rendered="#{horario.estado eq 'Terminado'}"/>
+                                    </p:column>
+                                    <p:column headerText="Archivo">
+                                        <p:commandButton value="Descargar" icon="pi pi-download" styleClass="ui-button-outlined ui-button-success" 
+                                                         actionListener="#{GeneradorHorarioMB.generarArchivoExcel(horario.idCurso,horario.nombre,horario.fechaInicio,horario.fechaFin)}"/>
+                                    </p:column>
+                                    <p:column headerText="Acciones">
+                                        <p:commandButton id="accionesHorario" value="Acciones" type="button" icon="pi pi-chevron-down" styleClass="ui-button-outlined" />
+                                        <p:menu overlay="true" trigger="accionesHorario" my="left top" at="left bottom">
+                                            <p:submenu label="Acciones">
+                                                <p:menuitem value="Detalle" icon="pi pi-file-o"/>
+                                                <p:menuitem value="Editar" icon="pi pi-pencil"/>
 
-                                        </p:submenu>
-                                    </p:menu>
-                                </p:column>
-                            </p:dataTable>
+                                            </p:submenu>
+                                        </p:menu>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:outputPanel>
                         </p:tab>
                     </p:tabView>
                 </div>

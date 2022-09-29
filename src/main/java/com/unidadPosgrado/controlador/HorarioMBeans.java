@@ -290,6 +290,9 @@ public class HorarioMBeans {
                     tiempoHorario = new DualListModel<>(horaSource, horaTarget);
                     PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
                     llenaFechasHorario();
+                    if (listaModulo.size() == 0) {
+                        horarioDAO.registrarMaestria(integracionMaestria.getIdCurso());
+                    }
                 }
 
 //                if (verificaTiempo().size() < 1) {
@@ -333,7 +336,7 @@ public class HorarioMBeans {
 
     public List<TiempoModulo> verificaTiempo() {
         listaTiempoAsignados = new ArrayList<>();
-        listaVerificacionTiempo = horarioDAO.getListaValidacion(docente.getId_docente());
+        listaVerificacionTiempo = horarioDAO.getListaValidacion(docente.getId_docente(), integracionMaestria.getFechaInicio(), integracionMaestria.getFechaFin());
         for (TiempoModulo horario : listaVerificacionTiempo) {
             if (tiempoModulo.getFechaAsignacion().compareTo(horario.getFechaAsignacion()) == 0) {
                 listaTiempoAsignados.add(horario);
@@ -398,7 +401,7 @@ public class HorarioMBeans {
     public void obtenerValidacionHorario() {
         horaTarget = new ArrayList<>();
         horaSource = new ArrayList<>();
-        listaVerificacionTiempo = horarioDAO.getListaValidacion(docente.getId_docente());
+        listaVerificacionTiempo = horarioDAO.getListaValidacion(docente.getId_docente(), integracionMaestria.getFechaInicio(), integracionMaestria.getFechaFin());
         horaSource = getListaEntreFechas(integracionMaestria.getFechaInicio(), integracionMaestria.getFechaFin());
         eliminaFechaRepetidas();
         asignaFecha(tiempoModulo.getFechaAsignacion());

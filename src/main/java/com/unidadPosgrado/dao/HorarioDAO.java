@@ -7,6 +7,7 @@ package com.unidadPosgrado.dao;
 
 import com.global.config.Conexion;
 import com.unidadPosgrado.modelo.Docente;
+import com.unidadPosgrado.modelo.Horario;
 import com.unidadPosgrado.modelo.Maestria;
 import com.unidadPosgrado.modelo.Modulo;
 import com.unidadPosgrado.modelo.TiempoModulo;
@@ -129,9 +130,9 @@ public class HorarioDAO {
         }
     }
 
-    public List<TiempoModulo> getListaValidacion(int idDocente) {
+    public List<TiempoModulo> getListaValidacion(int idDocente,Date fechaInicio,Date fechaFin) {
         List<TiempoModulo> listadoFecha = new ArrayList<>();
-        sentencia = String.format("SELECT public.\"validacionFechaHorario\"(" + idDocente + ");");
+        sentencia = String.format("SELECT public.\"validacionFechaHorario\"("+idDocente+", '"+fechaInicio+"', '"+fechaFin+"');");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
@@ -166,26 +167,24 @@ public class HorarioDAO {
     }
 
     public List<Maestria> getListaMaestriaPeriodo() {
-        String estado="";
+        String estado = "";
         List<Maestria> listadoMaestria = new ArrayList<>();
         sentencia = String.format("SELECT * from public.\"getListaHorariosMaestrias\"()");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                if(null != resultSet.getString("_estado"))
+                if (null != resultSet.getString("_estado")) {
                     switch (resultSet.getString("_estado")) {
-                    case "A":
-                        estado="Activo";
-                        break;
-                    case "T":
-                        estado="Terminado";
-                        break;
-                    case "P":
-                        estado="Pendiente";
-                        break;
-                    default:
-                        estado="Activo";
-                        break;
+                        case "P":
+                            estado = "Planificado";
+                            break;
+                        case "T":
+                            estado = "Terminado";
+                            break;
+                        default:
+                            estado = "Activo";
+                            break;
+                    }
                 }
                 listadoMaestria.add(new Maestria(resultSet.getInt("_id_curso"), resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"),
                         resultSet.getDate("_fecha_inicio"), resultSet.getDate("_fecha_fin"), estado));
@@ -193,6 +192,30 @@ public class HorarioDAO {
             return listadoMaestria;
         } catch (SQLException e) {
             return listadoMaestria;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public void registrarMaestria(int idCurso) {
+        sentencia = String.format("SELECT public.\"actualizarEstado\"(" + idCurso + ")");
+        resultSet = conexion.ejecutarSql(sentencia);
+        conexion.desconectar();
+    }
+
+    public List<Horario> getListaModulo(int idCurso) {
+        List<Horario> listadoModulo = new ArrayList<>();
+        sentencia = String.format("SELECT * from public.\"getListaModuloxPeriodoMaesria\"(" + idCurso + ");");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoModulo.add(new Horario(resultSet.getInt("_id_periodo"), resultSet.getInt("_id_curso"),
+                        resultSet.getInt("_id_docente"), resultSet.getString("_nombre_materia"),
+                        resultSet.getString("_nombre_docente"), resultSet.getFloat("_hora")));
+            }
+            return listadoModulo;
+        } catch (SQLException e) {
+            return listadoModulo;
         } finally {
             conexion.desconectar();
         }

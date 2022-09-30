@@ -20,6 +20,7 @@ public class Horario {
     private String nombreDocente;
     private float hora;
     private Date fechaAsignacion;
+    private String Paralelo;
 
     public Horario() {
     }
@@ -28,13 +29,14 @@ public class Horario {
         this.fechaAsignacion = fechaAsignacion;
     }
 
-    public Horario(int idPeriodo, int idCurso, int idDocente, String nombreModulo, String nombreDocente, float hora) {
+    public Horario(int idPeriodo, int idCurso, int idDocente, String nombreModulo, String nombreDocente, float hora, String paralelo) {
         this.idPeriodo = idPeriodo;
         this.idCurso = idCurso;
         this.idDocente = idDocente;
         this.nombreModulo = nombreModulo;
         this.nombreDocente = nombreDocente;
         this.hora = hora;
+        this.Paralelo = paralelo;
     }
 
     public int getIdPeriodo() {
@@ -91,6 +93,14 @@ public class Horario {
 
     public void setFechaAsignacion(Date fechaAsignacion) {
         this.fechaAsignacion = fechaAsignacion;
+    }
+
+    public String getParalelo() {
+        return Paralelo;
+    }
+
+    public void setParalelo(String Paralelo) {
+        this.Paralelo = Paralelo;
     }
 
 }

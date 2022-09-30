@@ -10,6 +10,7 @@ import com.unidadPosgrado.modelo.Horario;
 import com.unidadPosgrado.modelo.Maestria;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,8 +20,11 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.component.export.ExcelOptions;
@@ -85,15 +89,21 @@ public class GeneragorHorarioMBeans {
     public void generarArchivoExcel(int idCurso, String maestria, Date fechaInicio, Date fechaFin) {
         HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().
                 getResponse();
-        response.addHeader("Content-disposition", "attachment; filename=Planificacion" + maestria.toUpperCase() + ".xlsx");
+        response.addHeader("Content-disposition", "attachment; filename=PLANIFICACIÓN DE " + maestria.toUpperCase() + ".xlsx");
         response.setContentType("application/vnd.ms-excel");
         List<Date> mesesFormado;
         List<Date> anioFormato;
-
         listadoModulo = horarioDAO.getListaModulo(idCurso);
         Workbook libroExcel = new XSSFWorkbook();
-        Sheet hojaNueva = (Sheet) libroExcel.createSheet("CRONOGRAMA " + maestria);
+        Sheet hojaNueva = (Sheet) libroExcel.createSheet("CRONOGRAMA DE " + maestria.toUpperCase());
         Row fila = hojaNueva.createRow(0);
+
+        //Estilos para el archivo Excel
+        CellStyle cellStyle = libroExcel.createCellStyle();
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellStyle.setVerticalAlignment(VerticalAlignment.TOP);
+        cellStyle.setWrapText(true);
+
         fila.createCell(0).setCellValue("UNIVERSIDAD TECNICA ESTATAL DE QUEVEDO");
         fila = hojaNueva.createRow(1);
         fila.createCell(0).setCellValue("UNIDAD DE POSGRADO");
@@ -103,9 +113,9 @@ public class GeneragorHorarioMBeans {
         fila.createCell(0).setCellValue("DESDE " + fechaInicio + " A " + fechaFin);
         //Encabezado Excel
         fila = hojaNueva.createRow(4);
-        fila.createCell(0).setCellValue("PARALELO");
-        fila.createCell(1).setCellValue(fechaInicio.getYear());
-
+        fila.createCell(0).setCellValue((listadoModulo.size() > 0) ? listadoModulo.get(0).getParalelo().toUpperCase() : "PARALELO ?");
+        SimpleDateFormat getYearFormat = new SimpleDateFormat("yyyy");
+        fila.createCell(4).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
         fila = hojaNueva.createRow(5);
         fila.createCell(0).setCellValue("ORDEN");
         fila.getCell(0).getCellStyle().setWrapText(true);
@@ -116,65 +126,69 @@ public class GeneragorHorarioMBeans {
         fila.createCell(3).setCellValue("HORAS");
         fila.getCell(3).getCellStyle().setWrapText(true);
         mesesFormado = getListaEntreFechas(fechaInicio, fechaFin);
-        anioFormato = getListaEntreAños(fechaInicio, fechaFin);
+        anioFormato = getListaEntreAños(mesesFormado);
         int columna = 4;
         int contador = 0;
+        int cantidadAnio = anioFormato.size() - 1;
+        int posicion = 0;
         for (Date mes : mesesFormado) {
             int mesI = mes.getMonth();
             switch (mesI) {
                 case 0:
                     fila.createCell(columna).setCellValue("ENERO");
-                    fila.getCell(columna).getCellStyle().setWrapText(true);
+                    fila.getCell(columna).setCellStyle(cellStyle);
+                    contador++;
+                    if (posicion < cantidadAnio) {
+                        if (contador >= 1) {
+                            Row fila_aux = hojaNueva.getRow(4);
+                            fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(anioFormato.get(posicion + 1)) + "'");
+                            posicion++;
+                        }
+                    }
                     break;
                 case 1:
                     fila.createCell(columna).setCellValue("FEBRERO");
-                    fila.getCell(columna).getCellStyle().setWrapText(true);
+                    fila.getCell(columna).setCellStyle(cellStyle);
                     break;
                 case 2:
                     fila.createCell(columna).setCellValue("MARZO");
-                    fila.getCell(columna).getCellStyle().setWrapText(true);
+                    fila.getCell(columna).setCellStyle(cellStyle);
                     break;
                 case 3:
                     fila.createCell(columna).setCellValue("ABRIL");
-                    fila.getCell(columna).getCellStyle().setWrapText(true);
+                    fila.getCell(columna).setCellStyle(cellStyle);
                     break;
                 case 4:
                     fila.createCell(columna).setCellValue("MAYO");
-                    fila.getCell(columna).getCellStyle().setWrapText(true);
+                    fila.getCell(columna).setCellStyle(cellStyle);
                     break;
                 case 5:
                     fila.createCell(columna).setCellValue("JUNIO");
-                    fila.getCell(columna).getCellStyle().setWrapText(true);
+                    fila.getCell(columna).setCellStyle(cellStyle);
                     break;
                 case 6:
                     fila.createCell(columna).setCellValue("JULIO");
-                    fila.getCell(columna).getCellStyle().setWrapText(true);
+                    fila.getCell(columna).setCellStyle(cellStyle);
                     break;
                 case 7:
                     fila.createCell(columna).setCellValue("AGOSTO");
-                    fila.getCell(columna).getCellStyle().setWrapText(true);
+                    fila.getCell(columna).setCellStyle(cellStyle);
                     break;
                 case 8:
                     fila.createCell(columna).setCellValue("SEPTIEMBRE");
-                    fila.getCell(columna).getCellStyle().setWrapText(true);
+                    fila.getCell(columna).setCellStyle(cellStyle);
                     break;
                 case 9:
                     fila.createCell(columna).setCellValue("OCTUBRE");
-                    fila.getCell(columna).getCellStyle().setWrapText(true);
+                    fila.getCell(columna).setCellStyle(cellStyle);
                     break;
                 case 10:
                     fila.createCell(columna).setCellValue("NOVIEMBRE");
-                    fila.getCell(columna).getCellStyle().setWrapText(true);
+                    fila.getCell(columna).setCellStyle(cellStyle);
                     break;
                 case 11:
                     fila.createCell(columna).setCellValue("DICIEMBRE");
-                    fila.getCell(columna).getCellStyle().setWrapText(true);
-//                    contador++;
-//                    if (anioFormato.size() > 1) {
-//                        if (contador > 1) {
-//                            fila.createCell(contador).setCellValue(fechaFin.getYear());
-//                        }
-//                    }
+                    fila.getCell(columna).setCellStyle(cellStyle);
                     break;
                 default:
                     break;
@@ -212,7 +226,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         } catch (Exception e) {
                             fila.createCell(celda);
@@ -223,8 +237,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         }
                         break;
@@ -241,7 +254,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         } catch (Exception e) {
                             fila.createCell(celda);
@@ -252,7 +265,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         }
                         break;
@@ -269,7 +282,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         } catch (Exception e) {
                             fila.createCell(celda);
@@ -280,7 +293,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         }
                         break;
@@ -297,7 +310,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         } catch (Exception e) {
                             fila.createCell(celda);
@@ -308,7 +321,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         }
                         break;
@@ -325,7 +338,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         } catch (Exception e) {
                             fila.createCell(celda);
@@ -336,7 +349,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         }
                         break;
@@ -353,7 +366,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         } catch (Exception e) {
                             fila.createCell(celda);
@@ -364,7 +377,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         }
                         break;
@@ -381,7 +394,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         } catch (Exception e) {
                             fila.createCell(celda);
@@ -392,7 +405,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         }
                         break;
@@ -409,7 +422,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         } catch (Exception e) {
                             fila.createCell(celda);
@@ -420,7 +433,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         }
                         break;
@@ -437,7 +450,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         } catch (Exception e) {
                             fila.createCell(celda);
@@ -448,7 +461,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         }
                         break;
@@ -465,7 +478,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         } catch (Exception e) {
                             fila.createCell(celda);
@@ -476,7 +489,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         }
                         break;
@@ -493,7 +506,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         } catch (Exception e) {
                             fila.createCell(celda);
@@ -504,7 +517,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         }
                         break;
@@ -521,7 +534,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         } catch (Exception e) {
                             fila.createCell(celda);
@@ -532,7 +545,7 @@ public class GeneragorHorarioMBeans {
                             }
                             dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
                             fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).getCellStyle().setWrapText(true);
+                            fila.getCell(celda).setCellStyle(cellStyle);
                             dia = " ";
                         }
                         break;
@@ -543,7 +556,6 @@ public class GeneragorHorarioMBeans {
             filaExcel++;
             orden++;
         }
-        filaExcel = 0;
         try {
             OutputStream fileOut = response.getOutputStream();
             libroExcel.write(fileOut);
@@ -574,23 +586,29 @@ public class GeneragorHorarioMBeans {
         return listaFechas;
     }
 
-    public List<Date> getListaEntreAños(Date fechaInicio, Date fechaFin) {
-        // Convertimos la fecha a Calendar, mucho más cómodo para realizar
-        // operaciones a las fechas
-        Calendar c1 = Calendar.getInstance();
-        c1.setTime(fechaInicio);
-        Calendar c2 = Calendar.getInstance();
-        c2.setTime(fechaFin);
-
-        // Lista donde se irán almacenando las fechas
+    public List<Date> getListaEntreAños(List<Date> mesesFormado) {
+        SimpleDateFormat getYearFormat = new SimpleDateFormat("yyyy");
         List<Date> listaFechas = new ArrayList<Date>();
+        listaFechas.add(mesesFormado.get(0));
 
-        // Bucle para recorrer el intervalo, en cada paso se le suma un día.
-        while (!c1.after(c2)) {
-            listaFechas.add(c1.getTime());
-            c1.add(Calendar.YEAR, 1);
+        for (Date anio : mesesFormado) {
+            if (!verificaFecha(anio, listaFechas)) {
+                listaFechas.add(anio);
+            }
         }
         return listaFechas;
+    }
+
+    public boolean verificaFecha(Date fecha, List<Date> mesesFormado) {
+        boolean verifica = false;
+        SimpleDateFormat getYearFormat = new SimpleDateFormat("yyyy");
+        for (Date fechaV : mesesFormado) {
+            if (getYearFormat.format(fecha).equals(getYearFormat.format(fechaV))) {
+                verifica = true;
+                break;
+            }
+        }
+        return verifica;
     }
 
 }

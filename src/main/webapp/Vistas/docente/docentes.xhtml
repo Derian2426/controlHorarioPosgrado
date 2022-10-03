@@ -36,7 +36,6 @@
                             </span>
                         </f:facet>
 
-                        <p:ajax event="rowEdit" listener="#{docenteMB.onRowEdit}" update=":form_docentes:msgs,:form_docentes:dtDocente"/>
                         <p:ajax event="rowEditCancel" listener="#{docenteMB.onRowCancel}" update=":form_docentes:msgs,:form_docentes:dtDocente"/>
 
                         <p:column headerText="Nombre" style="text-align: justify" sortBy="#{docente.nombre_docente}">

@@ -166,12 +166,20 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <p:commandButton action="#{horarioMB.registrarPeriodo()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" update=":form_horario:planificacionHorario:calendarioAcademico,:form_horario:planificacionHorario:nuevoDocenteAsignado,:form_horario:messages" style="margin-bottom: 1vh;"/>
+                                    <p:commandButton action="#{horarioMB.registrarPeriodo()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" update=":form_horario:planificacionHorario:calendarioAcademico,:form_horario:planificacionHorario:nuevoDocenteAsignado,:form_horario:messages,mensajeEstatico" style="margin-bottom: 1vh;"/>
                                     <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
                                         <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
                                         <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
                                     </p:confirmDialog>
                                 </p:outputPanel>
+                            </p:dialog>
+                            <p:dialog header="Transacción Fallida" widgetVar="transaccion" minHeight="40" width="350" showEffect="fade" modal="true">
+                                <div class="col-12 md:col-12">
+                                    <p:staticMessage id="mensajeEstatico" severity="error" summary="ERROR" detail="#{horarioMB.mensaje}" style="width: 100%"/>
+                                </div>
+                                <div class="col-12 md:col-12">
+                                    <p:staticMessage severity="info" summary="INFORMACIÓN" detail="Esté error surge por que al momneto de realizar la asignación, otro usuario ocupo primero que usted las fecha disponibles del docente, por favor vuelva asignar las fechas al docente, asegurese de que no se registren asignaciones por otro usuario." style="width: 100%"/>
+                                </div>
                             </p:dialog>
                             <p:dialog widgetVar="seleccionEditFecha" header="Asignación Horario" showEffect="fade" height="50%" width="50%" modal="true" responsive="true">
                                 <p:outputPanel id="editDocenteAsignado" class="ui-fluid">

@@ -58,6 +58,7 @@ public class HorarioMBeans {
     MaestriaDAO maestriaDAO;
     HorarioDAO horarioDAO;
     List<Maestria> busquedaMaestria;
+    private String mensaje;
     private boolean estado;
     private boolean estadoAsignacion;
     private ScheduleEvent<?> event = new DefaultScheduleEvent<>();
@@ -216,6 +217,14 @@ public class HorarioMBeans {
         this.listaHorario = listaHorario;
     }
 
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
     public void registrarPeriodo() {
         try {
             if ("".equals(integracionMaestria.getNombre()) || integracionMaestria.getNombre() == null) {
@@ -237,7 +246,7 @@ public class HorarioMBeans {
             } else if ("".equals(tiempoModulo.getDescripcion())) {
                 showWarn("Ingrese una descripción.");
             } else {
-                String mensaje = "Estas fechas ya se encuentran asignadas -->";
+                mensaje = "Estas fechas ya se encuentran asignadas: ";
                 int estado = -1;
                 aux = horarioDAO.registrarHorarioAsignaciones(modulo, docente, integracionMaestria, tiempoModulo, horaTarget);
                 for (TiempoModulo tm : aux) {
@@ -253,6 +262,8 @@ public class HorarioMBeans {
 
                 }
                 if (estado == 1) {
+                    mensaje = mensaje.substring(0, mensaje.length() - 1);
+                    mensaje += ".";
                     showWarn(mensaje);
                     eventModel = new DefaultScheduleModel();
                     event = new DefaultScheduleEvent<>();
@@ -270,6 +281,7 @@ public class HorarioMBeans {
                     horaTarget = new ArrayList<>();
                     tiempoHorario = new DualListModel<>(horaSource, horaTarget);
                     PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
+                    PrimeFaces.current().executeScript("PF('transaccion').show()");
 
                 } else {
                     showInfo("Asignación registrada con exito.");

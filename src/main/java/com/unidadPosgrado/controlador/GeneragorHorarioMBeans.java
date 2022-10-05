@@ -6,8 +6,10 @@
 package com.unidadPosgrado.controlador;
 
 import com.unidadPosgrado.dao.HorarioDAO;
+import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Horario;
 import com.unidadPosgrado.modelo.Maestria;
+import com.unidadPosgrado.modelo.Periodo;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -26,7 +29,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.primefaces.PrimeFaces;
 import org.primefaces.component.export.ExcelOptions;
 
 /**
@@ -35,6 +40,13 @@ import org.primefaces.component.export.ExcelOptions;
  */
 public class GeneragorHorarioMBeans {
 
+    private Maestria integracionMaestria;
+    private Periodo periodo;
+    MaestriaDAO maestriaDAO;
+    private Maestria maestriaBusqueda;
+    private List<Maestria> listaMaestriaPeriodo;
+    List<Maestria> busquedaMaestriaAuxP;
+
     HorarioDAO horarioDAO;
     private List<Maestria> listaMaestria;
     private List<Horario> listadoModulo;
@@ -42,6 +54,13 @@ public class GeneragorHorarioMBeans {
     private ExcelOptions excelOpt;
 
     public GeneragorHorarioMBeans() {
+        maestriaDAO = new MaestriaDAO();
+        periodo = new Periodo();
+        integracionMaestria = new Maestria();
+        maestriaBusqueda = new Maestria();
+        listaMaestriaPeriodo = new ArrayList<>();
+        busquedaMaestriaAuxP = new ArrayList<>();
+
         horarioDAO = new HorarioDAO();
         listaMaestria = new ArrayList<>();
         listadoModulo = new ArrayList<>();
@@ -52,6 +71,8 @@ public class GeneragorHorarioMBeans {
     @PostConstruct
     public void init() {
         listaMaestria = horarioDAO.getListaMaestriaPeriodo();
+        listaMaestriaPeriodo = maestriaDAO.getListaMaestria_Periodo();
+        busquedaMaestriaAuxP = listaMaestriaPeriodo;
     }
 
     public List<Maestria> getListaMaestria() {
@@ -86,6 +107,38 @@ public class GeneragorHorarioMBeans {
         this.listadoAsignaciones = listadoAsignaciones;
     }
 
+    public Maestria getIntegracionMaestria() {
+        return integracionMaestria;
+    }
+
+    public void setIntegracionMaestria(Maestria integracionMaestria) {
+        this.integracionMaestria = integracionMaestria;
+    }
+
+    public Periodo getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(Periodo periodo) {
+        this.periodo = periodo;
+    }
+
+    public Maestria getMaestriaBusqueda() {
+        return maestriaBusqueda;
+    }
+
+    public void setMaestriaBusqueda(Maestria maestriaBusqueda) {
+        this.maestriaBusqueda = maestriaBusqueda;
+    }
+
+    public List<Maestria> getListaMaestriaPeriodo() {
+        return listaMaestriaPeriodo;
+    }
+
+    public void setListaMaestriaPeriodo(List<Maestria> listaMaestriaPeriodo) {
+        this.listaMaestriaPeriodo = listaMaestriaPeriodo;
+    }
+
     public void generarArchivoExcel(int idCurso, String maestria, Date fechaInicio, Date fechaFin) {
         HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().
                 getResponse();
@@ -114,6 +167,10 @@ public class GeneragorHorarioMBeans {
         //Encabezado Excel
         fila = hojaNueva.createRow(4);
         fila.createCell(0).setCellValue((listadoModulo.size() > 0) ? listadoModulo.get(0).getParalelo().toUpperCase() : "PARALELO ?");
+        fila.createCell(1);
+        fila.createCell(2);
+        fila.createCell(3);
+        hojaNueva.addMergedRegion(CellRangeAddress.valueOf("A5:D5"));
         SimpleDateFormat getYearFormat = new SimpleDateFormat("yyyy");
         fila.createCell(4).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
         fila = hojaNueva.createRow(5);
@@ -131,16 +188,19 @@ public class GeneragorHorarioMBeans {
         int contador = 0;
         int cantidadAnio = anioFormato.size() - 1;
         int posicion = 0;
+
+        //Posiciones en la hoja de excel
+        Row fila_aux = hojaNueva.getRow(4);
         for (Date mes : mesesFormado) {
             int mesI = mes.getMonth();
             switch (mesI) {
                 case 0:
                     fila.createCell(columna).setCellValue("ENERO");
                     fila.getCell(columna).setCellStyle(cellStyle);
+                    fila_aux.createCell(columna + 1);
                     contador++;
                     if (posicion < cantidadAnio) {
                         if (contador >= 1) {
-                            Row fila_aux = hojaNueva.getRow(4);
                             fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(anioFormato.get(posicion + 1)) + "'");
                             posicion++;
                         }
@@ -149,55 +209,81 @@ public class GeneragorHorarioMBeans {
                 case 1:
                     fila.createCell(columna).setCellValue("FEBRERO");
                     fila.getCell(columna).setCellStyle(cellStyle);
+                    fila_aux.createCell(columna + 1);
                     break;
                 case 2:
                     fila.createCell(columna).setCellValue("MARZO");
                     fila.getCell(columna).setCellStyle(cellStyle);
+                    fila_aux.createCell(columna + 1);
                     break;
                 case 3:
                     fila.createCell(columna).setCellValue("ABRIL");
                     fila.getCell(columna).setCellStyle(cellStyle);
+                    fila_aux.createCell(columna + 1);
                     break;
                 case 4:
                     fila.createCell(columna).setCellValue("MAYO");
                     fila.getCell(columna).setCellStyle(cellStyle);
+                    fila_aux.createCell(columna + 1);
                     break;
                 case 5:
                     fila.createCell(columna).setCellValue("JUNIO");
                     fila.getCell(columna).setCellStyle(cellStyle);
+                    fila_aux.createCell(columna + 1);
                     break;
                 case 6:
                     fila.createCell(columna).setCellValue("JULIO");
                     fila.getCell(columna).setCellStyle(cellStyle);
+                    fila_aux.createCell(columna + 1);
                     break;
                 case 7:
                     fila.createCell(columna).setCellValue("AGOSTO");
                     fila.getCell(columna).setCellStyle(cellStyle);
+                    fila_aux.createCell(columna + 1);
                     break;
                 case 8:
                     fila.createCell(columna).setCellValue("SEPTIEMBRE");
                     fila.getCell(columna).setCellStyle(cellStyle);
+                    fila_aux.createCell(columna + 1);
                     break;
                 case 9:
                     fila.createCell(columna).setCellValue("OCTUBRE");
                     fila.getCell(columna).setCellStyle(cellStyle);
+                    fila_aux.createCell(columna + 1);
                     break;
                 case 10:
                     fila.createCell(columna).setCellValue("NOVIEMBRE");
                     fila.getCell(columna).setCellStyle(cellStyle);
+                    fila_aux.createCell(columna + 1);
                     break;
                 case 11:
                     fila.createCell(columna).setCellValue("DICIEMBRE");
                     fila.getCell(columna).setCellStyle(cellStyle);
+                    fila_aux.createCell(columna + 1);
                     break;
                 default:
                     break;
             }
             columna++;
         }
-
+        int celda_aux = 4;
+        int firstRow = 4;
+        int lastRow = 4;
+        int contadoEspacios = 0;
+        while (celda_aux <= columna) {
+            if ("".equals(fila.getSheet().getRow(4).getCell(celda_aux).getStringCellValue()) && celda_aux < columna) {
+                contadoEspacios++;
+            } else {
+                if (contadoEspacios > 0) {
+                    hojaNueva.addMergedRegion(new CellRangeAddress(firstRow, lastRow, (celda_aux - contadoEspacios) - 1, celda_aux - 1));
+                    contadoEspacios = 0;
+                }
+            }
+            celda_aux++;
+        }
         int filaExcel = 6;
         int orden = 1;
+        int anioContador;
         for (Horario horario : listadoModulo) {
             fila = hojaNueva.createRow(filaExcel);
             fila.createCell(0).setCellValue(orden);
@@ -208,351 +294,374 @@ public class GeneragorHorarioMBeans {
             fila.getCell(2).getCellStyle().setWrapText(true);
             fila.createCell(3).setCellValue(horario.getHora());
             fila.getCell(3).getCellStyle().setWrapText(true);
-            listadoAsignaciones = horarioDAO.getListaAsignacionDocente(idCurso, horario.getIdDocente());
+
             String dia = "Ases ";
             int celda;
-            for (Horario fechaAsignacion : listadoAsignaciones) {
-                switch (fechaAsignacion.getFechaAsignacion().getMonth()) {
-                    case 0:
-                        celda = 4;
-                        while (!"ENERO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
-                            celda++;
-                        }
-                        try {
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+            anioContador = anioFormato.size();
+            String anioCelda = "";
+            String anioLista = "";
+            int maximoAnio = 0;
+            int sumadorCeldas = 4;
+            while (maximoAnio < anioContador) {
+                listadoAsignaciones = horarioDAO.getListaAsignacionDocente(idCurso, horario.getIdDocente(), anioFormato.get(maximoAnio));
+                for (Horario fechaAsignacion : listadoAsignaciones) {
+                    switch (fechaAsignacion.getFechaAsignacion().getMonth()) {
+                        case 0:
+                            celda = sumadorCeldas;
+                            while (!"ENERO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())
+                                    && !anioCelda.equals(anioLista)) {
+                                celda++;
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        } catch (Exception e) {
-                            fila.createCell(celda);
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+
+                            try {
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
+                            } catch (Exception e) {
+                                fila.createCell(celda);
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        }
-                        break;
-                    case 1:
-                        celda = 4;
-                        while (!"FEBRERO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
-                            celda++;
-                        }
-                        try {
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            break;
+                        case 1:
+                            celda = sumadorCeldas;
+                            while (!"FEBRERO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
+                                celda++;
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        } catch (Exception e) {
-                            fila.createCell(celda);
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            try {
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
+                            } catch (Exception e) {
+                                fila.createCell(celda);
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        }
-                        break;
-                    case 2:
-                        celda = 4;
-                        while (!"MARZO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
-                            celda++;
-                        }
-                        try {
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            break;
+                        case 2:
+                            celda = sumadorCeldas;
+                            while (!"MARZO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
+                                celda++;
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        } catch (Exception e) {
-                            fila.createCell(celda);
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            try {
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
+                            } catch (Exception e) {
+                                fila.createCell(celda);
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        }
-                        break;
-                    case 3:
-                        celda = 4;
-                        while (!"ABRIL".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
-                            celda++;
-                        }
-                        try {
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            break;
+                        case 3:
+                            celda = sumadorCeldas;
+                            while (!"ABRIL".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
+                                celda++;
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        } catch (Exception e) {
-                            fila.createCell(celda);
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            try {
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
+                            } catch (Exception e) {
+                                fila.createCell(celda);
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        }
-                        break;
-                    case 4:
-                        celda = 4;
-                        while (!"MAYO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
-                            celda++;
-                        }
-                        try {
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            break;
+                        case 4:
+                            celda = sumadorCeldas;
+                            while (!"MAYO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
+                                celda++;
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        } catch (Exception e) {
-                            fila.createCell(celda);
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            try {
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
+                            } catch (Exception e) {
+                                fila.createCell(celda);
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        }
-                        break;
-                    case 5:
-                        celda = 4;
-                        while (!"JUNIO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
-                            celda++;
-                        }
-                        try {
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            break;
+                        case 5:
+                            celda = sumadorCeldas;
+                            while (!"JUNIO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
+                                celda++;
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        } catch (Exception e) {
-                            fila.createCell(celda);
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            try {
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
+                            } catch (Exception e) {
+                                fila.createCell(celda);
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        }
-                        break;
-                    case 6:
-                        celda = 4;
-                        while (!"JULIO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
-                            celda++;
-                        }
-                        try {
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            break;
+                        case 6:
+                            celda = sumadorCeldas;
+                            while (!"JULIO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
+                                celda++;
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        } catch (Exception e) {
-                            fila.createCell(celda);
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            try {
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
+                            } catch (Exception e) {
+                                fila.createCell(celda);
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        }
-                        break;
-                    case 7:
-                        celda = 4;
-                        while (!"AGOSTO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
-                            celda++;
-                        }
-                        try {
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            break;
+                        case 7:
+                            celda = sumadorCeldas;
+                            while (!"AGOSTO".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
+                                celda++;
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        } catch (Exception e) {
-                            fila.createCell(celda);
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            try {
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
+                            } catch (Exception e) {
+                                fila.createCell(celda);
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        }
-                        break;
-                    case 8:
-                        celda = 4;
-                        while (!"SEPTIEMBRE".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
-                            celda++;
-                        }
-                        try {
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            break;
+                        case 8:
+                            celda = sumadorCeldas;
+                            while (!"SEPTIEMBRE".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
+                                celda++;
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        } catch (Exception e) {
-                            fila.createCell(celda);
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            try {
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
+                            } catch (Exception e) {
+                                fila.createCell(celda);
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        }
-                        break;
-                    case 9:
-                        celda = 4;
-                        while (!"OCTUBRE".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
-                            celda++;
-                        }
-                        try {
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            break;
+                        case 9:
+                            celda = sumadorCeldas;
+                            while (!"OCTUBRE".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
+                                celda++;
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        } catch (Exception e) {
-                            fila.createCell(celda);
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            try {
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
+                            } catch (Exception e) {
+                                fila.createCell(celda);
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        }
-                        break;
-                    case 10:
-                        celda = 4;
-                        while (!"NOVIEMBRE".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
-                            celda++;
-                        }
-                        try {
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            break;
+                        case 10:
+                            celda = sumadorCeldas;
+                            while (!"NOVIEMBRE".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
+                                celda++;
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        } catch (Exception e) {
-                            fila.createCell(celda);
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            try {
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
+                            } catch (Exception e) {
+                                fila.createCell(celda);
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        }
-                        break;
-                    case 11:
-                        celda = 4;
-                        while (!"DICIEMBRE".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
-                            celda++;
-                        }
-                        try {
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            break;
+                        case 11:
+                            celda = sumadorCeldas;
+                            while (!"DICIEMBRE".equals(fila.getSheet().getRow(5).getCell(celda).getStringCellValue())) {
+                                celda++;
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        } catch (Exception e) {
-                            fila.createCell(celda);
-                            if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
-                                dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
-                            } else {
-                                dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                            try {
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
+                            } catch (Exception e) {
+                                fila.createCell(celda);
+                                if ("".equals(fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue())) {
+                                    dia += fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                } else {
+                                    dia = fila.getSheet().getRow(filaExcel).getCell(celda).getStringCellValue();
+                                }
+                                dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
+                                fila.createCell(celda).setCellValue(dia);
+                                fila.getCell(celda).setCellStyle(cellStyle);
+                                dia = " ";
                             }
-                            dia += fechaAsignacion.getFechaAsignacion().getDate() + ",";
-                            fila.createCell(celda).setCellValue(dia);
-                            fila.getCell(celda).setCellStyle(cellStyle);
-                            dia = " ";
-                        }
-                        break;
-                    default:
-                        break;
+                            break;
+                        default:
+                            break;
+                    }
                 }
+                sumadorCeldas++;
+                try {
+                    String prueba = fila.getSheet().getRow(4).getCell(sumadorCeldas).getStringCellValue();
+                    while ("".equals(fila.getSheet().getRow(4).getCell(sumadorCeldas).getStringCellValue())) {
+                        sumadorCeldas++;
+                    }
+                } catch (Exception e) {
+                    System.out.println("    " + e.getMessage());
+                    break;
+                }
+
+                maximoAnio++;
             }
+
             filaExcel++;
             orden++;
         }
@@ -609,6 +718,99 @@ public class GeneragorHorarioMBeans {
             }
         }
         return verifica;
+    }
+
+    public void registrarPeriodo() {
+        try {
+            if ("".equals(integracionMaestria.getNombre()) || integracionMaestria.getNombre() == null) {
+                showWarn("Seleccione una maestría.");
+            } else if ("".equals(periodo.getNombrePeriodo())) {
+                showWarn("Ingrese una descripción.");
+            } else if (periodo.getFechaInicio() == null) {
+                showWarn("Seleccione una fecha de inicio.");
+            } else if (periodo.getFechaFin() == null) {
+                showWarn("Seleccione una fecha de finaalización.");
+            } else if (periodo.getFechaFin().before(periodo.getFechaInicio())) {
+                showWarn("La fecha no puede ser anterior a la fecha de inicio del Periodo.");
+            } else if (periodo.getCantidadEstudiante() < 1) {
+                showWarn("Ingrese una cantidad de estudiantes para el paralelo.");
+            } else {
+                if (maestriaDAO.registrarPeriodo(integracionMaestria, periodo) > 0) {
+                    showInfo("Periodo registrado con exito.");
+                    PrimeFaces.current().executeScript("PF('dlgPlanificacion').hide()");
+                    integracionMaestria = new Maestria();
+                    periodo = new Periodo();
+                    maestriaBusqueda = new Maestria();
+                } else {
+                    showWarn("Error al registrar el periodo, esta fecha ya se ha utilizado para la planificación"
+                            + " de esta maestría.");
+                }
+            }
+
+        } catch (Exception e) {
+            showError(e.getMessage() + "Error al registrar el periodo, vuelva a intentarlo.");
+        }
+    }
+
+    public void cancelarPeriodo() {
+        try {
+            integracionMaestria = new Maestria();
+            periodo = new Periodo();
+            maestriaBusqueda = new Maestria();
+            showWarn("Se cancelo el registro.");
+        } catch (Exception e) {
+            showError(e.getMessage());
+        }
+
+    }
+
+    public void buscarMaestriaPeriodo() {
+        List<Maestria> busquedaM = new ArrayList<>();
+
+        if (maestriaBusqueda.getNombre() == null || "".equals(maestriaBusqueda.getNombre())) {
+            listaMaestriaPeriodo = busquedaMaestriaAuxP;
+        } else {
+            listaMaestriaPeriodo = busquedaMaestriaAuxP;
+            for (Maestria busqueda : listaMaestriaPeriodo) {
+                if (busqueda.getNombre().toUpperCase().contains(maestriaBusqueda.getNombre().toUpperCase())) {
+                    busquedaM.add(busqueda);
+                }
+            }
+            listaMaestriaPeriodo = busquedaM;
+            busquedaM = new ArrayList<>();
+//            maestriaBusqueda = new Maestria();
+        }
+
+    }
+
+    public void llenaMaestriaPeriodo(Maestria maestria) {
+
+        if (maestriaDAO.verificaCantidadDocente(maestria) > 0) {
+            integracionMaestria.setIdMaestria(maestria.getIdMaestria());
+            integracionMaestria.setNombre(maestria.getNombre());
+            integracionMaestria.setDescripcion(maestria.getDescripcion());
+        } else {
+            //Cambiar presentacion
+            showWarn("La maestria no tiene asignado docentes suficientes ");
+        }
+
+    }
+
+    public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
+        FacesContext.getCurrentInstance().
+                addMessage(null, new FacesMessage(severity, summary, detail));
+    }
+
+    public void showInfo(String message) {
+        addMessage(FacesMessage.SEVERITY_INFO, "Exito", message);
+    }
+
+    public void showWarn(String message) {
+        addMessage(FacesMessage.SEVERITY_WARN, "Advertencia", message);
+    }
+
+    public void showError(String message) {
+        addMessage(FacesMessage.SEVERITY_WARN, "Error", message);
     }
 
 }

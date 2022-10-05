@@ -221,9 +221,9 @@ public class HorarioDAO {
         }
     }
 
-    public List<Horario> getListaAsignacionDocente(int idCurso, int idDocente) {
+    public List<Horario> getListaAsignacionDocente(int idCurso, int idDocente,Date anio) {
         List<Horario> listadoModulo = new ArrayList<>();
-        sentencia = String.format("SELECT* from public.fecha_asignacion_docente(" + idCurso + ", " + idDocente + ");");
+        sentencia = String.format("SELECT* from public.fecha_asignacion_docente(" + idCurso + ", " + idDocente + ", '" + anio + "');");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {

@@ -22,7 +22,7 @@
                                     <p:commandButton id="dynaButton" value="Planificación del Periodo" type="button" icon="pi pi-bars"/>
                                     <p:menu overlay="true" trigger="dynaButton" my="left top" at="left bottom">
                                         <p:submenu label="Opciones">
-                                            <p:menuitem value="Nuevo Periodo Académico" icon="pi pi-save"
+                                            <p:menuitem value="Nuevo Periodo Académico" icon="pi pi-plus"
                                                         onclick="PF('dlgPlanificacion').show()"/>
                                         </p:submenu>
                                     </p:menu>
@@ -95,8 +95,8 @@
                                         </div>
 
                                         <div class="p-field p-col-12 p-md-6">
-                                            <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{GeneradorHorarioMB.registrarPeriodo()}"
-                                                             update=":form_horario:messages ,:form_horario:planificacionHorario:nuevoPerido,:form_horario:planificacionHorario:horarioPeriodo"/>
+                                            <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{GeneradorHorarioMB.registrarPeriodo()}" action="#{horarioMB.actualizaListas()}"
+                                                             update=":form_horario:messages ,:form_horario:planificacionHorario:nuevoPerido,:form_horario:planificacionHorario:horarioPeriodo,:form_horario:planificacionHorario:dtSeleccionMaestriaPeriodo,:form_horario:planificacionHorario:horarioMaestria"/>
                                         </div>
                                         <div class="p-field p-col-12 p-md-6">
                                             <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" actionListener="#{GeneradorHorarioMB.cancelarPeriodo()}" 

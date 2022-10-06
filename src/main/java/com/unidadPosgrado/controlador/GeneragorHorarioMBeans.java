@@ -765,6 +765,7 @@ public class GeneragorHorarioMBeans {
                     periodo = new Periodo();
                     maestriaBusqueda = new Maestria();
                     listaPeriodo = maestriaDAO.getListaPeriodo();
+                    listaMaestria = horarioDAO.getListaMaestriaPeriodo();
                 } else {
                     showWarn("Error al registrar el periodo, esta fecha ya se ha utilizado para la planificación"
                             + " de esta maestría.");

@@ -724,6 +724,11 @@ public class HorarioMBeans {
         return verifica;
     }
 
+    public void actualizaListas() {
+        listaMaestria = maestriaDAO.getListaMaestriaPeriodo();
+        busquedaMaestriaAux = listaMaestria;
+    }
+
     public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
         return dateToConvert.toInstant()
                 .atZone(ZoneId.systemDefault())

@@ -35,9 +35,6 @@
                         <p:menuitem value="Integración de Módulos" icon="pi pi-book" onclick="PF('listadoModuloMaestria').show()">
                             <f:param name="i" value="5"/>
                         </p:menuitem>
-                        <p:menuitem value="Planificación Periodo" icon="pi pi-calendar-plus" onclick="PF('dlgPlanificacion').show()">
-                            <f:param name="i" value="6"/>
-                        </p:menuitem>
                     </p:tabMenu>
                 </div>
                 <div class="card">
@@ -68,92 +65,6 @@
                         </p:column>
                     </p:treeTable>
                 </div>    
-                <p:dialog header="Planificación Periodo" widgetVar="dlgPlanificacion" minHeight="100" width="650" showEffect="fade" modal="true" responsive="true" position="center" closable="false">
-                    <p:outputPanel id="nuevaPerido" class="ui-fluid">
-                        <div class="ui-fluid p-formgrid p-grid">
-                            <div class="p-field p-col-12 p-md-8">
-                                <p:outputLabel value="Nombre Maestría"/>
-                                <p:inputText maxlength="150" value="#{maestriaMB.integracionMaestria.nombre}" readonly="true"/>
-                            </div>
-                            <div class="p-field p-col-12 p-md-4">
-                                <p:outputLabel value="." style="color: white" />
-                                <p:commandButton style="margin-right: 6px;" value="Buscar Maestría" 
-                                                 styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestriaPeriodo').show()">
-                                </p:commandButton>
-                            </div>
-
-                            <p:outputLabel value="Descripción:"/>
-                            <p:inputTextarea maxlength="200" rows="3" cols="3" value="#{maestriaMB.periodo.nombrePeriodo}"/>
-                            <div class="p-field p-col-12 p-md-6">
-                                <p:outputLabel value="Fecha de inicio:"/>
-                                <p:calendar value="#{maestriaMB.periodo.fechaInicio}" />
-                            </div>
-                            <div class="p-field p-col-12 p-md-6">
-                                <p:outputLabel value="Fecha de finalización:"/>
-                                <p:calendar value="#{maestriaMB.periodo.fechaFin}" />
-                            </div>
-
-                            <div class="p-field p-col-12 p-md-6">
-                                <p:outputLabel value="Paralelo:"/>
-                                <p:selectOneMenu id="paralelo" value="#{maestriaMB.periodo.nombreParalelo}">
-                                    <p:ajax update="@this" process="@this"/>
-                                    <f:selectItem itemLabel="A" itemValue="A"/>
-                                    <f:selectItem itemLabel="B" itemValue="B"/>
-                                    <f:selectItem itemLabel="C" itemValue="C"/>
-                                    <f:selectItem itemLabel="D" itemValue="D"/>
-                                </p:selectOneMenu>
-                            </div>
-                            <div class="p-field p-col-12 p-md-6">
-                                <p:outputLabel value="Cantidad de estudiantes:"/>
-                                <p:inputNumber value="#{maestriaMB.periodo.cantidadEstudiante}" />
-                            </div>
-
-                            <div class="p-field p-col-12 p-md-6">
-                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{maestriaMB.registrarPeriodo()}"
-                                                 update=":form_maestria:msgs ,:form_maestria:nuevaPerido"/>
-                            </div>
-                            <div class="p-field p-col-12 p-md-6">
-                                <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" actionListener="#{maestriaMB.cancelarPeriodo()}" 
-                                                 onclick="PF('dlgPlanificacion').hide()" update=":form_maestria:msgs ,:form_maestria:nuevaPerido"/>
-                            </div>
-                        </div>
-
-                    </p:outputPanel>
-                </p:dialog>
-                <p:dialog header="Seleccione una de las  Maestrías" widgetVar="listMaestriaPeriodo" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
-                    <div class="card">
-                        <p:dataTable id="dtSeleccionMaestriaPeriodo" var="maestrias" value="#{maestriaMB.listaMaestriaPeriodo}" editable="true" paginatorPosition="bottom"
-                                     style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
-                                     emptyMessage="No se encontro la maestría">
-                            <f:facet name="header">
-                                <span class="ui-input-icon-left">
-                                    <p:inputText placeholder="Buscar Maestría" value="#{maestriaMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
-                                    </p:inputText>
-                                    <p:commandButton icon="pi pi-search" update=":form_maestria:dtSeleccionMaestriaPeriodo" styleClass="rounded-button ui-button-secondary" actionListener="#{maestriaMB.buscarMaestriaPeriodo()}" process="dtSeleccionMaestriaPeriodo @this"/>
-                                </span>
-                            </f:facet>
-                            <p:column headerText="Acciones" style="width:6rem">
-                                <p:commandButton
-                                    class="rounded-button"
-                                    icon="pi pi-check">
-                                    <p:ajax listener="#{maestriaMB.llenaMaestriaPeriodo(maestrias)}" 
-                                            update=":form_maestria:nuevaPerido,:form_maestria:msgs"
-                                            oncomplete="PF('listMaestriaPeriodo').hide()"/>
-
-                                </p:commandButton>
-                            </p:column>
-                            <p:column headerText="Nombre Maestría" style="text-align: justify">
-                                <h:outputText value="#{maestrias.nombre}"/>
-                            </p:column>
-
-                            <p:column headerText="Descripción" style="text-align: justify">
-                                <h:outputText value="#{maestrias.descripcion}"/>
-                            </p:column>
-                        </p:dataTable>
-                    </div>
-                </p:dialog>
-
-
                 <p:dialog header="Registro de Maestría" widgetVar="dlgMaestria" minHeight="100" width="550" showEffect="fade" modal="true" responsive="true" position="center">
                     <p:outputPanel id="nuevaMaestria" class="ui-fluid">
                         <div class="ui-fluid p-formgrid p-grid">
@@ -167,7 +78,7 @@
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{maestriaMB.registrarMaestria()}"
-                                                 update=":form_maestria:dtMaestrias,:form_maestria:msgs,nuevaMaestria,:form_maestria:dtSeleccionMaestria,:form_maestria:dtSeleccionMaestriaPeriodo"/>
+                                                 update=":form_maestria:dtMaestrias,:form_maestria:msgs,nuevaMaestria,:form_maestria:dtSeleccionMaestria"/>
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgMaestria').hide()"/>

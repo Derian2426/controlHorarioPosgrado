@@ -51,6 +51,7 @@ public class GeneragorHorarioMBeans {
     private List<Maestria> listaMaestria;
     private List<Horario> listadoModulo;
     private List<Horario> listadoAsignaciones;
+    private List<Periodo> listaPeriodo;
     private ExcelOptions excelOpt;
 
     public GeneragorHorarioMBeans() {
@@ -66,6 +67,7 @@ public class GeneragorHorarioMBeans {
         listadoModulo = new ArrayList<>();
         excelOpt = new ExcelOptions();
         listadoAsignaciones = new ArrayList<>();
+        listaPeriodo = new ArrayList<>();
     }
 
     @PostConstruct
@@ -73,6 +75,7 @@ public class GeneragorHorarioMBeans {
         listaMaestria = horarioDAO.getListaMaestriaPeriodo();
         listaMaestriaPeriodo = maestriaDAO.getListaMaestria_Periodo();
         busquedaMaestriaAuxP = listaMaestriaPeriodo;
+        listaPeriodo = maestriaDAO.getListaPeriodo();
     }
 
     public List<Maestria> getListaMaestria() {
@@ -139,6 +142,14 @@ public class GeneragorHorarioMBeans {
         this.listaMaestriaPeriodo = listaMaestriaPeriodo;
     }
 
+    public List<Periodo> getListaPeriodo() {
+        return listaPeriodo;
+    }
+
+    public void setListaPeriodo(List<Periodo> listaPeriodo) {
+        this.listaPeriodo = listaPeriodo;
+    }
+
     public void generarArchivoExcel(int idCurso, String maestria, Date fechaInicio, Date fechaFin) {
         HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().
                 getResponse();
@@ -149,6 +160,9 @@ public class GeneragorHorarioMBeans {
         listadoModulo = horarioDAO.getListaModulo(idCurso);
         Workbook libroExcel = new XSSFWorkbook();
         Sheet hojaNueva = (Sheet) libroExcel.createSheet("CRONOGRAMA DE " + maestria.toUpperCase());
+        hojaNueva.setColumnWidth(0, 3500);
+        hojaNueva.setColumnWidth(1, 5500);
+        hojaNueva.setColumnWidth(2, 5500);
         Row fila = hojaNueva.createRow(0);
 
         //Estilos para el archivo Excel
@@ -156,6 +170,7 @@ public class GeneragorHorarioMBeans {
         cellStyle.setAlignment(HorizontalAlignment.CENTER);
         cellStyle.setVerticalAlignment(VerticalAlignment.TOP);
         cellStyle.setWrapText(true);
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 
         fila.createCell(0).setCellValue("UNIVERSIDAD TECNICA ESTATAL DE QUEVEDO");
         fila = hojaNueva.createRow(1);
@@ -166,6 +181,10 @@ public class GeneragorHorarioMBeans {
         fila.createCell(0).setCellValue("DESDE " + fechaInicio + " A " + fechaFin);
         //Encabezado Excel
         fila = hojaNueva.createRow(4);
+//        cellStyle.setBorderBottom(BorderStyle.THIN);
+//        cellStyle.setBorderLeft(BorderStyle.THIN);
+//        cellStyle.setBorderRight(BorderStyle.THIN);
+//        cellStyle.setBorderTop(BorderStyle.THIN);
         fila.createCell(0).setCellValue((listadoModulo.size() > 0) ? listadoModulo.get(0).getParalelo().toUpperCase() : "PARALELO ?");
         fila.createCell(1);
         fila.createCell(2);
@@ -173,15 +192,16 @@ public class GeneragorHorarioMBeans {
         hojaNueva.addMergedRegion(CellRangeAddress.valueOf("A5:D5"));
         SimpleDateFormat getYearFormat = new SimpleDateFormat("yyyy");
         fila.createCell(4).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
+        fila.getCell(4).setCellStyle(cellStyle);
         fila = hojaNueva.createRow(5);
         fila.createCell(0).setCellValue("ORDEN");
-        fila.getCell(0).getCellStyle().setWrapText(true);
+        fila.getCell(0).setCellStyle(cellStyle);
         fila.createCell(1).setCellValue("MODULOS");
-        fila.getCell(1).getCellStyle().setWrapText(true);
+        fila.getCell(1).setCellStyle(cellStyle);
         fila.createCell(2).setCellValue("DOCENTES");
-        fila.getCell(2).getCellStyle().setWrapText(true);
+        fila.getCell(2).setCellStyle(cellStyle);
         fila.createCell(3).setCellValue("HORAS");
-        fila.getCell(3).getCellStyle().setWrapText(true);
+        fila.getCell(3).setCellStyle(cellStyle);
         mesesFormado = getListaEntreFechas(fechaInicio, fechaFin);
         anioFormato = getListaEntreAños(mesesFormado);
         int columna = 4;
@@ -202,6 +222,7 @@ public class GeneragorHorarioMBeans {
                     if (posicion < cantidadAnio) {
                         if (contador >= 1) {
                             fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(anioFormato.get(posicion + 1)) + "'");
+                            fila_aux.getCell(columna).setCellStyle(cellStyle);
                             posicion++;
                         }
                     }
@@ -279,21 +300,23 @@ public class GeneragorHorarioMBeans {
                     contadoEspacios = 0;
                 }
             }
+            hojaNueva.setColumnWidth(celda_aux, 3800);
             celda_aux++;
         }
         int filaExcel = 6;
         int orden = 1;
         int anioContador;
+        int tamanioCelda;
         for (Horario horario : listadoModulo) {
             fila = hojaNueva.createRow(filaExcel);
             fila.createCell(0).setCellValue(orden);
-            fila.getCell(0).getCellStyle().setWrapText(true);
+            fila.getCell(0).setCellStyle(cellStyle);
             fila.createCell(1).setCellValue(horario.getNombreModulo());
-            fila.getCell(1).getCellStyle().setWrapText(true);
+            fila.getCell(1).setCellStyle(cellStyle);
             fila.createCell(2).setCellValue(horario.getNombreDocente());
-            fila.getCell(2).getCellStyle().setWrapText(true);
+            fila.getCell(2).setCellStyle(cellStyle);
             fila.createCell(3).setCellValue(horario.getHora());
-            fila.getCell(3).getCellStyle().setWrapText(true);
+            fila.getCell(3).setCellStyle(cellStyle);
 
             String dia = "Ases ";
             int celda;
@@ -741,6 +764,7 @@ public class GeneragorHorarioMBeans {
                     integracionMaestria = new Maestria();
                     periodo = new Periodo();
                     maestriaBusqueda = new Maestria();
+                    listaPeriodo = maestriaDAO.getListaPeriodo();
                 } else {
                     showWarn("Error al registrar el periodo, esta fecha ya se ha utilizado para la planificación"
                             + " de esta maestría.");

@@ -19,8 +19,17 @@ public class Periodo {
     private Date fechaInicio;
     private Date fechaFin;
     private int cantidadEstudiante;
+    private String estado;
 
     public Periodo() {
+    }
+
+    public Periodo(int idPeriodo, String nombrePeriodo, Date fechaInicio, Date fechaFin, String estado) {
+        this.idPeriodo = idPeriodo;
+        this.nombrePeriodo = nombrePeriodo;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.estado = estado;
     }
 
     public Periodo(int idPeriodo, String nombrePeriodo, Date fechaInicio, Date fechaFin) {
@@ -85,6 +94,14 @@ public class Periodo {
 
     public void setCantidadEstudiante(int cantidadEstudiante) {
         this.cantidadEstudiante = cantidadEstudiante;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
 }

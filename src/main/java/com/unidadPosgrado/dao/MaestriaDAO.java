@@ -28,6 +28,24 @@ public class MaestriaDAO {
         conexion = new Conexion();
     }
 
+    //TABLE(_id_periodo integer, _nombre_maestria character varying, _fecha_inicio date, _fecha_fin date,_estado character(1))
+    public List<Periodo> getListaPeriodo() {
+        List<Periodo> listadoPeriodo = new ArrayList<>();
+        sentencia = String.format("SELECT * from public.\"getListaPeriodo\"();");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoPeriodo.add(new Periodo(resultSet.getInt("_id_periodo"), resultSet.getString("_nombre_maestria"), resultSet.getDate("_fecha_inicio"),
+                        resultSet.getDate("_fecha_fin"), resultSet.getString("_estado")));
+            }
+            return listadoPeriodo;
+        } catch (SQLException e) {
+            return listadoPeriodo;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
     public List<Maestria> getListaMaestria() {
         List<Maestria> listadoMaestria = new ArrayList<>();
         sentencia = String.format("select * from public.\"getListaMaestrias\"()");
@@ -201,9 +219,10 @@ public class MaestriaDAO {
             conexion.desconectar();
         }
     }
+
     public int verificaCantidadDocente(Maestria maestria) {
         int mensaje = 0;
-        sentencia = String.format("SELECT public.verifica_cantidad_docente("+maestria.getIdMaestria()+")");
+        sentencia = String.format("SELECT public.verifica_cantidad_docente(" + maestria.getIdMaestria() + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
@@ -216,9 +235,10 @@ public class MaestriaDAO {
             conexion.desconectar();
         }
     }
+
     public List<Maestria> getEditListaMaestria(String cedula) {
         List<Maestria> listadoMaestria = new ArrayList<>();
-        sentencia = String.format("SELECT * from public.get_lista_maestriaxdocente('"+cedula+"')");
+        sentencia = String.format("SELECT * from public.get_lista_maestriaxdocente('" + cedula + "')");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {

@@ -17,56 +17,96 @@
                 <div class="card">
                     <p:tabView id="planificacionHorario">
                         <p:tab title="Planificación Periodo">
-                            <p:outputPanel id="nuevoPerido" class="ui-fluid">
-                                <div class="ui-fluid p-formgrid p-grid">
-                                    <div class="p-field p-col-12 p-md-8">
-                                        <p:outputLabel value="Nombre Maestría"/>
-                                        <p:inputText maxlength="150" value="#{GeneradorHorarioMB.integracionMaestria.nombre}" readonly="true"/>
-                                    </div>
-                                    <div class="p-field p-col-12 p-md-4">
-                                        <p:outputLabel value="." style="color: white" />
-                                        <p:commandButton style="margin-right: 6px;" value="Buscar Maestría" 
-                                                         styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestriaPeriodoP').show()">
-                                        </p:commandButton>
-                                    </div>
+                            <p:toolbar>
+                                <p:toolbarGroup>
+                                    <p:commandButton id="dynaButton" value="Planificación del Periodo" type="button" icon="pi pi-bars"/>
+                                    <p:menu overlay="true" trigger="dynaButton" my="left top" at="left bottom">
+                                        <p:submenu label="Opciones">
+                                            <p:menuitem value="Nuevo Periodo Académico" icon="pi pi-save"
+                                                        onclick="PF('dlgPlanificacion').show()"/>
+                                        </p:submenu>
+                                    </p:menu>
+                                </p:toolbarGroup>
+                            </p:toolbar>
+                            <p:outputPanel id="HorarioPeriodo" class="ui-fluid">
+                                <p:dataTable id="horarioPeriodo" var="periodo" rows="5" paginator="true" paginatorPosition="bottom" value="#{GeneradorHorarioMB.listaPeriodo}">
+                                    <f:facet name="header">
+                                        Periodos Académicos 
+                                    </f:facet>
 
-                                    <p:outputLabel value="Descripción:"/>
-                                    <p:inputTextarea maxlength="200" rows="3" cols="3" value="#{GeneradorHorarioMB.periodo.nombrePeriodo}"/>
-                                    <div class="p-field p-col-12 p-md-6">
-                                        <p:outputLabel value="Fecha de inicio:"/>
-                                        <p:calendar value="#{GeneradorHorarioMB.periodo.fechaInicio}" />
-                                    </div>
-                                    <div class="p-field p-col-12 p-md-6">
-                                        <p:outputLabel value="Fecha de finalización:"/>
-                                        <p:calendar value="#{GeneradorHorarioMB.periodo.fechaFin}" />
-                                    </div>
-
-                                    <div class="p-field p-col-12 p-md-6">
-                                        <p:outputLabel value="Paralelo:"/>
-                                        <p:selectOneMenu id="paralelo" value="#{GeneradorHorarioMB.periodo.nombreParalelo}">
-                                            <p:ajax update="@this" process="@this"/>
-                                            <f:selectItem itemLabel="A" itemValue="A"/>
-                                            <f:selectItem itemLabel="B" itemValue="B"/>
-                                            <f:selectItem itemLabel="C" itemValue="C"/>
-                                            <f:selectItem itemLabel="D" itemValue="D"/>
-                                        </p:selectOneMenu>
-                                    </div>
-                                    <div class="p-field p-col-12 p-md-6">
-                                        <p:outputLabel value="Cantidad de estudiantes:"/>
-                                        <p:inputNumber value="#{GeneradorHorarioMB.periodo.cantidadEstudiante}" />
-                                    </div>
-
-                                    <div class="p-field p-col-12 p-md-6">
-                                        <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{GeneradorHorarioMB.registrarPeriodo()}"
-                                                         update=":form_horario:messages ,:form_horario:planificacionHorario:nuevoPerido"/>
-                                    </div>
-                                    <div class="p-field p-col-12 p-md-6">
-                                        <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" actionListener="#{GeneradorHorarioMB.cancelarPeriodo()}" 
-                                                         update=":form_horario:messages ,:form_horario:planificacionHorario:nuevoPerido"/>
-                                    </div>
-                                </div>
-
+                                    <p:column headerText="Nombre de la Maestría">
+                                        <h:outputText value="#{periodo.nombrePeriodo}" />
+                                    </p:column>
+                                    <p:column headerText="Fecha Inicio">
+                                        <h:outputText value="#{periodo.fechaInicio}" />
+                                    </p:column>
+                                    <p:column headerText="Fecha Fin">
+                                        <h:outputText value="#{periodo.fechaFin}" />
+                                    </p:column>
+                                    <p:column headerText="Acciones">
+                                        <p:commandButton id="accionesPeriodo" value="Acciones" type="button" icon="pi pi-chevron-down" styleClass="ui-button-outlined" />
+                                        <p:menu overlay="true" trigger="accionesPeriodo" my="left top" at="left bottom">
+                                            <p:submenu label="Acciones">
+                                                <p:menuitem value="Detalle" icon="pi pi-file-o"/>
+                                                <p:menuitem value="Editar" icon="pi pi-pencil"/>
+                                            </p:submenu>
+                                        </p:menu>
+                                    </p:column>
+                                </p:dataTable>
                             </p:outputPanel>
+                            <p:dialog header="Planificación Periodo" widgetVar="dlgPlanificacion" minHeight="100" width="650" showEffect="fade" modal="true" responsive="true" position="center" closable="false">
+                                <p:outputPanel id="nuevoPerido" class="ui-fluid">
+                                    <div class="ui-fluid p-formgrid p-grid">
+                                        <div class="p-field p-col-12 p-md-8">
+                                            <p:outputLabel value="Nombre Maestría"/>
+                                            <p:inputText maxlength="150" value="#{GeneradorHorarioMB.integracionMaestria.nombre}" readonly="true"/>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-4">
+                                            <p:outputLabel value="." style="color: white" />
+                                            <p:commandButton style="margin-right: 6px;" value="Buscar Maestría" 
+                                                             styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestriaPeriodoP').show()">
+                                            </p:commandButton>
+                                        </div>
+
+                                        <p:outputLabel value="Descripción:"/>
+                                        <p:inputTextarea maxlength="200" rows="3" cols="3" value="#{GeneradorHorarioMB.periodo.nombrePeriodo}"/>
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel value="Fecha de inicio:"/>
+                                            <p:calendar value="#{GeneradorHorarioMB.periodo.fechaInicio}" />
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel value="Fecha de finalización:"/>
+                                            <p:calendar value="#{GeneradorHorarioMB.periodo.fechaFin}" />
+                                        </div>
+
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel value="Paralelo:"/>
+                                            <p:selectOneMenu id="paralelo" value="#{GeneradorHorarioMB.periodo.nombreParalelo}">
+                                                <p:ajax update="@this" process="@this"/>
+                                                <f:selectItem itemLabel="A" itemValue="A"/>
+                                                <f:selectItem itemLabel="B" itemValue="B"/>
+                                                <f:selectItem itemLabel="C" itemValue="C"/>
+                                                <f:selectItem itemLabel="D" itemValue="D"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel value="Cantidad de estudiantes:"/>
+                                            <p:inputNumber value="#{GeneradorHorarioMB.periodo.cantidadEstudiante}" />
+                                        </div>
+
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{GeneradorHorarioMB.registrarPeriodo()}"
+                                                             update=":form_horario:messages ,:form_horario:planificacionHorario:nuevoPerido,:form_horario:planificacionHorario:horarioPeriodo"/>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" actionListener="#{GeneradorHorarioMB.cancelarPeriodo()}" 
+                                                             onclick="PF('dlgPlanificacion').hide()" update=":form_horario:messages ,:form_horario:planificacionHorario:nuevoPerido"/>
+                                        </div>
+                                    </div>
+
+                                </p:outputPanel>
+                            </p:dialog>
+
                             <p:dialog header="Seleccione una de las  Maestrías" widgetVar="listMaestriaPeriodoP" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
                                 <div class="card">
                                     <p:dataTable id="dtSeleccionMaestriaPeriodoP" var="maestrias" value="#{GeneradorHorarioMB.listaMaestriaPeriodo}" editable="true" paginatorPosition="bottom"

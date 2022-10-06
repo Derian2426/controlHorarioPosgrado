@@ -142,6 +142,7 @@ public class DocenteMBeans {
             listaDocente = docenteDAO.getListaDocente();
             listaDocenteBusqueda = listaDocente;
             listaMaestria = maestriaDAO.getListaMaestria();
+            busquedaMaestriaAux = maestriaDAO.getListaMaestria();
             maestriaBusqueda = new Maestria();
         } catch (Exception e) {
             showWarn(e.getMessage());

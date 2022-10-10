@@ -23,8 +23,10 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -185,15 +187,20 @@ public class GeneragorHorarioMBeans {
         fila.createCell(0).setCellValue("DESDE " + fechaInicio + " A " + fechaFin);
         //Encabezado Excel
         fila = hojaNueva.createRow(4);
-//        cellStyle.setBorderBottom(BorderStyle.THIN);
-//        cellStyle.setBorderLeft(BorderStyle.THIN);
-//        cellStyle.setBorderRight(BorderStyle.THIN);
-//        cellStyle.setBorderTop(BorderStyle.THIN);
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        cellStyle.setBorderTop(BorderStyle.THIN);
         fila.createCell(0).setCellValue((listadoModulo.size() > 0) ? listadoModulo.get(0).getParalelo().toUpperCase() : "PARALELO ?");
         fila.createCell(1);
         fila.createCell(2);
         fila.createCell(3);
         hojaNueva.addMergedRegion(CellRangeAddress.valueOf("A5:D5"));
+        //Aqui para luego cambiar el color
+        fila.getSheet().getRow(4).getCell(0).setCellStyle(cellStyle);
+        fila.getSheet().getRow(4).getCell(1).setCellStyle(cellStyle);
+        fila.getSheet().getRow(4).getCell(2).setCellStyle(cellStyle);
+        fila.getSheet().getRow(4).getCell(3).setCellStyle(cellStyle);
         SimpleDateFormat getYearFormat = new SimpleDateFormat("yyyy");
         fila.createCell(4).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
         fila.getCell(4).setCellStyle(cellStyle);
@@ -297,6 +304,8 @@ public class GeneragorHorarioMBeans {
         int contadoEspacios = 0;
         while (celda_aux <= columna) {
             if ("".equals(fila.getSheet().getRow(4).getCell(celda_aux).getStringCellValue()) && celda_aux < columna) {
+                //Aqui para luego cambiar el color
+                fila.getSheet().getRow(4).getCell(celda_aux).setCellStyle(cellStyle);
                 contadoEspacios++;
             } else {
                 if (contadoEspacios > 0) {
@@ -310,7 +319,6 @@ public class GeneragorHorarioMBeans {
         int filaExcel = 6;
         int orden = 1;
         int anioContador;
-        int tamanioCelda;
         for (Horario horario : listadoModulo) {
             fila = hojaNueva.createRow(filaExcel);
             fila.createCell(0).setCellValue(orden);
@@ -322,7 +330,7 @@ public class GeneragorHorarioMBeans {
             fila.createCell(3).setCellValue(horario.getHora());
             fila.getCell(3).setCellStyle(cellStyle);
 
-            String dia = "Ases ";
+            String dia = "";
             int celda;
             anioContador = anioFormato.size();
             String anioCelda = "";
@@ -677,7 +685,6 @@ public class GeneragorHorarioMBeans {
                 }
                 sumadorCeldas++;
                 try {
-                    String prueba = fila.getSheet().getRow(4).getCell(sumadorCeldas).getStringCellValue();
                     while ("".equals(fila.getSheet().getRow(4).getCell(sumadorCeldas).getStringCellValue())) {
                         sumadorCeldas++;
                     }
@@ -685,10 +692,27 @@ public class GeneragorHorarioMBeans {
                     System.out.println("    " + e.getMessage());
                     break;
                 }
-
                 maximoAnio++;
             }
-
+            String diaAux;
+            int cendasRellena = 4;
+            while (cendasRellena < columna) {
+                try {
+                    if ("".equals(fila.getSheet().getRow(filaExcel).getCell(cendasRellena).getStringCellValue())) {
+                        fila.createCell(cendasRellena);
+                        fila.getSheet().getRow(filaExcel).getCell(cendasRellena).setCellStyle(cellStyle);
+                    } else {
+                        diaAux = fila.getSheet().getRow(filaExcel).getCell(cendasRellena).getStringCellValue();
+                        diaAux = diaAux.substring(0, diaAux.length() - 1);
+                        fila.getSheet().getRow(filaExcel).getCell(cendasRellena).setCellValue(diaAux);
+//                            
+                    }
+                } catch (Exception e) {
+                    fila.createCell(cendasRellena);
+                    fila.getSheet().getRow(filaExcel).getCell(cendasRellena).setCellStyle(cellStyle);
+                }
+                cendasRellena++;
+            }
             filaExcel++;
             orden++;
         }

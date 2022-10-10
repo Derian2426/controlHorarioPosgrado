@@ -25,15 +25,15 @@ public class Conexion implements Serializable {
     private String mensaje;
 
     //Credenciales para la conexion
-//    private String url = "jdbc:postgresql://ec2-3-217-113-25.compute-1.amazonaws.com:5432/d73bcc4qo4v4uh";
-//    private String usuario = "zyfyxaqvzijtvh";
-//    private String clave = "57570678494e0b63bfeb58823f8e48579b30813750bdf7d2df98bf72aa49ca49";
+    private String url = "jdbc:postgresql://ec2-3-217-113-25.compute-1.amazonaws.com:5432/d73bcc4qo4v4uh";
+    private String usuario = "zyfyxaqvzijtvh";
+    private String clave = "57570678494e0b63bfeb58823f8e48579b30813750bdf7d2df98bf72aa49ca49";
     
     
     
-    private String url = "jdbc:postgresql://localhost:5432/Unidad_Posgrado";
-    private String usuario = "postgres";
-    private String clave = "0929415636";
+//    private String url = "jdbc:postgresql://localhost:5432/Unidad_Posgrado";
+//    private String usuario = "postgres";
+//    private String clave = "0929415636";
     String classForName = "org.postgresql.Driver";
 
     public Conexion() {

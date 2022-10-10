@@ -225,16 +225,16 @@
                                 </div>
                             </p:dialog>
                             <p:dialog widgetVar="seleccionFecha" header="Asignación Horario" showEffect="fade" height="50%" width="50%" modal="true" responsive="true">
-                                <p:ajax event="close" listener="#{horarioMB.cerrarDialigo()}" update=":form_horario:planificacionHorario:nuevoDocenteAsignado"/>
+                                <p:ajax event="close" listener="#{horarioMB.cerrarDialigo()}" update="nuevoDocenteAsignado"/>
                                 <p:outputPanel id="nuevoDocenteAsignado" class="ui-fluid">
-                                    <p:outputLabel value="Módulos" for="@next" styleClass="p-text-bold"/>
+                                    <p:outputLabel id="moduloactualiza" value="Módulos" for="@next" styleClass="p-text-bold"/>
                                     <p:selectOneMenu editable="false" value="#{horarioMB.modulo.idMateria}" disabled="#{horarioMB.estadoAsignacion}">
                                         <f:selectItem itemLabel="Seleccione un Módulo" noSelectionOption="true"/>
                                         <f:selectItems value="#{horarioMB.listaModulo}" var="moduloAsignado" 
                                                        itemLabel="#{moduloAsignado.nombreMateria}" 
                                                        itemValue="#{moduloAsignado.idMateria}"></f:selectItems>
                                     </p:selectOneMenu>
-                                    <p:outputLabel value="Docentes" for="@next" styleClass="p-text-bold"/>
+                                    <p:outputLabel id="docenteactualiza" value="Docentes" for="@next" styleClass="p-text-bold"/>
                                     <p:selectOneMenu editable="false" disabled="#{horarioMB.estadoAsignacion}" value="#{horarioMB.docente.id_docente}">
                                         <f:selectItem itemLabel="Seleccione un Docente" noSelectionOption="true"/>
                                         <f:selectItems value="#{horarioMB.listaDocente}" var="docenteAsignado" 
@@ -293,10 +293,7 @@
                                     </div>
                                     <p:commandButton actionListener="#{horarioMB.registrarPeriodo()}" action="#{GeneradorHorarioMB.actualizaLista()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" 
                                                      update=":form_horario:planificacionHorario:calendarioAcademico,:form_horario:planificacionHorario:nuevoDocenteAsignado,:form_horario:messages,mensajeEstatico,:form_horario:planificacionHorario:horarioMaestria" style="margin-bottom: 1vh;"/>
-                                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
-                                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
-                                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
-                                    </p:confirmDialog>
+
                                 </p:outputPanel>
                             </p:dialog>
                             <p:dialog header="Transacción Fallida" widgetVar="transaccion" minHeight="40" width="550" showEffect="fade" modal="true">

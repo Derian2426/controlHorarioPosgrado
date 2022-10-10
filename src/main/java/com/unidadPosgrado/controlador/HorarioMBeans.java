@@ -343,8 +343,10 @@ public class HorarioMBeans {
         horaSource = new ArrayList<>();
         horaTarget = new ArrayList<>();
         tiempoHorario = new DualListModel<>(horaSource, horaTarget);
-        listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+        listaDocente = new ArrayList<>();
+        listaModulo = new ArrayList<>();
         listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+        listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
     }
 
     public List<TiempoModulo> verificaTiempo() {

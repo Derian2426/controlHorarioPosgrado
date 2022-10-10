@@ -282,6 +282,7 @@ public class HorarioMBeans {
                     tiempoHorario = new DualListModel<>(horaSource, horaTarget);
                     PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
                     PrimeFaces.current().executeScript("PF('transaccion').show()");
+                    llenaFechasHorario();
 
                 } else {
                     showInfo("Asignación registrada con exito.");

@@ -150,6 +150,10 @@ public class GeneragorHorarioMBeans {
         this.listaPeriodo = listaPeriodo;
     }
 
+    public void actualizaLista() {
+        listaMaestria = horarioDAO.getListaMaestriaPeriodo();
+    }
+
     public void generarArchivoExcel(int idCurso, String maestria, Date fechaInicio, Date fechaFin) {
         HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().
                 getResponse();

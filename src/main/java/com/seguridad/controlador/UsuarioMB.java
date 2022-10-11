@@ -28,23 +28,31 @@ public class UsuarioMB {
     RolDAO rolDAO;
     private Usuario usuario;
     private Rol rol;
-    
+    private Usuario usuarioSesion;
+    private Usuario usuarioEdit;
+    private boolean estado;
+
     String warnMsj = "Advertencia";
     String infMsj = "Exito";
-    
+
     private final FacesContext facesContext = FacesContext.getCurrentInstance();
     HttpSession httpSession = (HttpSession) facesContext.getExternalContext().getSession(true);
-    
+
     public UsuarioMB() {
         userDAO = new UsuarioDAO();
         rolDAO = new RolDAO();
         usuario = new Usuario();
         rol = new Rol();
+        usuarioSesion = new Usuario();
+        usuarioEdit = new Usuario();
+        estado = true;
     }
+
     @PostConstruct
     public void init() {
-        
+
     }
+
     public Usuario getUsuario() {
         return usuario;
     }
@@ -52,8 +60,32 @@ public class UsuarioMB {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    
-    public void registrarUsuario(){
+
+    public Usuario getUsuarioSesion() {
+        return usuarioSesion;
+    }
+
+    public void setUsuarioSesion(Usuario usuarioSesion) {
+        this.usuarioSesion = usuarioSesion;
+    }
+
+    public boolean getEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
+    public Usuario getUsuarioEdit() {
+        return usuarioEdit;
+    }
+
+    public void setUsuarioEdit(Usuario usuarioEdit) {
+        this.usuarioEdit = usuarioEdit;
+    }
+
+    public void registrarUsuario() {
         Pattern pattern = Pattern
                 .compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                         + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
@@ -73,10 +105,10 @@ public class UsuarioMB {
                 showWarn("Confirme contraseña");
             } else if (usuario.getPassword().equals(usuario.getConfpassword())) {
                 int resultadoRegistro = userDAO.registrarUsuario(usuario);
-                if(resultadoRegistro > 0){
+                if (resultadoRegistro > 0) {
                     showInfo(usuario.getNombre().trim().replace(".", ",") + " Guardado con exito");
                     usuario = new Usuario();
-                } else{
+                } else {
                     showWarn("El nombre de usuario ya se encuentra registrado");
                 }
             } else {
@@ -85,10 +117,34 @@ public class UsuarioMB {
         } catch (Exception e) {
         }
     }
-    
+
+    public void cambiaEstado(int idUsuario) {
+        try {
+            if ("".equals(usuarioEdit.getNomUserSesion())) {
+                mensajeDeAdvertencia("El campo nombre de usuario no puede estar vacio.");
+            } else if ("".equals(usuarioEdit.getNombreSesion())) {
+                mensajeDeAdvertencia("El campo nombre no puede estar vacio.");
+            } else if ("".equals(usuarioEdit.getApellidoSesion())) {
+                mensajeDeAdvertencia("El campo apellido no puede estar vacio.");
+            } else if ("".equals(usuarioEdit.getCorreoSesion())) {
+                mensajeDeAdvertencia("El campo correo no puede estar vacio.");
+            } else {
+                usuarioEdit.setIdUsuario(idUsuario);
+                usuarioEdit.setEstado(true);
+                if (userDAO.editarUsuario(usuarioEdit) > 0) {
+                    usuarioSesion = usuarioEdit;
+                    mensajeDeExito("Se actualizaron sus datos.");
+                } else {
+                    mensajeDeExito("La mayoria de los campos fueron actualizados");
+                }
+            }
+        } catch (Exception e) {
+            mensajeDeAdvertencia("Este error: " + e.getMessage());
+        }
+    }
+
     public void iniciarSesion() {
         try {
-            Usuario usuarioSesion = new Usuario();
             if ("".equals(usuario.getNomUserSesion())) {
                 mensajeDeAdvertencia("Ingrese un usuario");
             } else if ("".equals(usuario.getPassSesion())) {
@@ -102,17 +158,22 @@ public class UsuarioMB {
                         mensajeDeExito(usuarioSesion.getMensajeAux());
 
                         usuario = usuarioSesion;
-                        
+
                         List<Rol> rolesSesion = rolDAO.getRolesByUsers(usuarioSesion.getIdUsuarioSesion());
-                        
+
                         httpSession.setAttribute("username", usuarioSesion);
 
                         FacesContext.getCurrentInstance().getExternalContext()
                                 .getSessionMap().put("usuario", usuarioSesion);
                         FacesContext.getCurrentInstance().getExternalContext()
                                 .getSessionMap().put("roles", rolesSesion);
-                        
+                        usuarioEdit = usuarioSesion;
+                        usuarioEdit.setApellido(usuarioSesion.getApellidoSesion());
+                        usuarioEdit.setNombre(usuarioSesion.getNombreSesion());
+                        usuarioEdit.setCorreo(usuarioSesion.getCorreoSesion());
+                        usuarioEdit.setNombreUsuario(usuarioSesion.getNomUserSesion());
                         facesContext.getExternalContext().redirect("faces/Vistas/Global/principal.xhtml");
+                        //aqui cargamos los datos del usuario
                     }
                 } else {
                     mensajeDeAdvertencia("Error de conexión al intentar iniciar sesión.");
@@ -122,7 +183,7 @@ public class UsuarioMB {
             showWarn(e.getMessage());
         }
     }
-    
+
     public void cerrarSession() throws IOException {
         httpSession.removeAttribute("usuario");
         httpSession.removeAttribute("roles");
@@ -132,7 +193,7 @@ public class UsuarioMB {
         usuario.setNomUserSesion("");
         rol.setNombre("");
     }
-    
+
     public void mensajeDeAdvertencia(String msj) {
         FacesContext.getCurrentInstance().
                 addMessage(null, new FacesMessage(
@@ -144,7 +205,7 @@ public class UsuarioMB {
                 addMessage(null, new FacesMessage(
                         FacesMessage.SEVERITY_INFO, infMsj, msj));
     }
-    
+
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
         FacesContext.getCurrentInstance().
                 addMessage(null, new FacesMessage(severity, summary, detail));

@@ -156,14 +156,14 @@ public class GeneragorHorarioMBeans {
         listaMaestria = horarioDAO.getListaMaestriaPeriodo();
     }
 
-    public void generarArchivoExcel(int idCurso, String maestria, Date fechaInicio, Date fechaFin) {
+    public void generarArchivoExcel(int idCurso, String maestria, Date fechaInicio, Date fechaFin, int idMaestria) {
         HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().
                 getResponse();
         response.addHeader("Content-disposition", "attachment; filename=PLANIFICACIÓN DE " + maestria.toUpperCase() + ".xlsx");
         response.setContentType("application/vnd.ms-excel");
         List<Date> mesesFormado;
         List<Date> anioFormato;
-        listadoModulo = horarioDAO.getListaModulo(idCurso);
+        listadoModulo = horarioDAO.getListaModuloDocente(idCurso, idMaestria);
         Workbook libroExcel = new XSSFWorkbook();
         Sheet hojaNueva = (Sheet) libroExcel.createSheet("CRONOGRAMA DE " + maestria.toUpperCase());
         hojaNueva.setColumnWidth(0, 3500);

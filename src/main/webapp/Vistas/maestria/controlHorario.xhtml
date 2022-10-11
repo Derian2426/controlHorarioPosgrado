@@ -326,8 +326,7 @@
                                     <f:facet name="header">
                                         CALENDARIO ACADEMICO
                                     </f:facet>
-
-                                    <p:column headerText="Nombre de la Maestría">
+                                    <p:column headerText="Nombre de la Maestría" sortBy="#{horario.nombre}">
                                         <h:outputText value="#{horario.nombre}" />
                                     </p:column>
                                     <p:column headerText="Fecha Inicio">

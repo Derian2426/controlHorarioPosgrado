@@ -14,13 +14,11 @@
     <ui:define name="content">
         <h:form id="form_horario">
             <p:growl id="messages" showDetail="true"/>
-            <p:outputPanel id="actualizarPerfil" class="ui-fluid">
+            <p:outputPanel id="actualizarPerfil" class="ui-fluid" style="margin-left: 20%; margin-right: 20%;margin-bottom: 10%;margin-top: 5%">
                 <div class="card">
-                    <h:outputStylesheet library="webjars" name="primeflex/3.2.0/primeflex.min.css" />
-
-                    <div class="flex card-container blue-container"><div class="flex-grow-1 flex align-items-center justify-content-center bg-yellow-500 font-bold text-gray-900 p-4 m-3 border-round">
-                        </div>
-                        <div class="flex-shrink-0 flex align-items-center justify-content-center bg-blue-500 font-bold text-white p-6 m-6 border-round">
+                    <div class="grid ui-fluid">
+                        <div class="col-12 md:col-12">
+                            <h:outputStylesheet library="webjars" name="primeflex/3.2.0/primeflex.min.css" />
                             <p:toolbar>
                                 <p:toolbarGroup>
                                     <div class="grid ui-fluid">
@@ -48,7 +46,7 @@
                                             </div>
                                         </div>
                                         <div class="col-12 md:col-12">
-                                            <h:outputText value="Nombre de Usuario" style="color: #000000"/>
+                                            <h:outputText value="Nombre de Usuario:" style="color: #000000"/>
                                         </div>
                                         <div class="col-12 md:col-12">
                                             <div class="ui-inputgroup">
@@ -57,7 +55,7 @@
                                             </div>
                                         </div>
                                         <div class="col-12 md:col-12">
-                                            <h:outputText value="Correo" style="color: #000000"/>
+                                            <h:outputText value="Correo:" style="color: #000000"/>
                                         </div>
                                         <div class="col-12 md:col-12">
                                             <div class="ui-inputgroup">
@@ -74,9 +72,6 @@
                                     </div>
                                 </p:toolbarGroup>
                             </p:toolbar>
-                        </div>
-                        <div class="flex-grow-1 flex align-items-center justify-content-center bg-yellow-500 font-bold text-gray-900 p-4 m-3 border-round">
-
                         </div>
                     </div>
                 </div>

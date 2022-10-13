@@ -20,8 +20,20 @@ public class Periodo {
     private Date fechaFin;
     private int cantidadEstudiante;
     private String estado;
+    private String estado_planificacion;
+    private String descripcion;
 
     public Periodo() {
+    }
+
+    public Periodo(String nombrePeriodo, String nombreParalelo, Date fechaInicio, Date fechaFin, int cantidadEstudiante, String estado, String descripcion) {
+        this.nombrePeriodo = nombrePeriodo;
+        this.nombreParalelo = nombreParalelo;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.cantidadEstudiante = cantidadEstudiante;
+        this.estado = estado;
+        this.descripcion = descripcion;
     }
 
     public Periodo(int idPeriodo, String nombrePeriodo, Date fechaInicio, Date fechaFin, String estado) {
@@ -102,6 +114,22 @@ public class Periodo {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getEstado_planificacion() {
+        return estado_planificacion;
+    }
+
+    public void setEstado_planificacion(String estado_planificacion) {
+        this.estado_planificacion = estado_planificacion;
     }
 
 }

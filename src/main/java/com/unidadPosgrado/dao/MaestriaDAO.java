@@ -11,6 +11,8 @@ import com.unidadPosgrado.modelo.Modulo;
 import com.unidadPosgrado.modelo.Periodo;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,9 +36,15 @@ public class MaestriaDAO {
         sentencia = String.format("SELECT * from public.\"getListaPeriodo\"();");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
+            String estado;
             while (resultSet.next()) {
+                if ("A".equals(resultSet.getString("_estado").trim())) {
+                    estado = "Activo";
+                } else {
+                    estado = "Terminado";
+                }
                 listadoPeriodo.add(new Periodo(resultSet.getInt("_id_periodo"), resultSet.getString("_nombre_maestria"), resultSet.getDate("_fecha_inicio"),
-                        resultSet.getDate("_fecha_fin"), resultSet.getString("_estado")));
+                        resultSet.getDate("_fecha_fin"), estado));
             }
             return listadoPeriodo;
         } catch (SQLException e) {
@@ -252,4 +260,11 @@ public class MaestriaDAO {
         }
     }
 
+    public void actualizaEstadoPeriodo() {
+        String dateTime = DateTimeFormatter.ofPattern("yyyy MMM dd")
+                .format(LocalDateTime.now());
+        sentencia = String.format("SELECT * from public.actualiza_estado_periodo('" + dateTime + "')");
+        resultSet = conexion.ejecutarSql(sentencia);
+        conexion.desconectar();
+    }
 }

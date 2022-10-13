@@ -43,17 +43,38 @@
                                     <p:column headerText="Fecha Fin">
                                         <h:outputText value="#{periodo.fechaFin}" />
                                     </p:column>
+                                    <p:column headerText="Estado">
+                                        <p:tag severity="success" value="#{periodo.estado}" rendered="#{periodo.estado eq 'Activo'}"/>
+                                        <p:tag severity="danger" value="#{periodo.estado}" rendered="#{periodo.estado eq 'Terminado'}"/>
+                                    </p:column>
                                     <p:column headerText="Acciones">
                                         <p:commandButton id="accionesPeriodo" value="Acciones" type="button" icon="pi pi-chevron-down" styleClass="ui-button-outlined" />
                                         <p:menu overlay="true" trigger="accionesPeriodo" my="left top" at="left bottom">
                                             <p:submenu label="Acciones">
-                                                <p:menuitem value="Detalle" icon="pi pi-file-o"/>
-                                                <p:menuitem value="Editar" icon="pi pi-pencil"/>
+                                                <p:menuitem value="Detalle" icon="pi pi-file-o" actionListener="#{GeneradorHorarioMB.detallePeriodo(periodo.idPeriodo)}"
+                                                            onclick="PF('detallePeriodo').show()" update="form_horario:planificacionHorario:detallePeriodoAcademico"/>
+                                                <p:menuitem value="Editar" icon="pi pi-pencil" rendered="#{periodo.estado eq 'Activo'}"/>
                                             </p:submenu>
                                         </p:menu>
                                     </p:column>
                                 </p:dataTable>
                             </p:outputPanel>
+                            <p:dialog widgetVar="detallePeriodo" header="Detalle del Periodo Académico" showEffect="fade" height="50%" width="30%" modal="true" responsive="true">
+                                <p:outputPanel id="detallePeriodoAcademico" class="ui-fluid">
+                                    <p:outputLabel value="Nombre de la Maestría" for="@next" styleClass="p-text-bold"/>
+                                    <p:inputText value="#{GeneradorHorarioMB.descripcionPeriodo.nombrePeriodo}" readonly="true"/>
+                                    <p:outputLabel value="Fecha de inicio del periodo académico" for="@next" styleClass="p-text-bold"/>
+                                    <p:inputText value="#{GeneradorHorarioMB.descripcionPeriodo.fechaInicio}" readonly="true"/>
+                                    <p:outputLabel value="Fecha de finalización del periodo académico" for="@next" styleClass="p-text-bold"/>
+                                    <p:inputText value="#{GeneradorHorarioMB.descripcionPeriodo.fechaFin}" readonly="true"/>
+                                    <p:outputLabel value="Descripción" styleClass="p-text-bold"/>
+                                    <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{GeneradorHorarioMB.descripcionPeriodo.descripcion}" readonly="true"/>
+                                    <p:outputLabel value="Paralelo" styleClass="p-text-bold"/>
+                                    <p:datePicker value="#{GeneradorHorarioMB.descripcionPeriodo.nombreParalelo}" readonly="true"/>
+                                    <p:outputLabel value="Cantidad de estudiantes" styleClass="p-text-bold"/>
+                                    <p:datePicker value="#{GeneradorHorarioMB.descripcionPeriodo.cantidadEstudiante}" readonly="true"/>
+                                </p:outputPanel>
+                            </p:dialog>
                             <p:dialog header="Planificación Periodo" widgetVar="dlgPlanificacion" minHeight="100" width="650" showEffect="fade" modal="true" responsive="true" position="center" closable="false">
                                 <p:outputPanel id="nuevoPerido" class="ui-fluid">
                                     <div class="ui-fluid p-formgrid p-grid">
@@ -224,7 +245,7 @@
                                     </p:dataTable>
                                 </div>
                             </p:dialog>
-                            <p:dialog widgetVar="seleccionFecha" header="Asignación Horario" showEffect="fade" height="50%" width="50%" modal="true" responsive="true">
+                            <p:dialog widgetVar="seleccionFecha" header="Asignación Horario" showEffect="fade" height="50%" width="50%" modal="true" responsive="true" maximizable="true" blockScroll="true">
                                 <p:ajax event="close" listener="#{horarioMB.cerrarDialigo()}" update="nuevoDocenteAsignado"/>
                                 <p:outputPanel id="nuevoDocenteAsignado" class="ui-fluid">
                                     <p:outputLabel id="moduloactualiza" value="Módulos" for="@next" styleClass="p-text-bold"/>
@@ -336,9 +357,9 @@
                                         <h:outputText value="#{horario.fechaFin}" />
                                     </p:column>
                                     <p:column headerText="Estado" sortBy="#{horario.estado}">
-                                        <p:tag severity="success" value="#{horario.estado}" rendered="#{horario.estado eq 'Activo'}"/>
-                                        <p:tag value="#{horario.estado}" rendered="#{horario.estado eq 'Planificado'}"/>
-                                        <p:tag severity="danger" value="#{horario.estado}" rendered="#{horario.estado eq 'Terminado'}"/>
+                                        <p:tag value="#{horario.estado}" rendered="#{horario.estado eq 'En proceso'}"/>
+                                        <p:tag severity="success" value="#{horario.estado}" rendered="#{horario.estado eq 'Planificado'}"/>
+                                        <p:tag severity="danger" value="#{horario.estado}" rendered="#{horario.estado eq 'No Planificado'}"/>
                                     </p:column>
                                     <p:column headerText="Archivo">
                                         <p:commandButton value="Descargar" icon="pi pi-download" styleClass="ui-button-outlined ui-button-success" 

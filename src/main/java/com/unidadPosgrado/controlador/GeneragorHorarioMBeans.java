@@ -44,6 +44,7 @@ public class GeneragorHorarioMBeans {
 
     private Maestria integracionMaestria;
     private Periodo periodo;
+    private Periodo descripcionPeriodo;
     MaestriaDAO maestriaDAO;
     private Maestria maestriaBusqueda;
     private List<Maestria> listaMaestriaPeriodo;
@@ -59,6 +60,7 @@ public class GeneragorHorarioMBeans {
     public GeneragorHorarioMBeans() {
         maestriaDAO = new MaestriaDAO();
         periodo = new Periodo();
+        descripcionPeriodo = new Periodo();
         integracionMaestria = new Maestria();
         maestriaBusqueda = new Maestria();
         listaMaestriaPeriodo = new ArrayList<>();
@@ -70,6 +72,7 @@ public class GeneragorHorarioMBeans {
         excelOpt = new ExcelOptions();
         listadoAsignaciones = new ArrayList<>();
         listaPeriodo = new ArrayList<>();
+        maestriaDAO.actualizaEstadoPeriodo();
     }
 
     @PostConstruct
@@ -150,6 +153,14 @@ public class GeneragorHorarioMBeans {
 
     public void setListaPeriodo(List<Periodo> listaPeriodo) {
         this.listaPeriodo = listaPeriodo;
+    }
+
+    public Periodo getDescripcionPeriodo() {
+        return descripcionPeriodo;
+    }
+
+    public void setDescripcionPeriodo(Periodo descripcionPeriodo) {
+        this.descripcionPeriodo = descripcionPeriodo;
     }
 
     public void actualizaLista() {
@@ -834,6 +845,10 @@ public class GeneragorHorarioMBeans {
 //            maestriaBusqueda = new Maestria();
         }
 
+    }
+
+    public void detallePeriodo(int idPeriodo) {
+        descripcionPeriodo = horarioDAO.getDescrionPeriodo(idPeriodo);
     }
 
     public void llenaMaestriaPeriodo(Maestria maestria) {

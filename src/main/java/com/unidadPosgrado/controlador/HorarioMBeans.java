@@ -305,6 +305,8 @@ public class HorarioMBeans {
                     llenaFechasHorario();
                     if (listaModulo.size() == 0) {
                         horarioDAO.registrarMaestria(integracionMaestria.getIdCurso());
+                    } else {
+                        horarioDAO.actualizarMaestria(integracionMaestria.getIdCurso());
                     }
                 }
 

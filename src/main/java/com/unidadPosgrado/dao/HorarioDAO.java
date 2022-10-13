@@ -10,6 +10,7 @@ import com.unidadPosgrado.modelo.Docente;
 import com.unidadPosgrado.modelo.Horario;
 import com.unidadPosgrado.modelo.Maestria;
 import com.unidadPosgrado.modelo.Modulo;
+import com.unidadPosgrado.modelo.Periodo;
 import com.unidadPosgrado.modelo.TiempoModulo;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -175,14 +176,17 @@ public class HorarioDAO {
             while (resultSet.next()) {
                 if (null != resultSet.getString("_estado")) {
                     switch (resultSet.getString("_estado")) {
-                        case "P":
+                        case "N":
+                            estado = "No Planificado";
+                            break;
+                        case "S":
                             estado = "Planificado";
                             break;
-                        case "T":
-                            estado = "Terminado";
+                        case "P":
+                            estado = "En proceso";
                             break;
                         default:
-                            estado = "Activo";
+                            estado = "No Planificado";
                             break;
                     }
                 }
@@ -199,6 +203,11 @@ public class HorarioDAO {
 
     public void registrarMaestria(int idCurso) {
         sentencia = String.format("SELECT public.\"actualizarEstado\"(" + idCurso + ")");
+        resultSet = conexion.ejecutarSql(sentencia);
+        conexion.desconectar();
+    }
+    public void actualizarMaestria(int idCurso) {
+        sentencia = String.format("SELECT public.\"actualizarEstadoP\"(" + idCurso + ")");
         resultSet = conexion.ejecutarSql(sentencia);
         conexion.desconectar();
     }
@@ -232,6 +241,23 @@ public class HorarioDAO {
             return listadoModulo;
         } catch (SQLException e) {
             return listadoModulo;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public Periodo getDescrionPeriodo(int idPeriodo) {
+        Periodo periodo = new Periodo();
+        sentencia = String.format("SELECT * from public.get_detalle_periodo(" + idPeriodo + ");");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                periodo = new Periodo(resultSet.getString("_nombre_maestria"), resultSet.getString("_descripcion"), resultSet.getDate("_fecha_inicio"), resultSet.getDate("_fecha_fin"),
+                        resultSet.getInt("_cantidad_estudiante"), resultSet.getString("_estado"), resultSet.getString("_nombre_periodo"));
+            }
+            return periodo;
+        } catch (SQLException e) {
+            return periodo;
         } finally {
             conexion.desconectar();
         }

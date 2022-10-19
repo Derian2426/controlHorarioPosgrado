@@ -15,6 +15,8 @@ import com.unidadPosgrado.modelo.TiempoModulo;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ public class HorarioMBeans {
     private DualListModel<Date> tiempoHorario;
     List<Date> horaSource;
     List<Date> horaTarget;
-
+    public LocalDate localDate2;
     private ScheduleModel eventModel;
     private Periodo periodo;
     private Maestria integracionMaestria;
@@ -223,6 +225,14 @@ public class HorarioMBeans {
 
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
+    }
+
+    public LocalDate getLocalDate2() {
+        return localDate2;
+    }
+
+    public void setLocalDate2(LocalDate localDate2) {
+        this.localDate2 = localDate2;
     }
 
     public void registrarPeriodo() {
@@ -421,7 +431,8 @@ public class HorarioMBeans {
         listaVerificacionTiempo = horarioDAO.getListaValidacion(docente.getId_docente(), integracionMaestria.getFechaInicio(), integracionMaestria.getFechaFin());
         horaSource = getListaEntreFechas(integracionMaestria.getFechaInicio(), integracionMaestria.getFechaFin());
         eliminaFechaRepetidas();
-        asignaFecha(tiempoModulo.getFechaAsignacion());
+        Date fechaConvert = new Date(tiempoModulo.getFechaAsignacion().getTime());
+        asignaFecha(fechaConvert);
         tiempoHorario = new DualListModel<>(horaSource, horaTarget);
     }
 
@@ -449,45 +460,10 @@ public class HorarioMBeans {
     }
 
     public void asignaFecha(Date fecha) {
-        if (!busquedaFechaTarget(fecha)) {
-            for (Date tiempoDisponible : horaSource) {
-                if (fecha.getYear() == tiempoDisponible.getYear()
-                        && fecha.getMonth() == tiempoDisponible.getMonth()
-                        && fecha.getDay() == tiempoDisponible.getDay()) {
-                    horaTarget.add(tiempoDisponible);
-                    horaSource.remove(tiempoDisponible);
-                    break;
-                }
-            }
+        if (busquedaFechaSource(fecha)) {
+            horaSource.remove(fecha);
+            horaTarget.add(fecha);
         }
-
-    }
-
-    public boolean busquedaFechaTarget(Date fechaDate) {
-        boolean verifica = false;
-        for (Date fechaSource : horaTarget) {
-            if (fechaSource.getMonth() == fechaDate.getMonth() && fechaSource.getDay() == fechaDate.getDay()
-                    && fechaSource.getYear() == fechaDate.getYear()) {
-                if (busquedaFecha(fechaDate)) {
-                    horaSource.remove(fechaSource);
-                }
-                verifica = true;
-                break;
-            }
-        }
-        return verifica;
-    }
-
-    public boolean busquedaFecha(Date fechaDate) {
-        boolean verifica = false;
-        for (Date fechaSource : horaSource) {
-            if (fechaSource.getMonth() == fechaDate.getMonth() && fechaSource.getDay() == fechaDate.getDay()
-                    && fechaSource.getYear() == fechaDate.getYear()) {
-                verifica = true;
-                break;
-            }
-        }
-        return verifica;
     }
 
     public void onDateSelect(SelectEvent<LocalDateTime> selectEvent) {
@@ -600,6 +576,13 @@ public class HorarioMBeans {
         listaHorario = horarioDAO.getListaHorario(integracionMaestria.getIdCurso());
         llenaFechasHorario();
         estadoAsignacion = false;
+        SimpleDateFormat getYearFormat = new SimpleDateFormat("yyyy");
+        int anio = Integer.parseInt(getYearFormat.format(maestria.getFechaInicio()));
+        getYearFormat = new SimpleDateFormat("MM");
+        int mes = Integer.parseInt(getYearFormat.format(maestria.getFechaInicio()));
+        getYearFormat = new SimpleDateFormat("dd");
+        int dia = Integer.parseInt(getYearFormat.format(maestria.getFechaInicio()));
+        localDate2 = LocalDate.of(anio, mes, dia);
     }
 
     public void llenaFechasHorario() {
@@ -693,21 +676,18 @@ public class HorarioMBeans {
 
     public void onTransfer(TransferEvent event) {
         SimpleDateFormat formato = new SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-        Date fechaDate = null;
+        Date fechaDate;
         for (Object item : event.getItems()) {
             String fecha = item.toString();
             System.out.println("");
             try {
                 fechaDate = formato.parse(fecha);
                 if (!busquedaFechaSource(fechaDate)) {
-                    for (Date fechaTarget : horaTarget) {
-                        if (fechaTarget.getMonth() == fechaDate.getMonth() && fechaTarget.getDay() == fechaDate.getDay()
-                                && fechaTarget.getYear() == fechaDate.getYear()) {
-                            horaSource.add(fechaTarget);
-                            horaTarget.remove(fechaTarget);
-                            break;
-                        }
-                    }
+                    horaSource.add(fechaDate);
+                    horaTarget.remove(fechaDate);
+                } else if (!busquedaFechaTarge(fechaDate)) {
+                    horaTarget.add(fechaDate);
+                    horaSource.remove(fechaDate);
                 }
             } catch (ParseException ex) {
                 Logger.getLogger(HorarioMBeans.class.getName()).log(Level.SEVERE, null, ex);
@@ -715,13 +695,23 @@ public class HorarioMBeans {
         }
     }
 
+    public boolean busquedaFechaTarge(Date fechaDate) {
+        boolean verifica = false;
+        for (Date fechaSource : horaTarget) {
+            if (fechaSource.getMonth() == fechaDate.getMonth() && fechaSource.getDay() == fechaDate.getDay()
+                    && fechaSource.getYear() == fechaDate.getYear() && fechaSource.equals(fechaDate)) {
+                verifica = true;
+                break;
+            }
+        }
+        return verifica;
+    }
+
     public boolean busquedaFechaSource(Date fechaDate) {
         boolean verifica = false;
         for (Date fechaSource : horaSource) {
             if (fechaSource.getMonth() == fechaDate.getMonth() && fechaSource.getDay() == fechaDate.getDay()
-                    && fechaSource.getYear() == fechaDate.getYear()) {
-                horaTarget.add(fechaSource);
-                horaSource.remove(fechaSource);
+                    && fechaSource.getYear() == fechaDate.getYear() && fechaSource.equals(fechaDate)) {
                 verifica = true;
                 break;
             }

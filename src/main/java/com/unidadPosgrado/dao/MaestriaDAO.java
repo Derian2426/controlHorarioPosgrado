@@ -207,7 +207,7 @@ public class MaestriaDAO {
 
     public int registrarPeriodo(Maestria maestria, Periodo periodo) {
         int mensaje = 0;
-        sentencia = String.format("SELECT public.\"registrarPeriodo\"(\n"
+        sentencia = String.format("SELECT public.\"registrarPeriodoAcademico\"(\n"
                 + "	" + maestria.getIdMaestria() + ", \n"
                 + "	'" + periodo.getNombrePeriodo() + "', \n"
                 + "	'" + periodo.getFechaInicio() + "', \n"

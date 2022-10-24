@@ -28,7 +28,7 @@
                                     </p:menu>
                                 </p:toolbarGroup>
                             </p:toolbar>
-                            <p:outputPanel id="HorarioPeriodo" class="ui-fluid">
+                            <p:outputPanel id="HorarioPeriodoAcademico" class="ui-fluid">
                                 <p:dataTable id="horarioPeriodo" var="periodo" rows="5" paginator="true" paginatorPosition="bottom" value="#{GeneradorHorarioMB.listaPeriodo}">
                                     <f:facet name="header">
                                         Periodos Académicos 
@@ -52,13 +52,59 @@
                                         <p:menu overlay="true" trigger="accionesPeriodo" my="left top" at="left bottom">
                                             <p:submenu label="Acciones">
                                                 <p:menuitem value="Detalle" icon="pi pi-file-o" actionListener="#{GeneradorHorarioMB.detallePeriodo(periodo.idPeriodo)}"
-                                                            onclick="PF('detallePeriodo').show()" update="form_horario:planificacionHorario:detallePeriodoAcademico"/>
-                                                <p:menuitem value="Editar" icon="pi pi-pencil" rendered="#{periodo.estado eq 'Activo'}"/>
+                                                            update="form_horario:planificacionHorario:detallePeriodoAcademico"/>
+                                                <p:menuitem value="Editar" icon="pi pi-pencil" rendered="#{periodo.estado eq 'Activo'}" actionListener="#{GeneradorHorarioMB.editarPeriodo(periodo.idPeriodo,periodo.idMaestria)}"
+                                                            update="form_horario:planificacionHorario:editPeriodoAcademico,:form_horario:planificacionHorario:horarioPeriodo"/>
                                             </p:submenu>
                                         </p:menu>
                                     </p:column>
                                 </p:dataTable>
                             </p:outputPanel>
+                            <p:dialog widgetVar="editPeriodo" header="Editar Periodo Académico" showEffect="fade" height="50%" width="30%" modal="true" responsive="true">
+                                <p:outputPanel id="editPeriodoAcademico" class="ui-fluid">
+                                    <div class="ui-fluid p-formgrid p-grid">
+                                        <div class="p-field p-col-12 p-md-12">
+                                            <p:outputLabel value="Nombre de la Maestría" for="@next" styleClass="p-text-bold"/>
+                                            <p:inputText value="#{GeneradorHorarioMB.editPeriodo.nombrePeriodo}" readonly="true"/>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel value="Fecha de inicio del periodo académico" for="@next" styleClass="p-text-bold"/>
+                                            <p:datePicker value="#{GeneradorHorarioMB.editPeriodo.fechaInicio}"/>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel value="Fecha de finalización del periodo académico" for="@next" styleClass="p-text-bold"/>
+                                            <p:datePicker value="#{GeneradorHorarioMB.editPeriodo.fechaFin}"/>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-12">
+                                            <p:outputLabel value="Descripción" styleClass="p-text-bold"/>
+                                            <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{GeneradorHorarioMB.editPeriodo.descripcion}"/>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-12">
+                                            <p:outputLabel value="Paralelo" styleClass="p-text-bold"/>
+                                            <p:selectOneMenu id="paraleloedit" value="#{GeneradorHorarioMB.editPeriodo.nombreParalelo}">
+                                                <p:ajax update="@this" process="@this"/>
+                                                <f:selectItem itemLabel="A" itemValue="A"/>
+                                                <f:selectItem itemLabel="B" itemValue="B"/>
+                                                <f:selectItem itemLabel="C" itemValue="C"/>
+                                                <f:selectItem itemLabel="D" itemValue="D"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-12">
+                                            <p:outputLabel value="Cantidad de estudiantes" styleClass="p-text-bold"/>
+                                            <p:inputNumber value="#{GeneradorHorarioMB.editPeriodo.cantidadEstudiante}"/>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-6">
+                                            
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{GeneradorHorarioMB.EditaPeriodo()}"
+                                                             action="#{horarioMB.actualizaListas()}"
+                                                             update=":form_horario:messages ,:form_horario:planificacionHorario:editPeriodoAcademico,:form_horario:planificacionHorario:horarioPeriodo,:form_horario:planificacionHorario:dtSeleccionMaestriaPeriodo,:form_horario:planificacionHorario:horarioMaestria"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </p:dialog>
+
                             <p:dialog widgetVar="detallePeriodo" header="Detalle del Periodo Académico" showEffect="fade" height="50%" width="30%" modal="true" responsive="true">
                                 <p:outputPanel id="detallePeriodoAcademico" class="ui-fluid">
                                     <p:outputLabel value="Nombre de la Maestría" for="@next" styleClass="p-text-bold"/>

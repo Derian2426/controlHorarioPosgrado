@@ -13,6 +13,7 @@ import java.util.Date;
  */
 public class Periodo {
 
+    private int idMaestria;
     private int idPeriodo;
     private String nombrePeriodo;
     private String nombreParalelo;
@@ -36,7 +37,8 @@ public class Periodo {
         this.descripcion = descripcion;
     }
 
-    public Periodo(int idPeriodo, String nombrePeriodo, Date fechaInicio, Date fechaFin, String estado) {
+    public Periodo(int idMaestria, int idPeriodo, String nombrePeriodo, Date fechaInicio, Date fechaFin, String estado) {
+        this.idMaestria = idMaestria;
         this.idPeriodo = idPeriodo;
         this.nombrePeriodo = nombrePeriodo;
         this.fechaInicio = fechaInicio;
@@ -130,6 +132,14 @@ public class Periodo {
 
     public void setEstado_planificacion(String estado_planificacion) {
         this.estado_planificacion = estado_planificacion;
+    }
+
+    public int getIdMaestria() {
+        return idMaestria;
+    }
+
+    public void setIdMaestria(int idMaestria) {
+        this.idMaestria = idMaestria;
     }
 
 }

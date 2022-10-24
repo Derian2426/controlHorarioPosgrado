@@ -43,12 +43,36 @@ public class MaestriaDAO {
                 } else {
                     estado = "Terminado";
                 }
-                listadoPeriodo.add(new Periodo(resultSet.getInt("_id_periodo"), resultSet.getString("_nombre_maestria"), resultSet.getDate("_fecha_inicio"),
+                listadoPeriodo.add(new Periodo(resultSet.getInt("_id_maestria"), resultSet.getInt("_id_periodo"), resultSet.getString("_nombre_maestria"), resultSet.getDate("_fecha_inicio"),
                         resultSet.getDate("_fecha_fin"), estado));
             }
             return listadoPeriodo;
         } catch (SQLException e) {
             return listadoPeriodo;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public String editarPeriodo(Periodo periodo) {
+        String estado = "";
+        sentencia = String.format("SELECT public.\"editaPeriodoAcademico\"(\n"
+                + "	" + periodo.getIdPeriodo() + ", \n"
+                + "	'" + periodo.getFechaInicio() + "', \n"
+                + "	'" + periodo.getFechaFin() + "', \n"
+                + "	" + periodo.getIdMaestria() + ", \n"
+                + "	'" + "Paralelo " + periodo.getNombreParalelo() + "', \n"
+                + "	" + periodo.getCantidadEstudiante() + ", \n"
+                + "	'" + periodo.getNombrePeriodo() + "'\n"
+                + ")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                estado = resultSet.getString("editaPeriodoAcademico");
+            }
+            return estado;
+        } catch (SQLException e) {
+            return estado;
         } finally {
             conexion.desconectar();
         }
@@ -218,7 +242,7 @@ public class MaestriaDAO {
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                mensaje = Integer.parseInt(resultSet.getString("registrarPeriodo"));
+                mensaje = Integer.parseInt(resultSet.getString("registrarPeriodoAcademico"));
             }
             return mensaje;
         } catch (SQLException e) {

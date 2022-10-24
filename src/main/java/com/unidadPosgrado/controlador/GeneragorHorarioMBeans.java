@@ -45,6 +45,7 @@ public class GeneragorHorarioMBeans {
     private Maestria integracionMaestria;
     private Periodo periodo;
     private Periodo descripcionPeriodo;
+    private Periodo editPeriodo;
     MaestriaDAO maestriaDAO;
     private Maestria maestriaBusqueda;
     private List<Maestria> listaMaestriaPeriodo;
@@ -61,6 +62,7 @@ public class GeneragorHorarioMBeans {
         maestriaDAO = new MaestriaDAO();
         periodo = new Periodo();
         descripcionPeriodo = new Periodo();
+        editPeriodo = new Periodo();
         integracionMaestria = new Maestria();
         maestriaBusqueda = new Maestria();
         listaMaestriaPeriodo = new ArrayList<>();
@@ -165,6 +167,14 @@ public class GeneragorHorarioMBeans {
 
     public void actualizaLista() {
         listaMaestria = horarioDAO.getListaMaestriaPeriodo();
+    }
+
+    public Periodo getEditPeriodo() {
+        return editPeriodo;
+    }
+
+    public void setEditPeriodo(Periodo editPeriodo) {
+        this.editPeriodo = editPeriodo;
     }
 
     public void generarArchivoExcel(int idCurso, String maestria, Date fechaInicio, Date fechaFin, int idMaestria) {
@@ -849,6 +859,25 @@ public class GeneragorHorarioMBeans {
 
     public void detallePeriodo(int idPeriodo) {
         descripcionPeriodo = horarioDAO.getDescrionPeriodo(idPeriodo);
+        PrimeFaces.current().executeScript("PF('detallePeriodo').show()");
+    }
+
+    public void editarPeriodo(int idPeriodo, int idMaestria) {
+        editPeriodo = horarioDAO.getDescrionPeriodo(idPeriodo);
+        editPeriodo.setIdMaestria(idMaestria);
+        editPeriodo.setIdPeriodo(idPeriodo);
+        PrimeFaces.current().executeScript("PF('editPeriodo').show()");
+        descripcionPeriodo.setFechaInicio(editPeriodo.getFechaInicio());
+        descripcionPeriodo.setFechaFin(editPeriodo.getFechaFin());
+    }
+
+    public void EditaPeriodo() {
+        String estado;
+        estado = maestriaDAO.editarPeriodo(editPeriodo);
+        PrimeFaces.current().executeScript("PF('editPeriodo').hide()");
+        showInfo(estado);
+        listaMaestria = horarioDAO.getListaMaestriaPeriodo();
+        listaPeriodo = maestriaDAO.getListaPeriodo();
     }
 
     public void llenaMaestriaPeriodo(Maestria maestria) {

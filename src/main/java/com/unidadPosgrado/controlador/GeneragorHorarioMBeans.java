@@ -801,7 +801,7 @@ public class GeneragorHorarioMBeans {
             } else if (periodo.getFechaInicio() == null) {
                 showWarn("Seleccione una fecha de inicio.");
             } else if (periodo.getFechaFin() == null) {
-                showWarn("Seleccione una fecha de finaalización.");
+                showWarn("Seleccione una fecha de finalización.");
             } else if (periodo.getFechaFin().before(periodo.getFechaInicio())) {
                 showWarn("La fecha no puede ser anterior a la fecha de inicio del Periodo.");
             } else if (periodo.getCantidadEstudiante() < 1) {
@@ -872,12 +872,22 @@ public class GeneragorHorarioMBeans {
     }
 
     public void EditaPeriodo() {
-        String estado;
-        estado = maestriaDAO.editarPeriodo(editPeriodo);
-        PrimeFaces.current().executeScript("PF('editPeriodo').hide()");
-        showInfo(estado);
-        listaMaestria = horarioDAO.getListaMaestriaPeriodo();
-        listaPeriodo = maestriaDAO.getListaPeriodo();
+        if (editPeriodo.getFechaInicio() == null) {
+            showWarn("Seleccione una fecha de inicio.");
+        } else if (editPeriodo.getFechaFin() == null) {
+            showWarn("Seleccione una fecha de finalización.");
+        } else if (editPeriodo.getFechaFin().before(editPeriodo.getFechaInicio())) {
+            showWarn("La fecha no puede ser anterior a la fecha de inicio del Periodo.");
+        } else if (editPeriodo.getCantidadEstudiante() < 1) {
+            showWarn("Ingrese una cantidad de estudiantes para el paralelo.");
+        } else {
+            String estado;
+            estado = maestriaDAO.editarPeriodo(editPeriodo);
+            PrimeFaces.current().executeScript("PF('editPeriodo').hide()");
+            showInfo(estado);
+            listaMaestria = horarioDAO.getListaMaestriaPeriodo();
+            listaPeriodo = maestriaDAO.getListaPeriodo();
+        }
     }
 
     public void llenaMaestriaPeriodo(Maestria maestria) {

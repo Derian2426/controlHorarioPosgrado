@@ -54,7 +54,9 @@ public class GeneragorHorarioMBeans {
     HorarioDAO horarioDAO;
     private List<Maestria> listaMaestria;
     private List<Horario> listadoModulo;
+    private List<Horario> listadoModuloDetalle;
     private List<Horario> listadoAsignaciones;
+    private List<Horario> listadoDetalleAsignaciones;
     private List<Periodo> listaPeriodo;
     private ExcelOptions excelOpt;
 
@@ -71,8 +73,10 @@ public class GeneragorHorarioMBeans {
         horarioDAO = new HorarioDAO();
         listaMaestria = new ArrayList<>();
         listadoModulo = new ArrayList<>();
+        listadoModuloDetalle = new ArrayList<>();
         excelOpt = new ExcelOptions();
         listadoAsignaciones = new ArrayList<>();
+        listadoDetalleAsignaciones = new ArrayList<>();
         listaPeriodo = new ArrayList<>();
         maestriaDAO.actualizaEstadoPeriodo();
     }
@@ -175,6 +179,22 @@ public class GeneragorHorarioMBeans {
 
     public void setEditPeriodo(Periodo editPeriodo) {
         this.editPeriodo = editPeriodo;
+    }
+
+    public List<Horario> getListadoModuloDetalle() {
+        return listadoModuloDetalle;
+    }
+
+    public void setListadoModuloDetalle(List<Horario> listadoModuloDetalle) {
+        this.listadoModuloDetalle = listadoModuloDetalle;
+    }
+
+    public List<Horario> getListadoDetalleAsignaciones() {
+        return listadoDetalleAsignaciones;
+    }
+
+    public void setListadoDetalleAsignaciones(List<Horario> listadoDetalleAsignaciones) {
+        this.listadoDetalleAsignaciones = listadoDetalleAsignaciones;
     }
 
     public void generarArchivoExcel(int idCurso, String maestria, Date fechaInicio, Date fechaFin, int idMaestria) {
@@ -901,6 +921,15 @@ public class GeneragorHorarioMBeans {
             showWarn("La maestria no tiene asignado docentes suficientes ");
         }
 
+    }
+
+    public void dealleHorarioMaestria(int idCurso, int idMaestria) {
+        listadoModuloDetalle = horarioDAO.getListaModuloDocente(idCurso, idMaestria);
+        PrimeFaces.current().executeScript("PF('dlgDetallePeriodoAcademico').show()");
+    }
+
+    public void detalleFechaAsignacion(int idCurso, int idDocente) {
+        listadoDetalleAsignaciones = horarioDAO.getListaDetalleAsignacionDocente(idCurso, idDocente);
     }
 
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {

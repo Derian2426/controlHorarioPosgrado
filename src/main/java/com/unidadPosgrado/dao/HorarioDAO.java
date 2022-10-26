@@ -206,6 +206,7 @@ public class HorarioDAO {
         resultSet = conexion.ejecutarSql(sentencia);
         conexion.desconectar();
     }
+
     public void actualizarMaestria(int idCurso) {
         sentencia = String.format("SELECT public.\"actualizarEstadoP\"(" + idCurso + ")");
         resultSet = conexion.ejecutarSql(sentencia);
@@ -233,6 +234,22 @@ public class HorarioDAO {
     public List<Horario> getListaAsignacionDocente(int idCurso, int idDocente, Date anio) {
         List<Horario> listadoModulo = new ArrayList<>();
         sentencia = String.format("SELECT* from public.fecha_asignacion_docente(" + idCurso + ", " + idDocente + ", '" + anio + "');");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoModulo.add(new Horario(resultSet.getDate("_fecha")));
+            }
+            return listadoModulo;
+        } catch (SQLException e) {
+            return listadoModulo;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public List<Horario> getListaDetalleAsignacionDocente(int idCurso, int idDocente) {
+        List<Horario> listadoModulo = new ArrayList<>();
+        sentencia = String.format("SELECT* from public.fecha_detalle_asignacion_docente(" + idCurso + ", " + idDocente + ");");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {

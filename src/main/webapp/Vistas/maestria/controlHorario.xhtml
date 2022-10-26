@@ -94,7 +94,7 @@
                                             <p:inputNumber value="#{GeneradorHorarioMB.editPeriodo.cantidadEstudiante}"/>
                                         </div>
                                         <div class="p-field p-col-12 p-md-6">
-                                            
+
                                         </div>
                                         <div class="p-field p-col-12 p-md-6">
                                             <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{GeneradorHorarioMB.EditaPeriodo()}"
@@ -415,14 +415,49 @@
                                         <p:commandButton id="accionesHorario" value="Acciones" type="button" icon="pi pi-chevron-down" styleClass="ui-button-outlined" />
                                         <p:menu overlay="true" trigger="accionesHorario" my="left top" at="left bottom">
                                             <p:submenu label="Acciones">
-                                                <p:menuitem value="Detalle" icon="pi pi-file-o"/>
+                                                <p:menuitem value="Detalle" icon="pi pi-file-o" actionListener="#{GeneradorHorarioMB.dealleHorarioMaestria(horario.idCurso, horario.idMaestria)}"
+                                                            update=":form_horario:planificacionHorario:detalleHorarioMaestria"/>
                                                 <p:menuitem value="Editar" icon="pi pi-pencil"/>
-
                                             </p:submenu>
                                         </p:menu>
                                     </p:column>
                                 </p:dataTable>
                             </p:outputPanel>
+                            <p:dialog header="Detalle Horario" widgetVar="dlgDetallePeriodoAcademico" height="80%" width="50%" showEffect="fade" modal="true" responsive="true">
+                                <p:dataTable id="detalleHorarioMaestria" var="modulo" value="#{GeneradorHorarioMB.listadoModuloDetalle}" scrollable="true" scrollHeight="500">
+                                    <p:ajax event="rowToggle" update="detalleHorarioMaestria" listener="#{GeneradorHorarioMB.detalleFechaAsignacion(modulo.idCurso, modulo.idDocente)}"/>
+                                    <f:facet name="header">
+                                        Expandir filas para ver información detallada
+                                    </f:facet>
+                                    <p:column style="width:2rem">
+                                        <p:rowToggler/>
+                                    </p:column>
+                                    <p:column headerText="Modulo">
+                                        <h:outputText value="#{modulo.nombreModulo}"/>
+                                    </p:column>
+                                    <p:column headerText="Docente">
+                                        <h:outputText value="#{modulo.nombreDocente}"/>
+                                    </p:column>
+                                    <p:column headerText="Tiempo">
+                                        <h:outputText value="#{modulo.hora}"/>
+                                    </p:column>
+                                    <p:rowExpansion>
+                                        <div class="product">
+                                            <p:fieldset legend="Calendario para el módulo">
+                                                <p class="m-0">
+                                                    <p:dataTable var="hora" value="#{GeneradorHorarioMB.listadoDetalleAsignaciones}" size="small" scrollable="true" scrollHeight="200">
+                                                        <p:column headerText="Fecha de asignación">
+                                                            <h:outputText value="#{hora.fechaAsignacion}"/>
+                                                        </p:column>
+                                                    </p:dataTable>
+                                                </p>
+                                            </p:fieldset>
+                                        </div>
+                                    </p:rowExpansion>
+
+
+                                </p:dataTable>
+                            </p:dialog>
                         </p:tab>
                     </p:tabView>
                 </div>

@@ -359,7 +359,7 @@
                                         </div>
                                     </div>
                                     <p:commandButton actionListener="#{horarioMB.registrarPeriodo()}" action="#{GeneradorHorarioMB.actualizaLista()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" 
-                                                     update=":form_horario:planificacionHorario:calendarioAcademico,:form_horario:planificacionHorario:nuevoDocenteAsignado,:form_horario:messages,mensajeEstatico,:form_horario:planificacionHorario:horarioMaestria" style="margin-bottom: 1vh;"/>
+                                                     update=":form_horario:planificacionHorario:calendarioAcademico,:form_horario:planificacionHorario:nuevoDocenteAsignado,:form_horario:messages,mensajeEstatico,mensajeEstatico1,:form_horario:planificacionHorario:horarioMaestria" style="margin-bottom: 1vh;"/>
 
                                 </p:outputPanel>
                             </p:dialog>
@@ -371,6 +371,16 @@
                                     </div>
                                     <div class="field col-12 md:col-6">
                                         <p:staticMessage severity="info" summary="INFORMACIÓN" detail="Esté error surge por que al momneto de realizar la asignación, otro usuario ocupo primero que usted las fecha disponibles del docente, por favor vuelva asignar las fechas al docente, asegurese de que no se registren asignaciones por otro usuario." style="width: 100%"/>
+                                    </div>
+                                </div>
+                            </p:dialog>
+                            <p:dialog header="Transacción Fallida" widgetVar="transaccion1" minHeight="40" width="550" showEffect="fade" modal="true">
+                                <div class="ui-fluid formgrid grid">
+                                    <div class="field col-12 md:col-6">
+                                        <p:staticMessage id="mensajeEstatico1" severity="error" summary="ERROR" detail="#{horarioMB.mensaje}" style="width: 100%"/>
+                                    </div>
+                                    <div class="field col-12 md:col-6">
+                                        <p:staticMessage severity="info" summary="INFORMACIÓN" detail="Esté error surge por que al momneto de realizar la asignación, otro usuario ocupo primero que usted las fecha disponibles en el periodo académico, por favor vuelva asignar las fechas al docente, asegurese de que no se registren asignaciones por otro usuario." style="width: 100%"/>
                                     </div>
                                 </div>
                             </p:dialog>
@@ -416,14 +426,15 @@
                                         <p:menu overlay="true" trigger="accionesHorario" my="left top" at="left bottom">
                                             <p:submenu label="Acciones">
                                                 <p:menuitem value="Detalle" icon="pi pi-file-o" actionListener="#{GeneradorHorarioMB.dealleHorarioMaestria(horario.idCurso, horario.idMaestria)}"
-                                                            update=":form_horario:planificacionHorario:detalleHorarioMaestria"/>
-                                                <p:menuitem value="Editar" icon="pi pi-pencil"/>
+                                                            update=":form_horario:planificacionHorario:detalleHorarioMaestria" rendered="#{horario.estado eq 'En proceso' or horario.estado eq 'Planificado'}"/>
+                                                <p:menuitem value="Editar" icon="pi pi-pencil" actionListener="#{GeneradorHorarioMB.editHorarioPeriodoAcademico(horario.idCurso, horario.idMaestria, horario.fechaInicio, horario.fechaFin)}"
+                                                            update=":form_horario:planificacionHorario:editHorarioMaestria"/>
                                             </p:submenu>
                                         </p:menu>
                                     </p:column>
                                 </p:dataTable>
                             </p:outputPanel>
-                            <p:dialog header="Detalle Horario" widgetVar="dlgDetallePeriodoAcademico" height="80%" width="50%" showEffect="fade" modal="true" responsive="true">
+                            <p:dialog header="Detalles de la planificación de Horarios" widgetVar="dlgDetallePeriodoAcademico" height="50%" width="50%" showEffect="fade" modal="true" responsive="true">
                                 <p:dataTable id="detalleHorarioMaestria" var="modulo" value="#{GeneradorHorarioMB.listadoModuloDetalle}" scrollable="true" scrollHeight="500">
                                     <p:ajax event="rowToggle" update="detalleHorarioMaestria" listener="#{GeneradorHorarioMB.detalleFechaAsignacion(modulo.idCurso, modulo.idDocente)}"/>
                                     <f:facet name="header">
@@ -442,7 +453,7 @@
                                         <h:outputText value="#{modulo.hora}"/>
                                     </p:column>
                                     <p:rowExpansion>
-                                        <div class="product">
+                                        <div class="detalleModulo">
                                             <p:fieldset legend="Calendario para el módulo">
                                                 <p class="m-0">
                                                     <p:dataTable var="hora" value="#{GeneradorHorarioMB.listadoDetalleAsignaciones}" size="small" scrollable="true" scrollHeight="200">
@@ -456,6 +467,43 @@
                                     </p:rowExpansion>
 
 
+                                </p:dataTable>
+                            </p:dialog>
+                            <p:dialog header="Editar la planificación del Horario" widgetVar="dlgEditPeriodoAcademico" height="50%" width="60%" showEffect="fade" modal="true" responsive="true">
+                                <p:dataTable id="editHorarioMaestria" var="editFecha" value="#{GeneradorHorarioMB.listadoModuloDetalle}" scrollable="true" scrollHeight="500">
+                                    <p:ajax event="rowToggle" update="pickEditList" listener="#{GeneradorHorarioMB.llenarFechaAsignacionEdit(editFecha.idCurso, editFecha.idDocente)}"/>
+                                    <f:facet name="header">
+                                        Expandir filas para editar las fechas asignadas.
+                                    </f:facet>
+                                    <p:column style="width:2rem">
+                                        <p:rowToggler/>
+                                    </p:column>
+                                    <p:column headerText="Modulo">
+                                        <h:outputText value="#{editFecha.nombreModulo}"/>
+                                    </p:column>
+                                    <p:column headerText="Docente">
+                                        <h:outputText value="#{editFecha.nombreDocente}"/>
+                                    </p:column>
+                                    <p:column headerText="Tiempo">
+                                        <h:outputText value="#{editFecha.hora}"/>
+                                    </p:column>
+                                    <p:rowExpansion>
+                                        <div class="editModulo">
+                                            <p:fieldset legend="Calendario para el módulo">
+                                                <p class="m-0">
+                                                    <div class="ui-fluid formgrid grid">
+                                                        <div class="field col-12 md:col-12">
+                                                            <p:pickList id="pickEditList" value="#{GeneradorHorarioMB.tiempoHorario}" var="fechaPeriodo" itemLabel="#{fechaPeriodo}" itemValue="#{fechaPeriodo}" responsive="true">
+                                                                <p:ajax event="transfer" listener="#{horarioMB.onTransfer}"/>
+                                                                <f:facet name="sourceCaption">Fechas disponibles</f:facet>
+                                                                <f:facet name="targetCaption">Fechas asignadas</f:facet>
+                                                            </p:pickList>
+                                                        </div>
+                                                    </div>
+                                                </p>
+                                            </p:fieldset>
+                                        </div>
+                                    </p:rowExpansion>
                                 </p:dataTable>
                             </p:dialog>
                         </p:tab>

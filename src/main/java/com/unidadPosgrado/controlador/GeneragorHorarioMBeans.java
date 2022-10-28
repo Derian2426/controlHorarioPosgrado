@@ -10,13 +10,16 @@ import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Horario;
 import com.unidadPosgrado.modelo.Maestria;
 import com.unidadPosgrado.modelo.Periodo;
+import com.unidadPosgrado.modelo.TiempoModulo;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -26,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -35,6 +37,8 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.PrimeFaces;
 import org.primefaces.component.export.ExcelOptions;
+import org.primefaces.event.TransferEvent;
+import org.primefaces.model.DualListModel;
 
 /**
  *
@@ -42,7 +46,13 @@ import org.primefaces.component.export.ExcelOptions;
  */
 public class GeneragorHorarioMBeans {
 
+    private DualListModel<Date> tiempoHorario;
+    List<Date> horaSource;
+    List<Date> horaTarget;
+    List<Maestria> listaHorario;
+    List<TiempoModulo> listaVerificacionTiempo;
     private Maestria integracionMaestria;
+    Maestria maestriaEdit;
     private Periodo periodo;
     private Periodo descripcionPeriodo;
     private Periodo editPeriodo;
@@ -79,6 +89,12 @@ public class GeneragorHorarioMBeans {
         listadoDetalleAsignaciones = new ArrayList<>();
         listaPeriodo = new ArrayList<>();
         maestriaDAO.actualizaEstadoPeriodo();
+        horaSource = new ArrayList<>();
+        horaTarget = new ArrayList<>();
+        listaHorario = new ArrayList<>();
+        tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+        maestriaEdit = new Maestria();
+        listaVerificacionTiempo = new ArrayList<>();
     }
 
     @PostConstruct
@@ -195,6 +211,14 @@ public class GeneragorHorarioMBeans {
 
     public void setListadoDetalleAsignaciones(List<Horario> listadoDetalleAsignaciones) {
         this.listadoDetalleAsignaciones = listadoDetalleAsignaciones;
+    }
+
+    public DualListModel<Date> getTiempoHorario() {
+        return tiempoHorario;
+    }
+
+    public void setTiempoHorario(DualListModel<Date> tiempoHorario) {
+        this.tiempoHorario = tiempoHorario;
     }
 
     public void generarArchivoExcel(int idCurso, String maestria, Date fechaInicio, Date fechaFin, int idMaestria) {
@@ -930,6 +954,108 @@ public class GeneragorHorarioMBeans {
 
     public void detalleFechaAsignacion(int idCurso, int idDocente) {
         listadoDetalleAsignaciones = horarioDAO.getListaDetalleAsignacionDocente(idCurso, idDocente);
+    }
+
+    public void editHorarioPeriodoAcademico(int idCurso, int idMaestria, Date inicio, Date fin) {
+        listadoModuloDetalle = horarioDAO.getListaModuloDocente(idCurso, idMaestria);
+        horaSource = getListaEntreDias(inicio, fin);
+        maestriaEdit.setFechaInicio(inicio);
+        maestriaEdit.setFechaFin(fin);
+        listaHorario = horarioDAO.getListaHorario(idCurso);
+        PrimeFaces.current().executeScript("PF('dlgEditPeriodoAcademico').show()");
+    }
+
+    public List<Date> getListaEntreDias(Date fechaInicio, Date fechaFin) {
+        // Convertimos la fecha a Calendar, mucho más cómodo para realizar
+        // operaciones a las fechas
+        Calendar c1 = Calendar.getInstance();
+        c1.setTime(fechaInicio);
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(fechaFin);
+
+        // Lista donde se irán almacenando las fechas
+        List<Date> listaFechas = new ArrayList<Date>();
+
+        // Bucle para recorrer el intervalo, en cada paso se le suma un día.
+        while (!c1.after(c2)) {
+            listaFechas.add(c1.getTime());
+            c1.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return listaFechas;
+    }
+
+    public void llenarFechaAsignacionEdit(int idCurso, int idDocente) {
+        horaTarget = horarioDAO.getListaEditAsignacionDocente(idCurso, idDocente);
+        listaVerificacionTiempo = horarioDAO.getListaValidacion(idDocente, maestriaEdit.getFechaInicio(), maestriaEdit.getFechaFin());
+        eliminarFechaAsignacionHorarioUtilizadas();
+        tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+    }
+
+    public void eliminarFechaAsignacionHorarioUtilizadas() {
+        for (TiempoModulo tiempo : listaVerificacionTiempo) {
+            for (Date tiempoDisponible : horaSource) {
+                if (tiempo.getFechaAsignacion().getDate() == tiempoDisponible.getDate()
+                        && tiempo.getFechaAsignacion().getMonth() == tiempoDisponible.getMonth()
+                        && tiempo.getFechaAsignacion().getDay() == tiempoDisponible.getDay()) {
+                    horaSource.remove(tiempoDisponible);
+                    break;
+                }
+            }
+        }
+        for (Maestria date : listaHorario) {
+            for (Date tiempoDisponible : horaSource) {
+                if (date.getFechaInicio().getDate() == tiempoDisponible.getDate()
+                        && date.getFechaInicio().getMonth() == tiempoDisponible.getMonth()
+                        && date.getFechaInicio().getDay() == tiempoDisponible.getDay()) {
+                    horaSource.remove(tiempoDisponible);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void onTransfer(TransferEvent event) {
+        SimpleDateFormat formato = new SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+        Date fechaDate;
+        for (Object item : event.getItems()) {
+            String fecha = item.toString();
+            try {
+                fechaDate = formato.parse(fecha);
+                if (!busquedaFechaSource(fechaDate)) {
+                    horaSource.add(fechaDate);
+                    horaTarget.remove(fechaDate);
+                } else if (!busquedaFechaTarge(fechaDate)) {
+                    horaTarget.add(fechaDate);
+                    horaSource.remove(fechaDate);
+                }
+            } catch (ParseException ex) {
+                Logger.getLogger(HorarioMBeans.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public boolean busquedaFechaTarge(Date fechaDate) {
+        boolean verifica = false;
+        for (Date fechaSource : horaTarget) {
+            if (fechaSource.getMonth() == fechaDate.getMonth() && fechaSource.getDay() == fechaDate.getDay()
+                    && fechaSource.getYear() == fechaDate.getYear() && fechaSource.equals(fechaDate)) {
+                verifica = true;
+                break;
+            }
+        }
+        return verifica;
+    }
+
+    public boolean busquedaFechaSource(Date fechaDate) {
+        boolean verifica = false;
+        for (Date fechaSource : horaSource) {
+            if (fechaSource.getMonth() == fechaDate.getMonth() && fechaSource.getDay() == fechaDate.getDay()
+                    && fechaSource.getYear() == fechaDate.getYear() && fechaSource.equals(fechaDate)) {
+                verifica = true;
+                break;
+            }
+        }
+        return verifica;
     }
 
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {

@@ -257,69 +257,67 @@ public class HorarioMBeans {
                 showWarn("Ingrese una descripción.");
             } else {
                 mensaje = "Estas fechas ya se encuentran asignadas: ";
-                int estado = -1;
+                int resultado = -1;
                 aux = horarioDAO.registrarHorarioAsignaciones(modulo, docente, integracionMaestria, tiempoModulo, horaTarget);
                 for (TiempoModulo tm : aux) {
                     if (tm.getIdTiempo() == 1) {
                         mensaje += tm.getFechaAsignacion() + " ,";
-                        estado = tm.getIdTiempo();
+                        resultado = tm.getIdTiempo();
                     } else {
                         if (tm.getIdTiempo() == 0) {
-                            estado = tm.getIdTiempo();
+                            resultado = tm.getIdTiempo();
                             break;
+                        } else {
+                            mensaje += tm.getFechaAsignacion() + " ,";
+                            resultado = tm.getIdTiempo();
                         }
                     }
-
                 }
-                if (estado == 1) {
-                    mensaje = mensaje.substring(0, mensaje.length() - 1);
-                    mensaje += ".";
-                    showWarn(mensaje);
-                    eventModel = new DefaultScheduleModel();
-                    event = new DefaultScheduleEvent<>();
-                    docente = new Docente();
-                    modulo = new Modulo();
-                    tiempoModulo = new TiempoModulo();
-                    listaHorario = horarioDAO.getListaHorario(integracionMaestria.getIdCurso());
-                    estadoAsignacion = false;
-                    maestriaBusqueda = new Maestria();
-                    listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
-                    listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
-
-                    listaTiempoModulo = new ArrayList<>();
-                    horaSource = new ArrayList<>();
-                    horaTarget = new ArrayList<>();
-                    tiempoHorario = new DualListModel<>(horaSource, horaTarget);
-                    PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
-                    PrimeFaces.current().executeScript("PF('transaccion').show()");
-                    llenaFechasHorario();
-
-                } else {
-                    showInfo("Asignación registrada con exito.");
-                    eventModel = new DefaultScheduleModel();
-                    event = new DefaultScheduleEvent<>();
-                    docente = new Docente();
-                    modulo = new Modulo();
-                    tiempoModulo = new TiempoModulo();
-                    listaHorario = horarioDAO.getListaHorario(integracionMaestria.getIdCurso());
-                    estadoAsignacion = false;
-                    maestriaBusqueda = new Maestria();
-                    listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
-                    listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
-                    listaTiempoModulo = new ArrayList<>();
-
-                    horaSource = new ArrayList<>();
-                    horaTarget = new ArrayList<>();
-                    tiempoHorario = new DualListModel<>(horaSource, horaTarget);
-                    PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
-                    llenaFechasHorario();
-                    if (listaModulo.size() == 0) {
-                        horarioDAO.registrarMaestria(integracionMaestria.getIdCurso());
-                    } else {
-                        horarioDAO.actualizarMaestria(integracionMaestria.getIdCurso());
-                    }
-                }
-
+                switch (resultado) {
+                    case 1:
+                        mensaje = mensaje.substring(0, mensaje.length() - 1);
+                        mensaje += ".";
+                        showWarn(mensaje);
+                        eventModel = new DefaultScheduleModel();
+                        event = new DefaultScheduleEvent<>();
+                        docente = new Docente();
+                        modulo = new Modulo();
+                        tiempoModulo = new TiempoModulo();
+                        listaHorario = horarioDAO.getListaHorario(integracionMaestria.getIdCurso());
+                        estadoAsignacion = false;
+                        maestriaBusqueda = new Maestria();
+                        listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+                        listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+                        listaTiempoModulo = new ArrayList<>();
+                        horaSource = new ArrayList<>();
+                        horaTarget = new ArrayList<>();
+                        tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+                        PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
+                        PrimeFaces.current().executeScript("PF('transaccion').show()");
+                        llenaFechasHorario();
+                        break;
+                    case 2:
+                        mensaje = mensaje.substring(0, mensaje.length() - 1);
+                        mensaje += ".";
+                        showWarn(mensaje);
+                        eventModel = new DefaultScheduleModel();
+                        event = new DefaultScheduleEvent<>();
+                        docente = new Docente();
+                        modulo = new Modulo();
+                        tiempoModulo = new TiempoModulo();
+                        listaHorario = horarioDAO.getListaHorario(integracionMaestria.getIdCurso());
+                        estadoAsignacion = false;
+                        maestriaBusqueda = new Maestria();
+                        listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+                        listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+                        listaTiempoModulo = new ArrayList<>();
+                        horaSource = new ArrayList<>();
+                        horaTarget = new ArrayList<>();
+                        tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+                        PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
+                        PrimeFaces.current().executeScript("PF('transaccion1').show()");
+                        llenaFechasHorario();
+                        break;
 //                if (verificaTiempo().size() < 1) {
 //                    if (horarioDAO.registrarHorarioAsignacion(modulo, docente, integracionMaestria, tiempoModulo, listaTiempoModulo) > 0) {
 //                        showInfo("Asignación registrada con exito.");
@@ -343,6 +341,69 @@ public class HorarioMBeans {
 //                    }
 //                    showWarn("Estas fechas se encuentran asignadas " + fechasUtilizadas);
 //                }
+                    case -1:
+                        showWarn("El módulo ya fue seleccionado, vuelva a realizar la asignación del docente a otro módulo.");
+                        eventModel = new DefaultScheduleModel();
+                        event = new DefaultScheduleEvent<>();
+                        docente = new Docente();
+                        modulo = new Modulo();
+                        tiempoModulo = new TiempoModulo();
+                        listaHorario = horarioDAO.getListaHorario(integracionMaestria.getIdCurso());
+                        estadoAsignacion = false;
+                        maestriaBusqueda = new Maestria();
+                        listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+                        listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+                        listaTiempoModulo = new ArrayList<>();
+                        horaSource = new ArrayList<>();
+                        horaTarget = new ArrayList<>();
+                        tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+                        PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
+                        llenaFechasHorario();
+                        break;
+                    case 3:
+                        showWarn("El docente ya fue seleccionado, vuelva a seleccionar otro docente.");
+                        eventModel = new DefaultScheduleModel();
+                        event = new DefaultScheduleEvent<>();
+                        docente = new Docente();
+                        modulo = new Modulo();
+                        tiempoModulo = new TiempoModulo();
+                        listaHorario = horarioDAO.getListaHorario(integracionMaestria.getIdCurso());
+                        estadoAsignacion = false;
+                        maestriaBusqueda = new Maestria();
+                        listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+                        listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+                        listaTiempoModulo = new ArrayList<>();
+                        horaSource = new ArrayList<>();
+                        horaTarget = new ArrayList<>();
+                        tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+                        PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
+                        llenaFechasHorario();
+                        break;
+                    default:
+                        showInfo("Asignación registrada con exito.");
+                        eventModel = new DefaultScheduleModel();
+                        event = new DefaultScheduleEvent<>();
+                        docente = new Docente();
+                        modulo = new Modulo();
+                        tiempoModulo = new TiempoModulo();
+                        listaHorario = horarioDAO.getListaHorario(integracionMaestria.getIdCurso());
+                        estadoAsignacion = false;
+                        maestriaBusqueda = new Maestria();
+                        listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+                        listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+                        listaTiempoModulo = new ArrayList<>();
+                        horaSource = new ArrayList<>();
+                        horaTarget = new ArrayList<>();
+                        tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+                        PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
+                        llenaFechasHorario();
+                        if (listaModulo.size() == 0) {
+                            horarioDAO.registrarMaestria(integracionMaestria.getIdCurso());
+                        } else {
+                            horarioDAO.actualizarMaestria(integracionMaestria.getIdCurso());
+                        }
+                        break;
+                }
             }
 
         } catch (Exception e) {
@@ -352,13 +413,22 @@ public class HorarioMBeans {
     }
 
     public void cerrarDialigo() {
+        eventModel = new DefaultScheduleModel();
+        event = new DefaultScheduleEvent<>();
+        docente = new Docente();
+        modulo = new Modulo();
+        tiempoModulo = new TiempoModulo();
+        listaHorario = horarioDAO.getListaHorario(integracionMaestria.getIdCurso());
+        estadoAsignacion = false;
+        maestriaBusqueda = new Maestria();
+        listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+        listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+        listaTiempoModulo = new ArrayList<>();
         horaSource = new ArrayList<>();
         horaTarget = new ArrayList<>();
         tiempoHorario = new DualListModel<>(horaSource, horaTarget);
-        listaDocente = new ArrayList<>();
-        listaModulo = new ArrayList<>();
-        listaModulo = horarioDAO.getListaModulo(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
-        listaDocente = horarioDAO.getListaDocente(integracionMaestria.getIdMaestria(), integracionMaestria.getIdCurso());
+        PrimeFaces.current().executeScript("PF('seleccionFecha').hide()");
+        llenaFechasHorario();
     }
 
     public List<TiempoModulo> verificaTiempo() {

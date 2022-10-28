@@ -110,13 +110,14 @@ public class HorarioDAO {
         }
         json = json.substring(0, json.length() - 1);
         json += "]";
-        sentencia = String.format("SELECT * from public.\"asignacionHorarioPrueba002\"(\n"
+        sentencia = String.format("SELECT * from public.\"asignacionHorarioPrueba003\"(\n"
                 + "	" + modulo.getIdMateria() + ", \n"
                 + "	" + docente.getId_docente() + ", \n"
-                + "	" + maestria.getIdCurso() + ", \n"
+                + "	" + maestria.getIdMaestria() + ", \n"
                 + "	'" + tiempoModulo.getDescripcion() + "', \n"
                 + "	" + tiempo.size() + ", \n"
-                + "	'" + json + "'\n"
+                + "	'" + json + "',\n"
+                + "	" + maestria.getIdCurso()+ "\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
@@ -254,6 +255,22 @@ public class HorarioDAO {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
                 listadoModulo.add(new Horario(resultSet.getDate("_fecha")));
+            }
+            return listadoModulo;
+        } catch (SQLException e) {
+            return listadoModulo;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public List<Date> getListaEditAsignacionDocente(int idCurso, int idDocente) {
+        List<Date> listadoModulo = new ArrayList<>();
+        sentencia = String.format("SELECT* from public.fecha_detalle_asignacion_docente(" + idCurso + ", " + idDocente + ");");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoModulo.add(resultSet.getDate("_fecha"));
             }
             return listadoModulo;
         } catch (SQLException e) {

@@ -16,6 +16,7 @@ public class Horario {
     private int idPeriodo;
     private int idCurso;
     private int idDocente;
+    private int idModulo;
     private String nombreModulo;
     private String nombreDocente;
     private float hora;
@@ -29,7 +30,7 @@ public class Horario {
         this.fechaAsignacion = fechaAsignacion;
     }
 
-    public Horario(int idPeriodo, int idCurso, int idDocente, String nombreModulo, String nombreDocente, float hora, String paralelo) {
+    public Horario(int idPeriodo, int idCurso, int idDocente, String nombreModulo, String nombreDocente, float hora, String paralelo, int idModulo) {
         this.idPeriodo = idPeriodo;
         this.idCurso = idCurso;
         this.idDocente = idDocente;
@@ -37,6 +38,7 @@ public class Horario {
         this.nombreDocente = nombreDocente;
         this.hora = hora;
         this.Paralelo = paralelo;
+        this.idModulo = idModulo;
     }
 
     public int getIdPeriodo() {
@@ -101,6 +103,14 @@ public class Horario {
 
     public void setParalelo(String Paralelo) {
         this.Paralelo = Paralelo;
+    }
+
+    public int getIdModulo() {
+        return idModulo;
+    }
+
+    public void setIdModulo(int idModulo) {
+        this.idModulo = idModulo;
     }
 
 }

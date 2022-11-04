@@ -7,12 +7,14 @@ package com.unidadPosgrado.controlador;
 
 import com.unidadPosgrado.dao.HorarioDAO;
 import com.unidadPosgrado.dao.MaestriaDAO;
+import com.unidadPosgrado.modelo.Docente;
 import com.unidadPosgrado.modelo.Horario;
 import com.unidadPosgrado.modelo.Maestria;
 import com.unidadPosgrado.modelo.Periodo;
 import com.unidadPosgrado.modelo.TiempoModulo;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,6 +49,8 @@ import org.primefaces.model.DualListModel;
 public class GeneragorHorarioMBeans {
 
     private DualListModel<Date> tiempoHorario;
+    private List<Docente> listaDocente;
+    private Docente docenteEdit;
     List<Date> horaSource;
     List<Date> horaTarget;
     List<Maestria> listaHorario;
@@ -54,12 +58,14 @@ public class GeneragorHorarioMBeans {
     private Maestria integracionMaestria;
     Maestria maestriaEdit;
     private Periodo periodo;
+    Periodo periodoEditAsignacion;
     private Periodo descripcionPeriodo;
     private Periodo editPeriodo;
     MaestriaDAO maestriaDAO;
     private Maestria maestriaBusqueda;
     private List<Maestria> listaMaestriaPeriodo;
     List<Maestria> busquedaMaestriaAuxP;
+    Horario asignacion;
 
     HorarioDAO horarioDAO;
     private List<Maestria> listaMaestria;
@@ -71,7 +77,10 @@ public class GeneragorHorarioMBeans {
     private ExcelOptions excelOpt;
 
     public GeneragorHorarioMBeans() {
+        listaDocente = new ArrayList<>();
+        asignacion = new Horario();
         maestriaDAO = new MaestriaDAO();
+        periodoEditAsignacion = new Periodo();
         periodo = new Periodo();
         descripcionPeriodo = new Periodo();
         editPeriodo = new Periodo();
@@ -79,7 +88,6 @@ public class GeneragorHorarioMBeans {
         maestriaBusqueda = new Maestria();
         listaMaestriaPeriodo = new ArrayList<>();
         busquedaMaestriaAuxP = new ArrayList<>();
-
         horarioDAO = new HorarioDAO();
         listaMaestria = new ArrayList<>();
         listadoModulo = new ArrayList<>();
@@ -95,6 +103,7 @@ public class GeneragorHorarioMBeans {
         tiempoHorario = new DualListModel<>(horaSource, horaTarget);
         maestriaEdit = new Maestria();
         listaVerificacionTiempo = new ArrayList<>();
+        docenteEdit = new Docente();
     }
 
     @PostConstruct
@@ -219,6 +228,22 @@ public class GeneragorHorarioMBeans {
 
     public void setTiempoHorario(DualListModel<Date> tiempoHorario) {
         this.tiempoHorario = tiempoHorario;
+    }
+
+    public List<Docente> getListaDocente() {
+        return listaDocente;
+    }
+
+    public void setListaDocente(List<Docente> listaDocente) {
+        this.listaDocente = listaDocente;
+    }
+
+    public Docente getDocenteEdit() {
+        return docenteEdit;
+    }
+
+    public void setDocenteEdit(Docente docenteEdit) {
+        this.docenteEdit = docenteEdit;
     }
 
     public void generarArchivoExcel(int idCurso, String maestria, Date fechaInicio, Date fechaFin, int idMaestria) {
@@ -958,11 +983,16 @@ public class GeneragorHorarioMBeans {
 
     public void editHorarioPeriodoAcademico(int idCurso, int idMaestria, Date inicio, Date fin) {
         listadoModuloDetalle = horarioDAO.getListaModuloDocente(idCurso, idMaestria);
-        horaSource = getListaEntreDias(inicio, fin);
+        periodoEditAsignacion.setFechaInicio(inicio);
+        periodoEditAsignacion.setFechaFin(fin);
         maestriaEdit.setFechaInicio(inicio);
         maestriaEdit.setFechaFin(fin);
-        listaHorario = horarioDAO.getListaHorario(idCurso);
+        listaDocente = horarioDAO.getListaDocente(idMaestria, idCurso);
         PrimeFaces.current().executeScript("PF('dlgEditPeriodoAcademico').show()");
+    }
+
+    public void verquemuestra(int idDocente) {
+        System.out.println("    " + idDocente);
     }
 
     public List<Date> getListaEntreDias(Date fechaInicio, Date fechaFin) {
@@ -984,10 +1014,18 @@ public class GeneragorHorarioMBeans {
         return listaFechas;
     }
 
-    public void llenarFechaAsignacionEdit(int idCurso, int idDocente) {
+    public void llenarFechaAsignacionEdit(int idCurso, int idDocente, int idModulo) {
         horaTarget = horarioDAO.getListaEditAsignacionDocente(idCurso, idDocente);
+        horaSource = getListaEntreDias(periodoEditAsignacion.getFechaInicio(), periodoEditAsignacion.getFechaFin());
+        listaHorario = horarioDAO.getListaHorario(idCurso);
         listaVerificacionTiempo = horarioDAO.getListaValidacion(idDocente, maestriaEdit.getFechaInicio(), maestriaEdit.getFechaFin());
         eliminarFechaAsignacionHorarioUtilizadas();
+        tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+        asignacion.setIdPeriodo(horarioDAO.getIdAsignacionDocente(idCurso, idDocente));
+        asignacion.setIdCurso(idCurso);
+        asignacion.setIdDocente(idDocente);
+        asignacion.setIdModulo(idModulo);
+        docenteEdit.setId_docente(idDocente);
         tiempoHorario = new DualListModel<>(horaSource, horaTarget);
     }
 
@@ -1015,23 +1053,57 @@ public class GeneragorHorarioMBeans {
     }
 
     public void onTransfer(TransferEvent event) {
-        SimpleDateFormat formato = new SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-        Date fechaDate;
+        List<Date> horaEliminada = new ArrayList<>();
+        List<Date> horaAgregada = new ArrayList<>();
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+        Date fechaDate = new Date();
+        String fecha;
         for (Object item : event.getItems()) {
-            String fecha = item.toString();
+            fecha = item.toString();
             try {
                 fechaDate = formato.parse(fecha);
-                if (!busquedaFechaSource(fechaDate)) {
-                    horaSource.add(fechaDate);
-                    horaTarget.remove(fechaDate);
-                } else if (!busquedaFechaTarge(fechaDate)) {
-                    horaTarget.add(fechaDate);
-                    horaSource.remove(fechaDate);
-                }
             } catch (ParseException ex) {
                 Logger.getLogger(HorarioMBeans.class.getName()).log(Level.SEVERE, null, ex);
+                DateFormat alfrescoDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
+                try {
+                    fechaDate = alfrescoDateFormat.parse(fecha);
+                } catch (ParseException ex1) {
+                    Logger.getLogger(GeneragorHorarioMBeans.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+            }
+            if (!busquedaFechaSource(fechaDate)) {
+                horaSource.add(fechaDate);
+                horaTarget.remove(fechaDate);
+                horaEliminada.add(fechaDate);
+            } else if (!busquedaFechaTarge(fechaDate)) {
+                horaTarget.add(fechaDate);
+                horaSource.remove(fechaDate);
+                horaAgregada.add(fechaDate);
             }
         }
+        if (horaEliminada.size() > 0) {
+            asignacion.setIdPeriodo(horarioDAO.getIdAsignacionDocente(asignacion.getIdCurso(), docenteEdit.getId_docente()));
+            if (asignacion.getIdPeriodo() == 0) {
+                showWarn("No sw puede Eliminar la fecha de un docente que no se encuentra asignado a un horario.");
+            } else {
+                horarioDAO.deleteAsignacionDocente(asignacion.getIdPeriodo(), horaEliminada);
+            }
+            horaTarget = horarioDAO.getListaEditAsignacionDocente(asignacion.getIdCurso(), asignacion.getIdDocente());
+            horaSource = getListaEntreDias(periodoEditAsignacion.getFechaInicio(), periodoEditAsignacion.getFechaFin());
+            listaHorario = horarioDAO.getListaHorario(asignacion.getIdCurso());
+            listaVerificacionTiempo = horarioDAO.getListaValidacion(asignacion.getIdDocente(), maestriaEdit.getFechaInicio(), maestriaEdit.getFechaFin());
+            eliminarFechaAsignacionHorarioUtilizadas();
+            tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+        } else if (horaAgregada.size() > 0) {
+            List<TiempoModulo> listHorario = new ArrayList<>();
+            listHorario = horarioDAO.editHorarioAsignaciones(asignacion, docenteEdit, horaAgregada.size(), horaAgregada);
+            horaTarget = horarioDAO.getListaEditAsignacionDocente(asignacion.getIdCurso(), asignacion.getIdDocente());
+            listaHorario = horarioDAO.getListaHorario(asignacion.getIdCurso());
+            horaSource = getListaEntreDias(periodoEditAsignacion.getFechaInicio(), periodoEditAsignacion.getFechaFin());
+            eliminarFechaAsignacionHorarioUtilizadas();
+            tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+        }
+
     }
 
     public boolean busquedaFechaTarge(Date fechaDate) {

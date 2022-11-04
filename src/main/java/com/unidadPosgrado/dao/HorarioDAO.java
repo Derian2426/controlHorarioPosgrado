@@ -117,7 +117,37 @@ public class HorarioDAO {
                 + "	'" + tiempoModulo.getDescripcion() + "', \n"
                 + "	" + tiempo.size() + ", \n"
                 + "	'" + json + "',\n"
-                + "	" + maestria.getIdCurso()+ "\n"
+                + "	" + maestria.getIdCurso() + "\n"
+                + ")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoFecha.add(new TiempoModulo(resultSet.getInt("validacion"), resultSet.getDate("_fecharetorno")));
+            }
+            return listadoFecha;
+        } catch (SQLException e) {
+            return listadoFecha;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public List<TiempoModulo> editHorarioAsignaciones(Horario asignacion, Docente docente, int size, List<Date> tiempo) {
+        List<TiempoModulo> listadoFecha = new ArrayList<>();
+        String json = "[";
+        for (Date moduloT : tiempo) {
+            json += "{\n"
+                    + "  \"fechainicio\": \"" + moduloT + "\"\n"
+                    + "},";
+        }
+        json = json.substring(0, json.length() - 1);
+        json += "]";
+        sentencia = String.format("SELECT * from public.\"editAsignacionHorario\"(\n"
+                + "	" + asignacion.getIdModulo() + ", \n"
+                + "	" + docente.getId_docente() + ", \n"
+                + "	" + asignacion.getIdCurso() + ", \n"
+                + "	" + size + ", \n"
+                + "	'" + json + "'\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
@@ -222,7 +252,7 @@ public class HorarioDAO {
             while (resultSet.next()) {
                 listadoModulo.add(new Horario(resultSet.getInt("_id_periodo"), resultSet.getInt("_id_curso"),
                         resultSet.getInt("_id_docente"), resultSet.getString("_nombre_materia"),
-                        resultSet.getString("_nombre_docente"), resultSet.getFloat("_hora"), resultSet.getString("_paralelo")));
+                        resultSet.getString("_nombre_docente"), resultSet.getFloat("_hora"), resultSet.getString("_paralelo"), resultSet.getInt("_id_modulo")));
             }
             return listadoModulo;
         } catch (SQLException e) {
@@ -275,6 +305,46 @@ public class HorarioDAO {
             return listadoModulo;
         } catch (SQLException e) {
             return listadoModulo;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public List<Date> deleteAsignacionDocente(int idAsignacion, List<Date> fecha) {
+        List<Date> listadoModulo = new ArrayList<>();
+        String json = "[";
+        for (Date moduloT : fecha) {
+            json += "{\n"
+                    + "  \"fechainicio\": \"" + moduloT + "\"\n"
+                    + "},";
+        }
+        json = json.substring(0, json.length() - 1);
+        json += "]";
+        sentencia = String.format("SELECT public.delete_tiempo_modulo(" + idAsignacion + ", '" + json + "');");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoModulo.add(resultSet.getDate("delete_tiempo_modulo"));
+            }
+            return listadoModulo;
+        } catch (SQLException e) {
+            return listadoModulo;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public int getIdAsignacionDocente(int idCurso, int idDocente) {
+        int idAsignacion = 0;
+        sentencia = String.format("SELECT public.get_id_asignacion(" + idCurso + ", " + idDocente + ");");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                idAsignacion = (resultSet.getInt("get_id_asignacion"));
+            }
+            return idAsignacion;
+        } catch (SQLException e) {
+            return idAsignacion;
         } finally {
             conexion.desconectar();
         }

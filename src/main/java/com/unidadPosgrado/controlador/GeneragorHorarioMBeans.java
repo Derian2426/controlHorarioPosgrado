@@ -292,8 +292,7 @@ public class GeneragorHorarioMBeans {
         fila.getSheet().getRow(4).getCell(2).setCellStyle(cellStyle);
         fila.getSheet().getRow(4).getCell(3).setCellStyle(cellStyle);
         SimpleDateFormat getYearFormat = new SimpleDateFormat("yyyy");
-        fila.createCell(4).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
-        fila.getCell(4).setCellStyle(cellStyle);
+
         fila = hojaNueva.createRow(5);
         fila.createCell(0).setCellValue("ORDEN");
         fila.getCell(0).setCellStyle(cellStyle);
@@ -309,7 +308,7 @@ public class GeneragorHorarioMBeans {
         int contador = 0;
         int cantidadAnio = anioFormato.size() - 1;
         int posicion = 0;
-
+        int verificaMesDiferente = 0;
         //Posiciones en la hoja de excel
         Row fila_aux = hojaNueva.getRow(4);
         for (Date mes : mesesFormado) {
@@ -321,10 +320,14 @@ public class GeneragorHorarioMBeans {
                     fila_aux.createCell(columna + 1);
                     contador++;
                     if (posicion < cantidadAnio) {
-                        if (contador >= 1) {
+                        if (contador >= 1 && verificaMesDiferente > 0) {
                             fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(anioFormato.get(posicion + 1)) + "'");
                             fila_aux.getCell(columna).setCellStyle(cellStyle);
                             posicion++;
+                        } else {
+                            fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
+                            fila_aux.getCell(columna).setCellStyle(cellStyle);
+                            verificaMesDiferente++;
                         }
                     }
                     break;
@@ -332,56 +335,111 @@ public class GeneragorHorarioMBeans {
                     fila.createCell(columna).setCellValue("FEBRERO");
                     fila.getCell(columna).setCellStyle(cellStyle);
                     fila_aux.createCell(columna + 1);
+                    verificaMesDiferente++;
+                    if (verificaMesDiferente < 2) {
+                        fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
+                        fila_aux.getCell(columna).setCellStyle(cellStyle);
+                    }
                     break;
                 case 2:
                     fila.createCell(columna).setCellValue("MARZO");
                     fila.getCell(columna).setCellStyle(cellStyle);
                     fila_aux.createCell(columna + 1);
+                    verificaMesDiferente++;
+                    if (verificaMesDiferente < 2) {
+                        fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
+                        fila_aux.getCell(columna).setCellStyle(cellStyle);
+                    }
                     break;
                 case 3:
                     fila.createCell(columna).setCellValue("ABRIL");
                     fila.getCell(columna).setCellStyle(cellStyle);
                     fila_aux.createCell(columna + 1);
+                    verificaMesDiferente++;
+                    if (verificaMesDiferente < 2) {
+                        fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
+                        fila_aux.getCell(columna).setCellStyle(cellStyle);
+                    }
                     break;
                 case 4:
                     fila.createCell(columna).setCellValue("MAYO");
                     fila.getCell(columna).setCellStyle(cellStyle);
                     fila_aux.createCell(columna + 1);
+                    verificaMesDiferente++;
+                    if (verificaMesDiferente < 2) {
+                        fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
+                        fila_aux.getCell(columna).setCellStyle(cellStyle);
+                    }
                     break;
                 case 5:
                     fila.createCell(columna).setCellValue("JUNIO");
                     fila.getCell(columna).setCellStyle(cellStyle);
                     fila_aux.createCell(columna + 1);
+                    verificaMesDiferente++;
+                    if (verificaMesDiferente < 2) {
+                        fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
+                        fila_aux.getCell(columna).setCellStyle(cellStyle);
+                    }
                     break;
                 case 6:
                     fila.createCell(columna).setCellValue("JULIO");
                     fila.getCell(columna).setCellStyle(cellStyle);
                     fila_aux.createCell(columna + 1);
+                    verificaMesDiferente++;
+                    if (verificaMesDiferente < 2) {
+                        fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
+                        fila_aux.getCell(columna).setCellStyle(cellStyle);
+                    }
                     break;
                 case 7:
                     fila.createCell(columna).setCellValue("AGOSTO");
                     fila.getCell(columna).setCellStyle(cellStyle);
                     fila_aux.createCell(columna + 1);
+                    verificaMesDiferente++;
+                    if (verificaMesDiferente < 2) {
+                        fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
+                        fila_aux.getCell(columna).setCellStyle(cellStyle);
+                    }
                     break;
                 case 8:
                     fila.createCell(columna).setCellValue("SEPTIEMBRE");
                     fila.getCell(columna).setCellStyle(cellStyle);
                     fila_aux.createCell(columna + 1);
+                    verificaMesDiferente++;
+                    if (verificaMesDiferente < 2) {
+                        fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
+                        fila_aux.getCell(columna).setCellStyle(cellStyle);
+                    }
                     break;
                 case 9:
                     fila.createCell(columna).setCellValue("OCTUBRE");
                     fila.getCell(columna).setCellStyle(cellStyle);
                     fila_aux.createCell(columna + 1);
+                    verificaMesDiferente++;
+                    if (verificaMesDiferente < 2) {
+                        fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
+                        fila_aux.getCell(columna).setCellStyle(cellStyle);
+                    }
                     break;
                 case 10:
                     fila.createCell(columna).setCellValue("NOVIEMBRE");
                     fila.getCell(columna).setCellStyle(cellStyle);
                     fila_aux.createCell(columna + 1);
+                    verificaMesDiferente++;
+                    if (verificaMesDiferente < 2) {
+                        fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
+                        fila_aux.getCell(columna).setCellStyle(cellStyle);
+                    }
                     break;
                 case 11:
                     fila.createCell(columna).setCellValue("DICIEMBRE");
                     fila.getCell(columna).setCellStyle(cellStyle);
                     fila_aux.createCell(columna + 1);
+                    verificaMesDiferente++;
+                    if (verificaMesDiferente < 2) {
+                        fila_aux.createCell(columna).setCellValue("'" + getYearFormat.format(fechaInicio) + "'");
+                        fila_aux.getCell(columna).setCellStyle(cellStyle);
+                    }
                     break;
                 default:
                     break;

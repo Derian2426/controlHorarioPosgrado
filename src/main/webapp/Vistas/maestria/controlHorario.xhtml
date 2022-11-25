@@ -428,7 +428,7 @@
                                                 <p:menuitem value="Detalle" icon="pi pi-file-o" actionListener="#{GeneradorHorarioMB.dealleHorarioMaestria(horario.idCurso, horario.idMaestria)}"
                                                             update=":form_horario:planificacionHorario:detalleHorarioMaestria" rendered="#{horario.estado eq 'En proceso' or horario.estado eq 'Planificado'}"/>
                                                 <p:menuitem value="Editar" icon="pi pi-pencil" actionListener="#{GeneradorHorarioMB.editHorarioPeriodoAcademico(horario.idCurso, horario.idMaestria, horario.fechaInicio, horario.fechaFin)}"
-                                                            update=":form_horario:planificacionHorario:editHorarioMaestria"/>
+                                                            update=":form_horario:planificacionHorario:editHorarioMaestria,:form_horario:planificacionHorario:docenteEditData"/>
                                             </p:submenu>
                                         </p:menu>
                                     </p:column>
@@ -471,18 +471,15 @@
                             </p:dialog>
                             <p:dialog header="Editar la planificación del Horario" widgetVar="dlgEditPeriodoAcademico" height="50%" width="60%" showEffect="fade" modal="true" responsive="true">
                                 <p:outputPanel id="editHorarioDocente" class="ui-fluid">
-                                    <p:dataTable id="editHorarioMaestria" var="editFecha" value="#{GeneradorHorarioMB.listadoModuloDetalle}" scrollable="true" scrollHeight="500">
-                                        <p:ajax event="rowToggle" update="pickEditList" listener="#{GeneradorHorarioMB.llenarFechaAsignacionEdit(editFecha.idCurso, editFecha.idDocente, editFecha.idModulo)}"/>
-                                        <f:facet name="header">
-                                            Expandir filas para editar las fechas asignadas.
-                                        </f:facet>
-                                        <p:column style="width:2rem">
-                                            <p:rowToggler/>
-                                        </p:column>
+                                    <p:dataTable stripedRows="true" id="editHorarioMaestria" var="editFecha" value="#{GeneradorHorarioMB.listadoModuloDetalle}" scrollable="true" scrollHeight="500">
+                                        <!-- comment<p:ajax event="rowToggle" update="pickEditList" listener="#{GeneradorHorarioMB.llenarFechaAsignacionEdit(editFecha.idCurso, editFecha.idDocente, editFecha.idModulo)}"/>-->
                                         <p:column headerText="Modulo">
                                             <h:outputText value="#{editFecha.nombreModulo}"/>
                                         </p:column>
                                         <p:column headerText="Docente">
+                                            <h:outputText value="#{editFecha.nombreDocente}"/>
+                                        </p:column>
+                                        <!-- comment <p:column headerText="Docente">
 
                                             <p:selectOneMenu editable="false" value="#{GeneradorHorarioMB.docenteEdit.id_docente}">
                                                 <f:selectItem itemLabel="#{editFecha.nombreDocente}" itemValue="#{editFecha.idDocente}" noSelectionOption="true"/>
@@ -491,31 +488,48 @@
                                                                itemValue="#{docenteAsignado.id_docente}"></f:selectItems>
                                                 <p:ajax event="change" update="@this"/>
                                             </p:selectOneMenu>                                            
-                                        </p:column>
+                                        </p:column>-->
                                         <p:column headerText="Tiempo">
                                             <h:outputText value="#{editFecha.hora}"/>
                                         </p:column>
-                                        <p:rowExpansion>
-                                            <div class="editModulo">
-                                                <p:fieldset legend="Calendario para el módulo">
-                                                    <p class="m-0">
-                                                        <div class="ui-fluid formgrid grid">
-                                                            <div class="field col-12 md:col-12">
-                                                                <p:pickList id="pickEditList" value="#{GeneradorHorarioMB.tiempoHorario}" var="fechaPeriodo" itemLabel="#{fechaPeriodo}" itemValue="#{fechaPeriodo}" responsive="true">
-                                                                    <p:ajax event="transfer" listener="#{GeneradorHorarioMB.onTransfer}" update="pickEditList"/>
-                                                                    <f:facet name="sourceCaption">Fechas disponibles</f:facet>
-                                                                    <f:facet name="targetCaption">Fechas asignadas</f:facet>
-                                                                </p:pickList>
-                                                            </div>
-                                                        </div>
-                                                    </p>
-                                                    <p:commandButton value="Editar" icon="pi pi-check" actionListener="#{GeneradorHorarioMB.verquemuestra()}"/>
-                                                </p:fieldset>
-                                            </div>
-                                        </p:rowExpansion>
+                                        <p:column>
+                                            <p:commandButton icon="pi pi-pencil" styleClass="rounded-button ui-button-outlined" 
+                                                             actionListener="#{GeneradorHorarioMB.llenarFechaAsignacionEdit(editFecha.idCurso, editFecha.idDocente, editFecha.idModulo,editFecha.nombreDocente)}"
+                                                             update=":form_horario:planificacionHorario:pickEditList,:form_horario:planificacionHorario:docenteEditData"/>
+                                        </p:column>
                                     </p:dataTable>
                                 </p:outputPanel>
 
+                            </p:dialog>
+                            <p:dialog header="Editar la planificación del Horario" widgetVar="dlgEditPeriodoAcademicoDate" height="40%" width="50%" showEffect="fade" modal="true" responsive="true">
+                                <div class="editModulo">
+                                    <p:fieldset legend="Calendario para el módulo">
+                                        <p class="m-0">
+                                            <div class="ui-fluid formgrid grid">
+                                                <div class="field col-12 md:col-12">
+                                                    <p:outputLabel value="Docente" for="@next" styleClass="p-text-bold"/>
+                                                    <p:selectOneMenu id="docenteEditData" editable="false" value="#{GeneradorHorarioMB.docenteEdit.id_docente}">
+                                                        <f:selectItem itemLabel="#{GeneradorHorarioMB.docenteEdit.nombre_docente}" itemValue="#{GeneradorHorarioMB.docenteEdit.id_docente}" noSelectionOption="true"/>
+                                                        <f:selectItems value="#{GeneradorHorarioMB.listaDocente}" var="docenteAsignado" 
+                                                                       itemLabel="#{docenteAsignado.nombre_docente}" 
+                                                                       itemValue="#{docenteAsignado.id_docente}"></f:selectItems>
+                                                        <p:ajax event="change" update="@this"/>
+                                                    </p:selectOneMenu>
+                                                </div>
+                                                <div class="field col-12 md:col-12">
+                                                    <p:pickList id="pickEditList" value="#{GeneradorHorarioMB.tiempoHorario}" var="fechaPeriodo" itemLabel="#{fechaPeriodo}" itemValue="#{fechaPeriodo}" responsive="true">
+                                                        <p:ajax event="transfer" listener="#{GeneradorHorarioMB.onTransfer}" update="pickEditList"/>
+                                                        <f:facet name="sourceCaption">Fechas disponibles</f:facet>
+                                                        <f:facet name="targetCaption">Fechas asignadas</f:facet>
+                                                    </p:pickList>
+                                                </div>
+                                                <div class="field col-12 md:col-12">
+                                                    <p:commandButton type="button" value="Editar" icon="pi pi-pencil" />
+                                                </div>
+                                            </div>
+                                        </p>
+                                    </p:fieldset>
+                                </div>
                             </p:dialog>
                         </p:tab>
                     </p:tabView>

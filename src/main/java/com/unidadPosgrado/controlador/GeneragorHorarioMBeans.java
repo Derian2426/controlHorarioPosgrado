@@ -1072,7 +1072,7 @@ public class GeneragorHorarioMBeans {
         return listaFechas;
     }
 
-    public void llenarFechaAsignacionEdit(int idCurso, int idDocente, int idModulo) {
+    public void llenarFechaAsignacionEdit(int idCurso, int idDocente, int idModulo,String nameDocente) {
         horaTarget = horarioDAO.getListaEditAsignacionDocente(idCurso, idDocente);
         horaSource = getListaEntreDias(periodoEditAsignacion.getFechaInicio(), periodoEditAsignacion.getFechaFin());
         listaHorario = horarioDAO.getListaHorario(idCurso);
@@ -1085,6 +1085,9 @@ public class GeneragorHorarioMBeans {
         asignacion.setIdModulo(idModulo);
         docenteEdit.setId_docente(idDocente);
         tiempoHorario = new DualListModel<>(horaSource, horaTarget);
+        docenteEdit.setNombre_docente(nameDocente);
+        docenteEdit.setId_docente(idDocente);
+        PrimeFaces.current().executeScript("PF('dlgEditPeriodoAcademicoDate').show()");
     }
 
     public void eliminarFechaAsignacionHorarioUtilizadas() {
@@ -1142,7 +1145,7 @@ public class GeneragorHorarioMBeans {
         if (horaEliminada.size() > 0) {
             asignacion.setIdPeriodo(horarioDAO.getIdAsignacionDocente(asignacion.getIdCurso(), docenteEdit.getId_docente()));
             if (asignacion.getIdPeriodo() == 0) {
-                showWarn("No sw puede Eliminar la fecha de un docente que no se encuentra asignado a un horario.");
+                showWarn("No se puede Eliminar la fecha de un docente que no se encuentra asignado a un horario.");
             } else {
                 horarioDAO.deleteAsignacionDocente(asignacion.getIdPeriodo(), horaEliminada);
             }

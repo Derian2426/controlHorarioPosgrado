@@ -472,23 +472,12 @@
                             <p:dialog header="Editar la planificación del Horario" widgetVar="dlgEditPeriodoAcademico" height="50%" width="60%" showEffect="fade" modal="true" responsive="true">
                                 <p:outputPanel id="editHorarioDocente" class="ui-fluid">
                                     <p:dataTable stripedRows="true" id="editHorarioMaestria" var="editFecha" value="#{GeneradorHorarioMB.listadoModuloDetalle}" scrollable="true" scrollHeight="500">
-                                        <!-- comment<p:ajax event="rowToggle" update="pickEditList" listener="#{GeneradorHorarioMB.llenarFechaAsignacionEdit(editFecha.idCurso, editFecha.idDocente, editFecha.idModulo)}"/>-->
                                         <p:column headerText="Modulo">
                                             <h:outputText value="#{editFecha.nombreModulo}"/>
                                         </p:column>
                                         <p:column headerText="Docente">
                                             <h:outputText value="#{editFecha.nombreDocente}"/>
                                         </p:column>
-                                        <!-- comment <p:column headerText="Docente">
-
-                                            <p:selectOneMenu editable="false" value="#{GeneradorHorarioMB.docenteEdit.id_docente}">
-                                                <f:selectItem itemLabel="#{editFecha.nombreDocente}" itemValue="#{editFecha.idDocente}" noSelectionOption="true"/>
-                                                <f:selectItems value="#{GeneradorHorarioMB.listaDocente}" var="docenteAsignado" 
-                                                               itemLabel="#{docenteAsignado.nombre_docente}" 
-                                                               itemValue="#{docenteAsignado.id_docente}"></f:selectItems>
-                                                <p:ajax event="change" update="@this"/>
-                                            </p:selectOneMenu>                                            
-                                        </p:column>-->
                                         <p:column headerText="Tiempo">
                                             <h:outputText value="#{editFecha.hora}"/>
                                         </p:column>
@@ -501,7 +490,7 @@
                                 </p:outputPanel>
 
                             </p:dialog>
-                            <p:dialog header="Editar la planificación del Horario" widgetVar="dlgEditPeriodoAcademicoDate" height="40%" width="50%" showEffect="fade" modal="true" responsive="true">
+                            <p:dialog header="Editar planificación del Horario" widgetVar="dlgEditPeriodoAcademicoDate" height="40%" width="50%" showEffect="fade" modal="true" responsive="true">
                                 <div class="editModulo">
                                     <p:fieldset legend="Calendario para el módulo">
                                         <p class="m-0">
@@ -518,14 +507,21 @@
                                                 </div>
                                                 <div class="field col-12 md:col-12">
                                                     <p:pickList id="pickEditList" value="#{GeneradorHorarioMB.tiempoHorario}" var="fechaPeriodo" itemLabel="#{fechaPeriodo}" itemValue="#{fechaPeriodo}" responsive="true">
-                                                        <p:ajax event="transfer" listener="#{GeneradorHorarioMB.onTransfer}" update="pickEditList"/>
+                                                        <p:ajax event="transfer" listener="#{GeneradorHorarioMB.onTransfer}" update=":form_horario:messages,pickEditList"/>
                                                         <f:facet name="sourceCaption">Fechas disponibles</f:facet>
                                                         <f:facet name="targetCaption">Fechas asignadas</f:facet>
                                                     </p:pickList>
                                                 </div>
-                                                <div class="field col-12 md:col-12">
-                                                    <p:commandButton type="button" value="Editar" icon="pi pi-pencil" />
+                                                <div class="field col-12 md:col-6">
+
                                                 </div>
+                                                <div class="field col-12 md:col-3">
+                                                    <p:commandButton value="Guardar" styleClass="ui-button-success" update=":form_horario:planificacionHorario:editHorarioMaestria,:form_horario:messages @this" actionListener="#{GeneradorHorarioMB.editarPlanificacionHorarioDocente()}"/>
+                                                </div>
+                                                <div class="field col-12 md:col-3">
+                                                    <p:commandButton value="Cancelar" styleClass="ui-button-danger" actionListener="#{GeneradorHorarioMB.editCancelarPanificacion()}"/>
+                                                </div>
+
                                             </div>
                                         </p>
                                     </p:fieldset>

@@ -178,6 +178,27 @@ public class HorarioDAO {
         }
     }
 
+    public List<TiempoModulo> getEditDocenteAsignacion(int idDocenteActual, int idDocenteAnterior, int idMateria, int idCurso) {
+        List<TiempoModulo> listadoFecha = new ArrayList<>();
+        sentencia = String.format("SELECT * from public.\"editDocentePlanificacion\"(\n"
+                + "	" + idDocenteActual + ", \n"
+                + "	" + idDocenteAnterior + ", \n"
+                + "	" + idMateria + ", \n"
+                + "	" + idCurso + "\n"
+                + ");");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoFecha.add(new TiempoModulo(resultSet.getInt("validacion"),resultSet.getDate("_fecharetorno")));
+            }
+            return listadoFecha;
+        } catch (SQLException e) {
+            return listadoFecha;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
     public List<Maestria> getListaHorario(int idCurso) {
         List<Maestria> listadoMaestria = new ArrayList<>();
         sentencia = String.format("SELECT * from public.\"getListHorario\"(\n"

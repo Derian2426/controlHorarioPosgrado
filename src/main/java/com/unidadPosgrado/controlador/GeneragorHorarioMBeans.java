@@ -1070,6 +1070,10 @@ public class GeneragorHorarioMBeans {
         return listaFechas;
     }
 
+    public void cancelarPlanificacion() {
+        PrimeFaces.current().executeScript("PF('dlgEditPeriodoAcademicoDate').hide()");
+    }
+
     public void llenarFechaAsignacionEdit(int idCurso, int idDocente, int idModulo, String nameDocente) {
         horaTarget = horarioDAO.getListaEditAsignacionDocente(idCurso, idDocente);
         horaSource = getListaEntreDias(periodoEditAsignacion.getFechaInicio(), periodoEditAsignacion.getFechaFin());
@@ -1087,10 +1091,6 @@ public class GeneragorHorarioMBeans {
         docenteEdit.setId_docente(idDocente);
         listaDocente = horarioDAO.getListaDocente(maestriaEdit.getIdMaestria(), maestriaEdit.getIdCurso());
         PrimeFaces.current().executeScript("PF('dlgEditPeriodoAcademicoDate').show()");
-    }
-
-    public void EditCancelarPanificacion() {
-        PrimeFaces.current().executeScript("PF('dlgEditPeriodoAcademicoDate').hide()");
     }
 
     public void eliminarFechaAsignacionHorarioUtilizadas() {

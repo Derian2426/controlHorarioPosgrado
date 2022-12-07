@@ -12,15 +12,17 @@ package com.seguridad.modelo;
 public class Usuario {
 
     private int idUsuario;
+    private int idRol;
     private String nombre;
     private String apellido;
     private String correo;
     private String nombreUsuario;
     private String password;
+    private String rol;
     private boolean estado;
-    
+
     private String confpassword;
-    
+
     //sesion
     private int idUsuarioSesion;
     private String nomUserSesion;
@@ -28,14 +30,14 @@ public class Usuario {
     private String nombreSesion;
     private String apellidoSesion;
     private String correoSesion;
-    
+
     String mensajeAux;
     int codigoAux;
 
     public Usuario() {
     }
-    
-    public Usuario(int idUsuario, String nombre, String apellido, String correo, 
+
+    public Usuario(int idUsuario, String nombre, String apellido, String correo,
             String nombreUsuario, boolean estado) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
@@ -44,8 +46,8 @@ public class Usuario {
         this.nombreUsuario = nombreUsuario;
         this.estado = estado;
     }
-    
-    public Usuario(int idUsuario, String nombre, String apellido, String correo, 
+
+    public Usuario(int idUsuario, String nombre, String apellido, String correo,
             String nombreUsuario, String password, boolean estado) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
@@ -55,8 +57,8 @@ public class Usuario {
         this.password = password;
         this.estado = estado;
     }
-    
-    public Usuario(int code, String reslt, int iduser, String name, String firname, 
+
+    public Usuario(int code, String reslt, int iduser, String name, String firname,
             String usrnm, String pssword, String mail) {
         this.codigoAux = code;
         this.mensajeAux = reslt;
@@ -66,6 +68,17 @@ public class Usuario {
         this.nomUserSesion = usrnm;
         this.passSesion = pssword;
         this.correoSesion = mail;
+    }
+
+    public Usuario(int idUsuario, int idRol, String nombre, String apellido, String correo, String nombreUsuario, String rol, boolean estado) {
+        this.idUsuario = idUsuario;
+        this.idRol = idRol;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.correo = correo;
+        this.nombreUsuario = nombreUsuario;
+        this.rol = rol;
+        this.estado = estado;
     }
 
     public int getIdUsuarioSesion() {
@@ -115,7 +128,7 @@ public class Usuario {
     public void setPassSesion(String passSesion) {
         this.passSesion = passSesion;
     }
-    
+
     public int getIdUsuario() {
         return idUsuario;
     }
@@ -127,7 +140,7 @@ public class Usuario {
     public void setConfpassword(String confpassword) {
         this.confpassword = confpassword;
     }
-    
+
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
     }
@@ -195,5 +208,21 @@ public class Usuario {
     public void setCodigoAux(int codigoAux) {
         this.codigoAux = codigoAux;
     }
-    
+
+    public int getIdRol() {
+        return idRol;
+    }
+
+    public void setIdRol(int idRol) {
+        this.idRol = idRol;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
 }

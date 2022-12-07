@@ -48,8 +48,8 @@ public class UsuarioDAO {
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                listaUsuario.add(new Usuario(resultSet.getInt("_id_usuario"), resultSet.getString("_nombre"), resultSet.getString("_apellido"),
-                        resultSet.getString("_correo"), resultSet.getString("_nombre_usuario"), resultSet.getBoolean("_estado")));
+                listaUsuario.add(new Usuario(resultSet.getInt("_id_usuario"), resultSet.getInt("_id_rol"), resultSet.getString("_nombre"), resultSet.getString("_apellido"),
+                        resultSet.getString("_correo"), resultSet.getString("_nombre_usuario"), resultSet.getString("_nombre_rol"), resultSet.getBoolean("_estado")));
             }
             return listaUsuario;
         } catch (SQLException ex) {
@@ -58,7 +58,7 @@ public class UsuarioDAO {
             conexion.desconectar();
         }
     }
-    
+
     public int registrarIntegracionRol(Usuario integracionUsuario, List<Rol> listaRol) {
         int mensaje = 0;
         String consulta;
@@ -114,11 +114,12 @@ public class UsuarioDAO {
         int mensaje = 0;
         sentencia = String.format("SELECT public.\"actualizarUsuario\"(\n"
                 + "	" + user.getIdUsuario() + ", \n"
+                + "	" + user.getRol()+ ", \n"
                 + "	'" + user.getNombre() + "', \n"
-                + "	'" + user.getApellido()+ "', \n"
-                + "	'" + user.getCorreo()+ "', \n"
-                + "	'" + user.getNombreUsuario()+ "', \n"
-                + "	" + user.isEstado()+ "\n"
+                + "	'" + user.getApellido() + "', \n"
+                + "	'" + user.getCorreo() + "', \n"
+                + "	'" + user.getNombreUsuario() + "', \n"
+                + "	" + user.isEstado() + "\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);

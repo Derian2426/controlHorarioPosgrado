@@ -10,7 +10,7 @@
     <ui:define name="titulo">
         Administración
     </ui:define>
-    
+
 
     <ui:define name="content">
         <f:event type="preRenderView" listener="#{verificarSesion.redireccionExternas()}"/>
@@ -28,7 +28,7 @@
 
                 <div class="card">
                     <p:dataTable id="dtUsuarios" var="usuario" value="#{adminMB.listaUsuario}" editable="true" paginatorPosition="bottom"
-                                 style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                 style="margin-bottom:20px" reflow="true" rows="6" paginator="true"
                                  emptyMessage="No se encontro el estudiante">
                         <!--<f:facet name="header">
                             <span class="ui-input-icon-left">
@@ -81,6 +81,21 @@
                                 </f:facet>
                             </p:cellEditor>
                         </p:column>
+                        <p:column headerText="Rol" style="text-align: justify" >
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{usuario.rol}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu id="Userrol" value="#{usuario.rol}">
+                                        <p:ajax update="@this" process="@this"/>
+                                        <f:selectItems value="#{rolMB.listaRol}" var="userRol" 
+                                                       itemLabel="#{userRol.nombre}" 
+                                                       itemValue="#{userRol.idRol}"></f:selectItems>
+                                    </p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
                         <p:column headerText="Estado" style="text-align: justify" >
                             <p:cellEditor>
                                 <f:facet name="output">
@@ -95,88 +110,11 @@
                                 </f:facet>
                             </p:cellEditor>
                         </p:column>
-                        
                         <p:column headerText="Acciones" style="width:6rem">
                             <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
-                            <p:commandButton icon="pi pi-th-large"                                                         
-                                             styleClass="rounded-button ui-button-primary" process="@this"
-                                             onclick="PF('asignarRol').show()" update=":form_admin:dtUsuarios, :form_admin:colocarRol">
-                                <f:setPropertyActionListener 
-                                    value="#{usuario}" 
-                                    target="#{adminMB.usuario}"/>
-                                <p:resetInput target=":form_admin:dtUsuarios"/>
-                            </p:commandButton>
                         </p:column>
-                        
                     </p:dataTable>
                 </div>
-
-                <p:dialog header="Seleccionar Rol" widgetVar="asignarRol" 
-                          height="500" width="700" showEffect="fade" modal="true" responsive="true">
-                    <p:outputPanel id="colocarRol" class="ui-fluid">
-                        <div class="p-d-flex">
-                            <div class="p-md-6">
-                                <p:outputLabel value="Nombre:"/>
-                                <p:inputText maxlength="100" value="#{adminMB.usuario.nombre}" readonly="true"/>
-                            </div>
-                            <div class="p-md-6">
-                                <p:outputLabel value="Apellido:"/>
-                                <p:inputText maxlength="100" value="#{adminMB.usuario.apellido}" readonly="true"/>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="p-field p-col-12 p-md-3">
-                                <p:commandButton style="margin-right: 6px;" value="Agregar Rol" 
-                                                 styleClass="ui-button-secondary" icon="pi pi-search"
-                                                 onclick="PF('userData').show()" update=":form_admin:msgs">
-                                </p:commandButton>
-                            </div>
-
-                            <p:dataTable id="dtRolAsignar" var="rolCheck" value="#{adminMB.listaRol}" editable="true" paginatorPosition="bottom"
-                                         style="margin-bottom:20px" reflow="true" rows="3" paginator="true">
-                                <p:column headerText="Nombre" style="text-align: justify">
-                                    <h:outputText value="#{rolCheck.nombre}"/>
-                                </p:column>
-                                <p:column headerText="Descripción" style="text-align: justify">
-                                    <h:outputText value="#{rolCheck.detalle}"/>
-                                </p:column>
-                            </p:dataTable>
-                        </div>
-                    </p:outputPanel>
-                    <div class="p-grid p-justify-end">
-                        <p:commandButton value="Guardar"  
-                                         icon="pi pi-check"
-                                         styleClass="ui-button-success"
-                                         style="margin-right: 6px;"
-                                         action="#{rolMB.actualizaRol()}"
-                                         actionListener="#{adminMB.registarIntegracionRol()}"
-                                         update=":form_admin:colocarRol,:form_admin:dtRolUser,:form_admin:msgs"/>
-                        <p:commandButton value="Cancelar" icon="pi pi-times"
-                                         styleClass="ui-button-danger" actionListener="#{adminMB.vaciarCamposIntegracionRol()}" action="#{rolMB.actualizaRol()}"
-                                         oncomplete="PF('asignarRol').hide()" 
-                                         update=":form_admin:colocarRol,:form_admin:dtRolUser,:form_admin:msgs" 
-                                         style="margin-right: 6px;"/>
-                    </div>
-                </p:dialog>
-
-                <p:dialog header="Roles" widgetVar="userData" width="650" showEffect="fade" modal="true" responsive="true">
-                    <p:dataTable id="dtRolUser" var="useRol" value="#{rolMB.listaRol}" editable="true" paginatorPosition="bottom"
-                                 style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
-                                 emptyMessage="No se encontro el rol">
-                        <p:column headerText="Acción" style="text-align: justify">
-                            <p:selectBooleanCheckbox value="#{useRol.verifica}">
-                                <p:ajax listener="#{adminMB.addRol(useRol)}" update=":form_admin:dtRolAsignar,:form_admin:colocarRol,:form_admin:msgs,:form_admin:dtRolUser"/>
-                            </p:selectBooleanCheckbox>
-                        </p:column>
-                        <p:column headerText="Nombre" style="text-align: justify" sortBy="#{useRol.nombre}">
-                            <h:outputText value="#{useRol.nombre}"/>
-                        </p:column>
-                        <p:column headerText="Detalle" style="text-align: justify">
-                            <h:outputText value="#{useRol.detalle}"/>
-                        </p:column>
-                    </p:dataTable>
-                </p:dialog>
             </h:form>
         </div>
 

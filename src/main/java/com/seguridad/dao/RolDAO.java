@@ -7,6 +7,7 @@ package com.seguridad.dao;
 
 import com.global.config.Conexion;
 import com.seguridad.modelo.Rol;
+import com.unidadPosgrado.modelo.Maestria;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,12 +18,13 @@ import java.util.List;
  * @author Alex
  */
 public class RolDAO {
+
     Conexion conexion;
     private Rol rol;
     String sentencia;
     ResultSet resultSet;
-    
-    public RolDAO(){
+
+    public RolDAO() {
         conexion = new Conexion();
         rol = new Rol();
     }
@@ -34,7 +36,7 @@ public class RolDAO {
     public void setRol(Rol rol) {
         this.rol = rol;
     }
-    
+
     public List<Rol> getRolesByUsers(int idUsuario) {
         List<Rol> roles = new ArrayList<>();
         Rol rolAux;
@@ -61,7 +63,7 @@ public class RolDAO {
         }
         return null;
     }
-    
+
     public List<Rol> getListaRol() {
         List<Rol> listaRol = new ArrayList<>();
         sentencia = String.format("SELECT * from public.\"getListaRoles\"();");
@@ -78,13 +80,22 @@ public class RolDAO {
             conexion.desconectar();
         }
     }
-    
-    public int registrarRol(Rol rol) {
+
+    public int registrarRol(Rol rol, List<Maestria> listaMaestria) {
         int mensaje = 0;
+        String jsonMaestrias = "[";
+        for (Maestria maestria : listaMaestria) {
+            jsonMaestrias += "{\n"
+                    + "  \"idMaestria\": " + maestria.getIdMaestria() + "\n"
+                    + "},";
+        }
+        jsonMaestrias = jsonMaestrias.substring(0, jsonMaestrias.length() - 1);
+        jsonMaestrias += "]";
         sentencia = String.format("SELECT public.\"registrarRol\"(\n"
                 + "	'" + rol.getNombre() + "', \n"
-                + "	'" + rol.getDetalle()+ "', \n"
-                + "	" + rol.isEstado()+ "\n"
+                + "	'" + rol.getDetalle() + "', \n"
+                + "	" + rol.isEstado() + ", \n"
+                + "	'" + jsonMaestrias + "'\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
@@ -98,14 +109,14 @@ public class RolDAO {
             conexion.desconectar();
         }
     }
-    
+
     public int editarRol(Rol rol) {
         int mensaje = 0;
         sentencia = String.format("SELECT public.\"actualizarRol\"(\n"
-                + "	" + rol.getIdRol()+ ", \n"
+                + "	" + rol.getIdRol() + ", \n"
                 + "	'" + rol.getNombre() + "', \n"
-                + "	'" + rol.getDetalle()+ "', \n"
-                + "	" + rol.isEstado()+ "\n"
+                + "	'" + rol.getDetalle() + "', \n"
+                + "	" + rol.isEstado() + "\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);

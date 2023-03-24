@@ -77,10 +77,8 @@
                     </p:dataTable>
                 </div>
 
-                <!-- DIALOGO REGISTRAR ESTUDIANTES -->
                 <p:dialog header="Registrar Rol" widgetVar="dlgRol"  width="850" showEffect="fade" modal="true" responsive="true">
                     <p:outputPanel id="nuevoRol" class="ui-fluid">
-
                         <div class="ui-fluid p-formgrid p-grid">
                             <div class="p-field p-col-12 p-md-6">
                                 <p:outputLabel value="Nombre:"/>
@@ -98,17 +96,53 @@
                                     <f:selectItem itemLabel="Deshabilitado" itemValue="false"/>
                                 </p:selectOneMenu>
                             </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Seleccione:"/>
+                                <p:commandButton id="maestriaBtn" value="Maestrias" type="button" icon="pi pi-search" onclick="PF('listMaestriasSeleccion').show()"/>
+                            </div>
+                        </div>
+                        <div class="p-grid p-justify-end">
+                            <div class="p-field p-col-12 p-md-12">
+                                <p:dataTable id="dtMaestrias" var="maestrias" value="#{rolMB.listaMaestriaSeleccion}" editable="true" paginatorPosition="bottom"
+                                             style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                             emptyMessage="No se encontro la maestría">
+                                    <p:column headerText="Nombre Maestría" style="text-align: justify">
+                                        <h:outputText value="#{maestrias.nombre}"/>
+                                    </p:column>
+                                    <p:column headerText="Descripción" style="text-align: justify">
+                                        <h:outputText value="#{maestrias.descripcion}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
                         </div>
                         <div class="p-grid p-justify-end">
                             <div class="p-col-4">
                                 <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{rolMB.registrarRol()}"
-                                                 update=":form_rol:msgs,nuevoRol,:form_rol:dtRol"/>
+                                                 update=":form_rol:msgs,nuevoRol,:form_rol:dtRol,:form_rol:maestriaListaSeleccion"/>
                             </div>
                             <div class="p-field p-col-12 p-md-4">
                                 <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgRol').hide()"/>
                             </div>
                         </div>
                     </p:outputPanel>
+                </p:dialog>
+                <p:dialog header="Seleccione las Maestrias a la que podra tener acceso" widgetVar="listMaestriasSeleccion" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
+                    <p:dataTable id="maestriaListaSeleccion" var="maestria" value="#{rolMB.listaMaestria}" paginatorPosition="bottom"
+                                 rows="3" paginator="true" editable="true"
+                                 emptyMessage="No se encontro la maestría">
+                        <p:column headerText="Acciones" style="width:6rem">
+                            <p:selectBooleanCheckbox value="#{maestria.verifica}">
+                                <p:ajax listener="#{rolMB.addMaestria(maestria)}" update=":form_rol:dtMaestrias"/>
+                            </p:selectBooleanCheckbox>
+                        </p:column>
+                        <p:column headerText="Nombre Maestría" style="text-align: justify">
+                            <h:outputText value="#{maestria.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="Descripción" style="text-align: justify">
+                            <h:outputText value="#{maestria.descripcion}"/>
+                        </p:column>
+                    </p:dataTable>
                 </p:dialog>
             </h:form>
         </div>

@@ -277,7 +277,7 @@ public class EstudianteMBeans {
         // Obtener la hoja de trabajo (worksheet) que se va a leer (en este caso, la primera hoja)
         Sheet sheet = workbook.getSheetAt(0);
         Row encabezados = sheet.getRow(3);
-        int columnaNombres = -1, columnaApellidos = -1, columnaSexo = -1, columnaEmail = -1, columnaCelular = -1, columnaTelefono = -1;
+        int columnaNombres = -1, columnaApellidos = -1, columnaSexo = -1, columnaEmail = -1, columnaCelular = -1, columnaIdentificacion = -1;
         for (Cell celda : encabezados) {
             String valorCelda = celda.getStringCellValue().trim();
             if (valorCelda.equalsIgnoreCase("NOMBRES")) {
@@ -286,12 +286,12 @@ public class EstudianteMBeans {
                 columnaApellidos = celda.getColumnIndex();
             } else if (valorCelda.equalsIgnoreCase("SEXO")) {
                 columnaSexo = celda.getColumnIndex();
-            } else if (valorCelda.equalsIgnoreCase("EMAIL")) {
+            } else if (valorCelda.equalsIgnoreCase("EMAILINST")) {
                 columnaEmail = celda.getColumnIndex();
             } else if (valorCelda.equalsIgnoreCase("CELULAR")) {
                 columnaCelular = celda.getColumnIndex();
-            } else if (valorCelda.equalsIgnoreCase("TELEFONO")) {
-                columnaTelefono = celda.getColumnIndex();
+            } else if (valorCelda.equalsIgnoreCase("IDENTIFICACIÓN")) {
+                columnaIdentificacion = celda.getColumnIndex();
             }
         }
         for (int i = 4; i <= sheet.getLastRowNum(); i++) {
@@ -302,9 +302,9 @@ public class EstudianteMBeans {
             String sexo = fila.getCell(columnaSexo).getStringCellValue();
             String email = fila.getCell(columnaEmail).getStringCellValue();
             String celular = fila.getCell(columnaCelular).getStringCellValue();
-            String telefono = fila.getCell(columnaTelefono).getStringCellValue();
+            String identificacion = fila.getCell(columnaIdentificacion).getStringCellValue();
             listaEstudianteSeleccionado.add(new Estudiante(nombres, apellidos, celular,
-                    telefono, sexo, email));
+                    identificacion, sexo, email));
         }
         // Cerrar el archivo y el objeto Workbook
         inputStream.close();

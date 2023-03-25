@@ -91,32 +91,67 @@ public class EstudianteDAO {
         }
     }
 
-    public int registraEstudiante(List<Inscripcion> inscripcion) {
+    public int registraEstudiante(List<Inscripcion> inscripcion, List<Estudiante> listaEstudiantes) {
         int mensaje = 0;
         try {
+            String fechaInscripcion = "";
+            String descripcion = "";
+            int contador = 0;
+            int curso = 0;
+            float valor = 0f;
             String json = "[";
+
             for (Inscripcion i : inscripcion) {
-                json += "{\n"
-                        + "  \"idCurso\": " + i.getIdCurso()+ ",\n"
-                        + "  \"idEstudiante\": " + i.getIdEstudiante() + ",\n"
-                        + "  \"fecha_inscripcion\":\"" + i.getFecha_inscripcion() + "\",\n"
-                        + "  \"descripcion\":\"" + i.getDescripcion() + "\",\n"
-                        + "  \"valor\":" + i.getValor() + "\n"
+                if (i.getIdEstudiante() > 0) {
+                    contador++;
+                    json += "{\n"
+                            + "  \"idCurso\": " + i.getIdCurso() + ",\n"
+                            + "  \"idEstudiante\": " + i.getIdEstudiante() + ",\n"
+                            + "  \"fecha_inscripcion\":\"" + i.getFecha_inscripcion() + "\",\n"
+                            + "  \"descripcion\":\"" + i.getDescripcion() + "\",\n"
+                            + "  \"valor\":" + i.getValor() + "\n"
+                            + "},";
+                }
+                fechaInscripcion = i.getFecha_inscripcion().toString();
+                descripcion = i.getDescripcion();
+                valor = i.getValor();
+                curso = i.getIdCurso();
+            }
+            if (contador > 0) {
+                json = json.substring(0, json.length() - 1);
+                json += "]";
+            } else {
+                json = "[]";
+            }
+            String jsonEstudiantes = "[";
+            for (Estudiante e : listaEstudiantes) {
+                jsonEstudiantes += "{\n"
+                        + "  \"nombreEstudiante\":\"" + e.getNombre_estudiante() + "\",\n"
+                        + "  \"apellidoEstudiante\":\"" + e.getApellido_estudiante() + "\",\n"
+                        + "  \"telefonoEstudiante\":\"" + e.getTelefono_estudiante() + "\",\n"
+                        + "  \"cedulaEstudiante\":\"" + e.getCedula_estudiante() + "\",\n"
+                        + "  \"sexo\":\"" + e.getSexo() + "\",\n"
+                        + "  \"fecha_inscripcion\":\"" + fechaInscripcion + "\",\n"
+                        + "  \"descripcion\":\"" + descripcion + "\",\n"
+                        + "  \"valor\":" + valor + ",\n"
+                        + "  \"idCurso\": " + curso + ",\n"
+                        + "  \"correoEstudiante\":\"" + e.getCorreo_estudiante() + "\"\n"
                         + "},";
             }
-            json = json.substring(0, json.length() - 1);
-            json += "]";
-            sentencia = String.format("SELECT public.\"inscripcionMestria\"(\n"
-                    + "	'" + json + "'\n"
+            jsonEstudiantes = jsonEstudiantes.substring(0, jsonEstudiantes.length() - 1);
+            jsonEstudiantes += "]";
+            sentencia = String.format("SELECT public.\"inscripcionMaestriaEstudiantes\"(\n"
+                    + "	'" + json + "',\n"
+                    + "	'" + jsonEstudiantes + "'\n"
                     + ")");
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                mensaje = Integer.parseInt(resultSet.getString("inscripcionMestria"));
+                mensaje = Integer.parseInt(resultSet.getString("inscripcionMaestriaEstudiantes"));
             }
             return mensaje;
         } catch (NumberFormatException | SQLException e) {
             return mensaje;
-        }finally {
+        } finally {
             conexion.desconectar();
         }
 

@@ -163,7 +163,7 @@ public class EstudianteMBeans {
                     listaInscripcion.add(new Inscripcion(integracionMaestria.getIdCurso(),
                             student.getId_estudiante(), inscripcion.getFecha_inscripcion(), integracionMaestria.getNombre(), inscripcion.getValor()));
                 }
-                if (estudianteDAO.registraEstudiante(listaInscripcion) > 0) {
+                if (estudianteDAO.registraEstudiante(listaInscripcion, listaEstudianteSeleccionado) > 0) {
                     showInfo("Registro exitoso");
                     estudianteBusqueda = new Estudiante();
                     listaInscripcion = new ArrayList<>();

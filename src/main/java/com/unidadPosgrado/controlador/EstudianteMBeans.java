@@ -10,22 +10,38 @@ import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Estudiante;
 import com.unidadPosgrado.modelo.Inscripcion;
 import com.unidadPosgrado.modelo.Maestria;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.model.file.UploadedFile;
 
 /**
  *
  * @author Alex
  */
 public class EstudianteMBeans {
-    
+
     private Estudiante estudiante;
     EstudianteDAO estudianteDAO;
     private List<Estudiante> listaEstudiante;
@@ -40,9 +56,9 @@ public class EstudianteMBeans {
     private Maestria maestriaBusqueda;
     List<Maestria> busquedaMaestria;
     List<Maestria> busquedaMaestriaAux;
-    
+
     private Estudiante estudianteBusqueda;
-    
+
     public EstudianteMBeans() {
         estudiante = new Estudiante();
         estudianteDAO = new EstudianteDAO();
@@ -60,7 +76,7 @@ public class EstudianteMBeans {
         busquedaMaestria = new ArrayList<>();
         busquedaMaestriaAux = new ArrayList<>();
     }
-    
+
     @PostConstruct
     public void init() {
         listaEstudiante = estudianteDAO.getListaEstudiante();
@@ -68,7 +84,7 @@ public class EstudianteMBeans {
         listaMaestria = maestriaDAO.getListaMaestriaPeriodo();
         busquedaMaestriaAux = listaMaestria;
     }
-    
+
     public void registrarEstudiante() {
         try {
             if ("".equals(estudiante.getNombre_estudiante().trim())) {
@@ -99,7 +115,7 @@ public class EstudianteMBeans {
             showWarn(e.getMessage());
         }
     }
-    
+
     public void onRowEdit(RowEditEvent<Estudiante> event) {
         try {
             if ("".equals(event.getObject().getNombre_estudiante().trim())) {
@@ -133,7 +149,7 @@ public class EstudianteMBeans {
             showWarn(e.getMessage());
         }
     }
-    
+
     public void registrarEstudianteMaestria() {
         try {
             if (listaEstudianteSeleccionado.size() < 1) {
@@ -168,7 +184,7 @@ public class EstudianteMBeans {
             showWarn(e.getMessage());
         }
     }
-    
+
     public void cancelarRegistro() {
         listaInscripcion = new ArrayList<>();
         listaEstudianteSeleccionado = new ArrayList<>();
@@ -182,7 +198,7 @@ public class EstudianteMBeans {
         maestriaBusqueda = new Maestria();
         showWarn("Registro cancelado.");
     }
-    
+
     public void llenaMaestria(Maestria maestria) {
         integracionMaestria.setIdMaestria(maestria.getIdMaestria());
         integracionMaestria.setNombre(maestria.getNombre());
@@ -190,7 +206,7 @@ public class EstudianteMBeans {
         integracionMaestria.setNombreParalelo(maestria.getNombreParalelo());
         integracionMaestria.setIdCurso(maestria.getIdCurso());
     }
-    
+
     public void onRowCancel(RowEditEvent<Estudiante> event) {
         try {
             showWarn("Editar el nombre " + event.getObject().getNombre_estudiante() + " fue cancelado.");
@@ -198,7 +214,7 @@ public class EstudianteMBeans {
             showWarn(e.getMessage());
         }
     }
-    
+
     public void buscarEstudiante() {
         if (estudianteBusqueda.getNombre_estudiante() == null || "".equals(estudianteBusqueda.getNombre_estudiante())) {
             listaEstudiante = busquedaEstudianteAux;
@@ -215,7 +231,7 @@ public class EstudianteMBeans {
 //            estudianteBusqueda = new Estudiante();
         }
     }
-    
+
     public void addEstudiantes(Estudiante objestudiante) {
         try {
             if (objestudiante.isVerifica()) {
@@ -223,13 +239,13 @@ public class EstudianteMBeans {
             } else {
                 listaEstudianteSeleccionado.remove(objestudiante);
             }
-            
+
         } catch (Exception e) {
             showWarn("Error" + e.getMessage());
         }
-        
+
     }
-    
+
     public void buscarMaestria() {
         if (maestriaBusqueda.getNombre() == null || "".equals(maestriaBusqueda.getNombre())) {
             listaMaestria = busquedaMaestriaAux;
@@ -244,94 +260,142 @@ public class EstudianteMBeans {
             busquedaMaestria = new ArrayList<>();
 //            maestriaBusqueda = new Maestria();
         }
-        
+
     }
-    
+
+    public void uploadedFile(FileUploadEvent event) throws IOException {
+        // Obtener el archivo cargado
+        UploadedFile file = event.getFile();
+        InputStream inputStream = file.getInputStream();
+        // Crear un objeto Workbook para el archivo de Excel
+        Workbook workbook = null;
+        if (file.getFileName().endsWith(".xlsx")) {
+            workbook = new XSSFWorkbook(inputStream); // Si es un archivo xlsx
+        } else if (file.getFileName().endsWith(".xls")) {
+            workbook = new HSSFWorkbook(inputStream); // Si es un archivo xls
+        }
+        // Obtener la hoja de trabajo (worksheet) que se va a leer (en este caso, la primera hoja)
+        Sheet sheet = workbook.getSheetAt(0);
+        Row encabezados = sheet.getRow(3);
+        int columnaNombres = -1, columnaApellidos = -1, columnaSexo = -1, columnaEmail = -1, columnaCelular = -1, columnaTelefono = -1;
+        for (Cell celda : encabezados) {
+            String valorCelda = celda.getStringCellValue().trim();
+            if (valorCelda.equalsIgnoreCase("NOMBRES")) {
+                columnaNombres = celda.getColumnIndex();
+            } else if (valorCelda.equalsIgnoreCase("APELLIDOS")) {
+                columnaApellidos = celda.getColumnIndex();
+            } else if (valorCelda.equalsIgnoreCase("SEXO")) {
+                columnaSexo = celda.getColumnIndex();
+            } else if (valorCelda.equalsIgnoreCase("EMAIL")) {
+                columnaEmail = celda.getColumnIndex();
+            } else if (valorCelda.equalsIgnoreCase("CELULAR")) {
+                columnaCelular = celda.getColumnIndex();
+            } else if (valorCelda.equalsIgnoreCase("TELEFONO")) {
+                columnaTelefono = celda.getColumnIndex();
+            }
+        }
+        for (int i = 4; i <= sheet.getLastRowNum(); i++) {
+            Row fila = sheet.getRow(i);
+            // Leer las celdas específicas de la fila
+            String nombres = fila.getCell(columnaNombres).getStringCellValue();
+            String apellidos = fila.getCell(columnaApellidos).getStringCellValue();
+            String sexo = fila.getCell(columnaSexo).getStringCellValue();
+            String email = fila.getCell(columnaEmail).getStringCellValue();
+            String celular = fila.getCell(columnaCelular).getStringCellValue();
+            String telefono = fila.getCell(columnaTelefono).getStringCellValue();
+            listaEstudianteSeleccionado.add(new Estudiante(nombres, apellidos, celular,
+                    telefono, sexo, email));
+        }
+        // Cerrar el archivo y el objeto Workbook
+        inputStream.close();
+        workbook.close();
+    }
+
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
         FacesContext.getCurrentInstance().
                 addMessage(null, new FacesMessage(severity, summary, detail));
     }
-    
+
     public void showWarn(String message) {
         addMessage(FacesMessage.SEVERITY_WARN, "Advertencia", message);
     }
-    
+
     public void showInfo(String message) {
         addMessage(FacesMessage.SEVERITY_INFO, "Exito", message);
     }
-    
+
     public Estudiante getEstudiante() {
         return estudiante;
     }
-    
+
     public void setEstudiante(Estudiante estudiante) {
         this.estudiante = estudiante;
     }
-    
+
     public EstudianteDAO getEstudianteDAO() {
         return estudianteDAO;
     }
-    
+
     public void setEstudianteDAO(EstudianteDAO estudianteDAO) {
         this.estudianteDAO = estudianteDAO;
     }
-    
+
     public List<Estudiante> getListaEstudiante() {
         return listaEstudiante;
     }
-    
+
     public Estudiante getEstudianteBusqueda() {
         return estudianteBusqueda;
     }
-    
+
     public void setEstudianteBusqueda(Estudiante estudianteBusqueda) {
         this.estudianteBusqueda = estudianteBusqueda;
     }
-    
+
     public void setListaEstudiante(List<Estudiante> listaEstudiante) {
         this.listaEstudiante = listaEstudiante;
     }
-    
+
     public List<Estudiante> getListaEstudianteSeleccionado() {
         return listaEstudianteSeleccionado;
     }
-    
+
     public void setListaEstudianteSeleccionado(List<Estudiante> listaEstudianteSeleccionado) {
         this.listaEstudianteSeleccionado = listaEstudianteSeleccionado;
     }
-    
+
     public Maestria getIntegracionMaestria() {
         return integracionMaestria;
     }
-    
+
     public void setIntegracionMaestria(Maestria integracionMaestria) {
         this.integracionMaestria = integracionMaestria;
     }
-    
+
     public Inscripcion getInscripcion() {
         return inscripcion;
     }
-    
+
     public void setInscripcion(Inscripcion inscripcion) {
         this.inscripcion = inscripcion;
     }
-    
+
     public List<Maestria> getListaMaestria() {
         return listaMaestria;
     }
-    
+
     public void setListaMaestria(List<Maestria> listaMaestria) {
         this.listaMaestria = listaMaestria;
     }
-    
+
     public Maestria getMaestriaBusqueda() {
         return maestriaBusqueda;
     }
-    
+
     public void setMaestriaBusqueda(Maestria maestriaBusqueda) {
         this.maestriaBusqueda = maestriaBusqueda;
     }
-    
+
     public void saludo() {
         System.out.println("Holas");
     }

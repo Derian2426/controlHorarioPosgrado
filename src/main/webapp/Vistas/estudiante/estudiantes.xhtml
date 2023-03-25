@@ -198,6 +198,17 @@
                                 <div class="p-field p-col-12 p-md-4">
                                     <p:commandButton value="Nómina de estudiantes" styleClass="ui-button-secondary" type="button" icon="pi pi-search" onclick="PF('listEstudiantesSeleccion').show()"/>
                                 </div>
+                                <div class="p-field p-col-12 p-md-8">
+                                    <p:fileUpload id="uploaderEstudent" mode="simple" skinSimple="true" styleClass="block mb-5"
+                                                  title="Seleccione un archivo .xlsx o .xls"
+                                                  auto="true"
+                                                  process="@this"
+                                                  listener="#{estudianteMB.uploadedFile}"
+                                                  allowTypes="/(\.|\/)(xlsx|xls)$/i"
+                                                  accept=".xlsx,.xls"
+                                                  update=":form_estudiante:estudianteSeleccionados,:form_estudiante:msgs"
+                                                  label="Seleccionar archivo de estudiantes"/>
+                                </div>
                             </div>
                             <p:dataTable id="estudianteSeleccionados" var="estudianteSelect" value="#{estudianteMB.listaEstudianteSeleccionado}" rows="4" paginator="true" paginatorPosition="bottom">
 
@@ -211,6 +222,9 @@
 
                                 <p:column headerText="Cédula">
                                     <h:outputText value="#{estudianteSelect.cedula_estudiante}"/>
+                                </p:column>
+                                <p:column headerText="Teléfono">
+                                    <h:outputText value="#{estudianteSelect.telefono_estudiante}"/>
                                 </p:column>
                             </p:dataTable>
                         </div>

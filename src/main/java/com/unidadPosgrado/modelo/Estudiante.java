@@ -23,6 +23,15 @@ public class Estudiante {
     public Estudiante() {
     }
 
+    public Estudiante(String nombre_estudiante, String apellido_estudiante, String telefono_estudiante, String cedula_estudiante, String sexo, String correo_estudiante) {
+        this.nombre_estudiante = nombre_estudiante;
+        this.apellido_estudiante = apellido_estudiante;
+        this.telefono_estudiante = telefono_estudiante;
+        this.cedula_estudiante = cedula_estudiante;
+        this.sexo = sexo;
+        this.correo_estudiante = correo_estudiante;
+    }
+
     public Estudiante(int id_estudiante, String nombre_estudiante,
             String apellido_estudiante, String telefono_estudiante,
             String cedula_estudiante, String sexo, String correo_estudiante) {

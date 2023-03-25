@@ -10,6 +10,7 @@ import com.seguridad.modelo.Rol;
 import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Maestria;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -25,24 +26,31 @@ public class RolMBeans {
 
     RolDAO rolDAO;
     private Rol rol;
+    private Rol editRol;
     private List<Rol> listaRol;
     private List<Maestria> listaMaestria;
+    private List<Maestria> listaMaestrias;
     private List<Maestria> listaMaestriaSeleccion;
     MaestriaDAO maestriaDAO;
+    private List<Maestria> listaMaestriaEdit;
 
     public RolMBeans() {
         rolDAO = new RolDAO();
         rol = new Rol();
         listaRol = new ArrayList<>();
         listaMaestria = new ArrayList<>();
+        listaMaestrias = new ArrayList<>();
         listaMaestriaSeleccion = new ArrayList<>();
+        listaMaestriaEdit = new ArrayList<>();
         maestriaDAO = new MaestriaDAO();
+        editRol = new Rol();
     }
 
     @PostConstruct
     public void init() {
         listaRol = rolDAO.getListaRol();
         listaMaestria = maestriaDAO.getListaMaestria_Periodo();
+        listaMaestrias = maestriaDAO.getListaMaestria_Periodo();
     }
 
     public void registrarRol() {
@@ -73,27 +81,31 @@ public class RolMBeans {
         }
     }
 
-    public void onRowEdit(RowEditEvent<Rol> event) {
+    public void rolEdit() {
         try {
-            if ("".equals(event.getObject().getNombre().trim())) {
+            if ("".equals(editRol.getNombre().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            } else if ("".equals(event.getObject().getDetalle().trim())) {
+            } else if ("".equals(editRol.getDetalle().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            } else if ("".equals(event.getObject().isEstado())) {
+            } else if ("".equals(editRol.isEstado())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
+            } else if (listaMaestriaEdit.size() == 0) {
+                showWarn("Seleccione alguna de las maestrias.");
             } else {
-                Rol editRol = new Rol(event.getObject().getIdRol(),
-                        event.getObject().getNombre(), event.getObject().getDetalle(),
-                        event.getObject().isEstado());
-                int resultadoRegistro = rolDAO.editarRol(editRol);
+                int resultadoRegistro = rolDAO.editarRol(editRol, listaMaestriaEdit);
                 if (resultadoRegistro > 0) {
                     showInfo("Se actualizo con éxito, " + editRol.getNombre().trim());
+
                 } else {
                     showWarn(editRol.getNombre().trim().replace(".", ",") + " se actualizaron los otros campos.");
                 }
             }
+            listaMaestriaEdit = new ArrayList<>();
             listaRol = new ArrayList<>();
             listaRol = rolDAO.getListaRol();
+            editRol = new Rol();
+            listaMaestrias = maestriaDAO.getListaMaestria_Periodo();
+            PrimeFaces.current().executeScript("PF('dlgEditRol').hide()");
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
@@ -132,6 +144,83 @@ public class RolMBeans {
             showWarn("Edición del rol: " + event.getObject().getNombre() + ", fue cancelado.");
         } catch (Exception e) {
             showWarn(e.getMessage());
+        }
+    }
+
+    public void recibirEditRol(Rol userRol) {
+        try {
+            editRol = userRol;
+            listaMaestriaEdit = rolDAO.listaMestriasRol(editRol.getIdRol());
+            PrimeFaces.current().executeScript("PF('dlgEditRol').show()");
+        } catch (Exception e) {
+            showWarn(e.getMessage());
+        }
+    }
+
+    public void cargarMaestriasEdit() {
+        for (Maestria maestria : listaMaestriaEdit) {
+            for (Maestria maestriabusqueda : listaMaestrias) {
+                if (maestriabusqueda.getIdMaestria() == maestria.getIdMaestria()) {
+                    maestriabusqueda.setVerifica(true);
+                }
+            }
+        }
+        PrimeFaces.current().executeScript("PF('listMaestriasEditSeleccion').show()");
+    }
+
+    public void addMaestriaEdit(Maestria maestria) {
+        try {
+            if (maestria.isVerifica() && verificaModuloEdit(maestria.getIdMaestria())) {
+                listaMaestriaEdit.add(maestria);
+            } else {
+                for (Iterator<Maestria> iterator = listaMaestriaEdit.iterator(); iterator.hasNext();) {
+                    Maestria m = iterator.next();
+                    if (m.getIdMaestria() == maestria.getIdMaestria()) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            showWarn("Error" + e.getMessage());
+        }
+    }
+
+    public boolean verificaModuloEdit(int idMaestria) {
+        boolean verifica = true;
+        for (Maestria maestria : listaMaestriaEdit) {
+            if (maestria.getIdMaestria() == idMaestria) {
+                verifica = false;
+                break;
+            }
+        }
+        return verifica;
+    }
+
+    public void canclearEdit() {
+        listaRol = rolDAO.getListaRol();
+        listaMaestria = maestriaDAO.getListaMaestria_Periodo();
+        listaMaestriaSeleccion = new ArrayList<>();
+        showWarn("Edición del rol: " + rol.getNombre() + ", fue cancelado.");
+        rol = new Rol();
+        PrimeFaces.current().executeScript("PF('dlgRol').hide()");
+    }
+
+    public void eliminarMaestria(Maestria maestria) {
+        if (rolDAO.deleteRolMaestria(editRol, maestria) == 1 && listaMaestriaEdit.size() > 1) {
+            listaMaestriaEdit.remove(maestria);
+            listaMaestriaEdit = rolDAO.listaMestriasRol(editRol.getIdRol());
+            listaMaestrias = maestriaDAO.getListaMaestria_Periodo();
+            for (Maestria maestriaObject : listaMaestriaEdit) {
+                for (Maestria maestriabusqueda : listaMaestrias) {
+                    if (maestriabusqueda.getIdMaestria() == maestriaObject.getIdMaestria()) {
+                        maestriabusqueda.setVerifica(true);
+                    }
+                }
+            }
+            showInfo("Se elimino la asiganación a la " + maestria.getNombre() + ".");
+        } else {
+            showWarn("Al menos debe tener asignado una Maestria.");
         }
     }
 
@@ -182,6 +271,30 @@ public class RolMBeans {
 
     public void setListaMaestriaSeleccion(List<Maestria> listaMaestriaSeleccion) {
         this.listaMaestriaSeleccion = listaMaestriaSeleccion;
+    }
+
+    public Rol getEditRol() {
+        return editRol;
+    }
+
+    public void setEditRol(Rol editRol) {
+        this.editRol = editRol;
+    }
+
+    public List<Maestria> getListaMaestriaEdit() {
+        return listaMaestriaEdit;
+    }
+
+    public void setListaMaestriaEdit(List<Maestria> listaMaestriaEdit) {
+        this.listaMaestriaEdit = listaMaestriaEdit;
+    }
+
+    public List<Maestria> getListaMaestrias() {
+        return listaMaestrias;
+    }
+
+    public void setListaMaestrias(List<Maestria> listaMaestrias) {
+        this.listaMaestrias = listaMaestrias;
     }
 
 }

@@ -34,9 +34,6 @@
                             </div>
                         </f:facet>
 
-                        <p:ajax event="rowEdit" listener="#{rolMB.onRowEdit}" update=":form_rol:msgs,:form_rol:dtRol"/>
-                        <p:ajax event="rowEditCancel" listener="#{rolMB.onRowCancel}" update=":form_rol:msgs,:form_rol:dtRol"/>
-
                         <p:column headerText="Nombre" style="text-align: justify" sortBy="#{rol.nombre}">
                             <p:cellEditor>
                                 <f:facet name="output">
@@ -72,7 +69,10 @@
                             </p:cellEditor>
                         </p:column>
                         <p:column headerText="Acciones" style="width:6rem">
-                            <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+                            <p:commandButton icon="pi pi-pencil" styleClass="rounded-button ui-button-flat">
+                                <p:ajax listener="#{rolMB.recibirEditRol(rol)}" 
+                                        update=":form_rol:editRol,:form_rol:dtMaestriasEdit"/>
+                            </p:commandButton>
                         </p:column>
                     </p:dataTable>
                 </div>
@@ -121,7 +121,8 @@
                                                  update=":form_rol:msgs,nuevoRol,:form_rol:dtRol,:form_rol:maestriaListaSeleccion"/>
                             </div>
                             <div class="p-field p-col-12 p-md-4">
-                                <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgRol').hide()"/>
+                                <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" actionListener="#{rolMB.canclearEdit()}"
+                                                 update=":form_rol:msgs,nuevoRol,:form_rol:dtRol,:form_rol:maestriaListaSeleccion"/>
                             </div>
                         </div>
                     </p:outputPanel>
@@ -133,6 +134,82 @@
                         <p:column headerText="Acciones" style="width:6rem">
                             <p:selectBooleanCheckbox value="#{maestria.verifica}">
                                 <p:ajax listener="#{rolMB.addMaestria(maestria)}" update=":form_rol:dtMaestrias"/>
+                            </p:selectBooleanCheckbox>
+                        </p:column>
+                        <p:column headerText="Nombre Maestría" style="text-align: justify">
+                            <h:outputText value="#{maestria.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="Descripción" style="text-align: justify">
+                            <h:outputText value="#{maestria.descripcion}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:dialog>
+
+                <p:dialog header="Editar Rol" widgetVar="dlgEditRol"  width="850" showEffect="fade" modal="true" responsive="true">
+                    <p:outputPanel id="editRol" class="ui-fluid">
+                        <div class="ui-fluid p-formgrid p-grid">
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Nombre:"/>
+                                <p:inputText maxlength="30" value="#{rolMB.editRol.nombre}"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Detalle"/>
+                                <p:inputText maxlength="30" value="#{rolMB.editRol.detalle}"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Estado:"/>
+                                <p:selectOneMenu id="generoEdit" value="#{rolMB.editRol.estado}">
+                                    <p:ajax update="@this" process="@this"/>
+                                    <f:selectItem itemLabel="Habilitado" itemValue="true"/>
+                                    <f:selectItem itemLabel="Deshabilitado" itemValue="false"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Seleccione:"/>
+                                <p:commandButton id="maestriaEditBtn" value="Maestrias" type="button" icon="pi pi-search">
+                                    <p:ajax listener="#{rolMB.cargarMaestriasEdit()}" 
+                                            update=":form_rol:maestriaListaEditSeleccion"/>
+                                </p:commandButton>
+                            </div>
+                        </div>
+                        <div class="p-grid p-justify-end">
+                            <div class="p-field p-col-12 p-md-12">
+                                <p:dataTable id="dtMaestriasEdit" var="maestrias" value="#{rolMB.listaMaestriaEdit}" editable="true" paginatorPosition="bottom"
+                                             style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                             emptyMessage="No se encontro la maestría">
+                                    <p:column headerText="Nombre Maestría" style="text-align: justify">
+                                        <h:outputText value="#{maestrias.nombre}"/>
+                                    </p:column>
+                                    <p:column headerText="Descripción" style="text-align: justify">
+                                        <h:outputText value="#{maestrias.descripcion}"/>
+                                    </p:column>
+                                    <p:column headerText="Acciones" style="width:6rem">
+                                        <p:commandButton icon="pi pi-trash" styleClass="rounded-button ui-button-danger" 
+                                                         actionListener="#{rolMB.eliminarMaestria(maestrias)}"
+                                                         update=":form_rol:msgs,dtMaestriasEdit,:form_rol:maestriaListaEditSeleccion"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                        <div class="p-grid p-justify-end">
+                            <div class="p-col-4">
+                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{rolMB.rolEdit()}"
+                                                 update=":form_rol:msgs,editRol,:form_rol:dtRol,:form_rol:maestriaListaEditSeleccion"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-4">
+                                <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgEditRol').hide()"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:dialog header="Seleccione las Maestrias a la que podra tener acceso" widgetVar="listMaestriasEditSeleccion" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
+                    <p:dataTable id="maestriaListaEditSeleccion" var="maestria" value="#{rolMB.listaMaestrias}" paginatorPosition="bottom"
+                                 rows="3" paginator="true" editable="true"
+                                 emptyMessage="No se encontro la maestría">
+                        <p:column headerText="Acciones" style="width:6rem">
+                            <p:selectBooleanCheckbox value="#{maestria.verifica}">
+                                <p:ajax listener="#{rolMB.addMaestriaEdit(maestria)}" update=":form_rol:dtMaestriasEdit"/>
                             </p:selectBooleanCheckbox>
                         </p:column>
                         <p:column headerText="Nombre Maestría" style="text-align: justify">

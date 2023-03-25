@@ -110,18 +110,64 @@ public class RolDAO {
         }
     }
 
-    public int editarRol(Rol rol) {
+    public int editarRol(Rol rol, List<Maestria> listaMaestrias) {
         int mensaje = 0;
-        sentencia = String.format("SELECT public.\"actualizarRol\"(\n"
+        String jsonMaestrias = "[";
+        for (Maestria maestria : listaMaestrias) {
+            jsonMaestrias += "{\n"
+                    + "  \"idMaestria\": " + maestria.getIdMaestria() + "\n"
+                    + "},";
+        }
+        jsonMaestrias = jsonMaestrias.substring(0, jsonMaestrias.length() - 1);
+        jsonMaestrias += "]";
+        sentencia = String.format("SELECT public.\"editarRol\"(\n"
                 + "	" + rol.getIdRol() + ", \n"
                 + "	'" + rol.getNombre() + "', \n"
                 + "	'" + rol.getDetalle() + "', \n"
-                + "	" + rol.isEstado() + "\n"
+                + "	" + rol.isEstado() + ", \n"
+                + "	'" + jsonMaestrias + "'\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                mensaje = Integer.parseInt(resultSet.getString("actualizarRol"));
+                mensaje = Integer.parseInt(resultSet.getString("editarRol"));
+            }
+            return mensaje;
+        } catch (NumberFormatException | SQLException e) {
+            return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public List<Maestria> listaMestriasRol(int idRol) {
+        List<Maestria> listaMaestria = new ArrayList<>();
+        sentencia = String.format("SELECT * from public.\"getListRolMaestria\"(" + idRol + ");");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listaMaestria.add(new Maestria(resultSet.getInt("_id_maestria"),
+                        resultSet.getString("_nombre_maestria"),
+                        resultSet.getString("_descripcion")));
+            }
+            return listaMaestria;
+        } catch (SQLException ex) {
+            return listaMaestria;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public int deleteRolMaestria(Rol rol, Maestria maestria) {
+        int mensaje = 0;
+        sentencia = String.format("SELECT public.\"deleteRolMaestria\"(\n"
+                + "	" + rol.getIdRol() + ", \n"
+                + "	" + maestria.getIdMaestria() + " \n"
+                + ")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("deleteRolMaestria"));
             }
             return mensaje;
         } catch (NumberFormatException | SQLException e) {

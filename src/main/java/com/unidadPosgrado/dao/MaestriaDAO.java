@@ -78,9 +78,9 @@ public class MaestriaDAO {
         }
     }
 
-    public List<Maestria> getListaMaestria() {
+    public List<Maestria> getListaMaestria(int idUsuario) {
         List<Maestria> listadoMaestria = new ArrayList<>();
-        sentencia = String.format("select * from public.\"getListaMaestrias\"()");
+        sentencia = String.format("select * from public.\"getListaMaestrias\"("+idUsuario+")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
@@ -127,9 +127,9 @@ public class MaestriaDAO {
         }
     }
 
-    public List<Maestria> getListaMaestriaxModulo() {
+    public List<Maestria> getListaMaestriaxModulo(int idUsuario) {
         List<Maestria> listadoMaestria = new ArrayList<>();
-        sentencia = String.format("SELECT * from public.\"tiempoMaestria\"()");
+        sentencia = String.format("SELECT * from public.\"tiempoMaestria\"("+ idUsuario+")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {

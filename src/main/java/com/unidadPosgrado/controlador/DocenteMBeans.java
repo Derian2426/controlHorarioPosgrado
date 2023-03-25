@@ -5,6 +5,7 @@
  */
 package com.unidadPosgrado.controlador;
 
+import com.seguridad.modelo.Usuario;
 import com.unidadPosgrado.dao.DocenteDAO;
 import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Docente;
@@ -38,6 +39,8 @@ public class DocenteMBeans {
     List<Maestria> editListMaestriaConfirmada;
     List<Docente> listaDocenteBusqueda;
     List<Docente> listaDocenteBusquedaAux;
+    Usuario user;
+    FacesContext contexto;
 
     public DocenteMBeans() {
         docente = new Docente();
@@ -55,11 +58,14 @@ public class DocenteMBeans {
         docenteBusqueda = new Docente();
         listaDocenteBusqueda = new ArrayList<>();
         listaDocenteBusquedaAux = new ArrayList<>();
+        user = new Usuario();
     }
 
     @PostConstruct
     public void init() {
-        listaMaestria = maestriaDAO.getListaMaestria();
+        contexto = FacesContext.getCurrentInstance();
+        user = (Usuario) contexto.getExternalContext().getSessionMap().get("usuario");
+        listaMaestria = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
         listaDocente = docenteDAO.getListaDocente();
         busquedaMaestriaAux = listaMaestria;
         listaDocenteBusqueda = listaDocente;
@@ -88,8 +94,8 @@ public class DocenteMBeans {
                     PrimeFaces.current().executeScript("PF('dlgDocente').hide()");
                     listaDocente = docenteDAO.getListaDocente();
                     listaDocenteBusqueda = docenteDAO.getListaDocente();
-                    listaMaestria = maestriaDAO.getListaMaestria();
-                    busquedaMaestriaAux = maestriaDAO.getListaMaestria();
+                    listaMaestria = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
+                    busquedaMaestriaAux = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
                     maestriaBusqueda = new Maestria();
                 } else {
                     showWarn("La cédula " + docente.getCedula_docente().trim().replace(".", ",") + " ya se encuentra registrada.");
@@ -97,8 +103,8 @@ public class DocenteMBeans {
                     seleccionMaestria = new ArrayList<>();
                     listaDocente = docenteDAO.getListaDocente();
                     listaDocenteBusqueda = docenteDAO.getListaDocente();
-                    listaMaestria = maestriaDAO.getListaMaestria();
-                    busquedaMaestriaAux = maestriaDAO.getListaMaestria();
+                    listaMaestria = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
+                    busquedaMaestriaAux = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
                     maestriaBusqueda = new Maestria();
                 }
             }
@@ -109,7 +115,7 @@ public class DocenteMBeans {
     public void cancelarRegistro() {
         docente = new Docente();
         seleccionMaestria = new ArrayList<>();
-        listaMaestria = maestriaDAO.getListaMaestria();
+        listaMaestria = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
         maestriaBusqueda = new Maestria();
         listaDocenteBusqueda = docenteDAO.getListaDocente();
         editListMaestria = new ArrayList<>();
@@ -141,8 +147,8 @@ public class DocenteMBeans {
             docente = new Docente();
             listaDocente = docenteDAO.getListaDocente();
             listaDocenteBusqueda = listaDocente;
-            listaMaestria = maestriaDAO.getListaMaestria();
-            busquedaMaestriaAux = maestriaDAO.getListaMaestria();
+            listaMaestria = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
+            busquedaMaestriaAux = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
             maestriaBusqueda = new Maestria();
         } catch (Exception e) {
             showWarn(e.getMessage());

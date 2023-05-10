@@ -13,6 +13,8 @@ import java.util.Date;
  */
 public class Inscripcion {
 
+    private Paralelo paralelo;
+    private Estudiante estudiante;
     private int idInscripcion;
     private int idCurso;
     private int idEstudiante;
@@ -21,6 +23,14 @@ public class Inscripcion {
     private float valor;
 
     public Inscripcion() {
+    }
+
+    public Inscripcion(Paralelo paralelo, Estudiante estudiante, Date fecha_inscripcion, String descripcion, float valor) {
+        this.paralelo = paralelo;
+        this.estudiante = estudiante;
+        this.fecha_inscripcion = fecha_inscripcion;
+        this.descripcion = descripcion;
+        this.valor = valor;
     }
 
     public Inscripcion(int idCurso, int idEstudiante, Date fecha_inscripcion, String descripcion, float valor) {
@@ -77,6 +87,22 @@ public class Inscripcion {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public Paralelo getParalelo() {
+        return paralelo;
+    }
+
+    public void setParalelo(Paralelo paralelo) {
+        this.paralelo = paralelo;
+    }
+
+    public Estudiante getEstudiante() {
+        return estudiante;
+    }
+
+    public void setEstudiante(Estudiante estudiante) {
+        this.estudiante = estudiante;
     }
 
 }

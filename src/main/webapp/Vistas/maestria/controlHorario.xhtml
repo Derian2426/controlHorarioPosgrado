@@ -307,7 +307,7 @@
                                         <f:selectItems value="#{horarioMB.listaDocente}" var="docenteAsignado" 
                                                        itemLabel="#{docenteAsignado.nombre_docente}" 
                                                        itemValue="#{docenteAsignado.id_docente}"></f:selectItems>
-                                        <p:ajax listener="#{horarioMB.obtenerValidacionHorario}" update=":form_horario:planificacionHorario:nuevoDocenteAsignado" process="nuevoDocenteAsignado @this"/>
+                                        <p:ajax listener="#{horarioMB.obtenerValidacionHorario}" update=":form_horario:planificacionHorario:idFechasMaestriaAsignada,:form_horario:planificacionHorario:idFechasDocenteAsignacion,:form_horario:planificacionHorario:nuevoDocenteAsignado" process="nuevoDocenteAsignado @this"/>
                                     </p:selectOneMenu>
                                     <p:outputLabel value="Descripción:" styleClass="p-text-bold"/>
                                     <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.tiempoModulo.descripcion}" disabled="#{horarioMB.estadoAsignacion}"/>
@@ -321,7 +321,7 @@
 
                                     <div class="ui-fluid formgrid grid">
                                         <div class="field col-12 md:col-9">
-                                            <p:pickList id="pickList" value="#{horarioMB.tiempoHorario}" var="fechaPeriodo" itemLabel="#{fechaPeriodo}" itemValue="#{fechaPeriodo}" responsive="true">
+                                            <p:pickList id="pickList" value="#{horarioMB.tiempoHorario}" var="fechaPeriodo" itemLabel="#{horarioMB.formatoFecha(fechaPeriodo)}" itemValue="#{fechaPeriodo}" responsive="true">
                                                 <p:ajax event="transfer" listener="#{horarioMB.onTransfer}"/>
                                                 <f:facet name="sourceCaption">Fechas disponibles</f:facet>
                                                 <f:facet name="targetCaption">Fechas asignadas</f:facet>
@@ -330,28 +330,11 @@
                                         <div class="field col-12 md:col-3">
                                             <div class="ui-fluid formgrid grid">
                                                 <div class="field col-12 md:col-12">
-                                                    <p:commandButton id="fechaBtnDocente" value="Fechas de asignaciones del docente" type="button" icon="pi pi-calendar"/>
-                                                    <p:overlayPanel for="fechaBtnDocente" dynamic="true" style="width:25%">
-                                                        <p:dataTable var="fechaDocenteAsignada" value="#{horarioMB.listaVerificacionTiempo}" rows="5" paginator="true">
-                                                            <p:column headerText="Fecha de asignación">
-                                                                <h:outputText value="#{fechaDocenteAsignada.fechaAsignacion}"/>
-                                                            </p:column>
-                                                        </p:dataTable>
-                                                    </p:overlayPanel>
-                                                    <p:tooltip for="fechaBtnDocente" value="Puede visualizar las fechas que el docente ya tiene asignadas." showEffect="clip" hideEffect="fold" />
+                                                    <p:commandButton id="horasAsignadasDocenteMaestria" onclick="PF('seleccionFechaAsinadaDocente').show()" value="Fechas de asignaciones del docente" type="button" icon="pi pi-calendar" />
+                                                    <p:tooltip for="horasAsignadasDocenteMaestria" value="Puede visualizar las fechas que el docente ya tiene asignadas." showEffect="clip" hideEffect="fold" />
                                                 </div>
                                                 <div class="field col-12 md:col-12">
-                                                    <p:commandButton id="fechaBtnMaestria" value="Fechas de asignaciones de la maestría" type="button" icon="pi pi-calendar" />
-                                                    <p:overlayPanel for="fechaBtnMaestria" dynamic="true" style="width:25%">
-                                                        <p:dataTable var="fechaMaestriaAsignada" value="#{horarioMB.listaHorario}" rows="5" paginator="true">
-                                                            <p:column headerText="Maestría">
-                                                                <h:outputText value="#{horarioMB.integracionMaestria.nombre}"/>
-                                                            </p:column>
-                                                            <p:column headerText="Fecha de asignación">
-                                                                <h:outputText value="#{fechaMaestriaAsignada.fechaInicio}"/>
-                                                            </p:column>
-                                                        </p:dataTable>
-                                                    </p:overlayPanel>
+                                                    <p:commandButton id="fechaBtnMaestria" onclick="PF('seleccionFechaAsinadaMaestria').show()" value="Fechas de asignaciones de la maestría" type="button" icon="pi pi-calendar" />
                                                     <p:tooltip for="fechaBtnMaestria" value="Puede visualizar las fechas que ya estan asignadas para la maestría." showEffect="clip" hideEffect="fold" />
                                                 </div>
 
@@ -362,6 +345,23 @@
                                                      update=":form_horario:planificacionHorario:calendarioAcademico,:form_horario:planificacionHorario:nuevoDocenteAsignado,:form_horario:messages,mensajeEstatico,mensajeEstatico1,:form_horario:planificacionHorario:horarioMaestria" style="margin-bottom: 1vh;"/>
 
                                 </p:outputPanel>
+                            </p:dialog>
+                            <p:dialog header="Fechas de asignaciones del docente" widgetVar="seleccionFechaAsinadaDocente" minHeight="100" width="550" showEffect="fade" modal ="true" responsive="true">
+                                <p:dataTable id="idFechasDocenteAsignacion" var="fechasDocenteAsignacion" value="#{horarioMB.listaVerificacionTiempo}" rows="5" paginator="true">
+                                    <p:column headerText="Fecha de asignación">
+                                        <h:outputText value="#{fechasDocenteAsignacion.fechaAsignacion}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:dialog>
+                            <p:dialog header="Fechas de asignaciones de la maestría" widgetVar="seleccionFechaAsinadaMaestria" minHeight="100" width="550" showEffect="fade" modal ="true" responsive="true">
+                                <p:dataTable id="idFechasMaestriaAsignada" var="fechasMaestriaAsignada" value="#{horarioMB.listaHorario}" rows="5" paginator="true">
+                                    <p:column headerText="Maestría">
+                                        <h:outputText value="#{horarioMB.integracionMaestria.nombre}"/>
+                                    </p:column>
+                                    <p:column headerText="Fecha de asignación">
+                                        <h:outputText value="#{fechasMaestriaAsignada.fechaInicio}"/>
+                                    </p:column>
+                                </p:dataTable>
                             </p:dialog>
                             <p:dialog header="Transacción Fallida" widgetVar="transaccion" minHeight="40" width="550" showEffect="fade" modal="true">
                                 <div class="ui-fluid formgrid grid">
@@ -506,7 +506,7 @@
                                                     </p:selectOneMenu>
                                                 </div>
                                                 <div class="field col-12 md:col-12">
-                                                    <p:pickList id="pickEditList" value="#{GeneradorHorarioMB.tiempoHorario}" var="fechaPeriodo" itemLabel="#{fechaPeriodo}" itemValue="#{fechaPeriodo}" responsive="true">
+                                                    <p:pickList id="pickEditList" value="#{GeneradorHorarioMB.tiempoHorario}" var="fechaPeriodo" itemLabel="#{horarioMB.formatoFecha(fechaPeriodo)}" itemValue="#{fechaPeriodo}" responsive="true">
                                                         <p:ajax event="transfer" listener="#{GeneradorHorarioMB.onTransfer}" update=":form_horario:messages,pickEditList"/>
                                                         <f:facet name="sourceCaption">Fechas disponibles</f:facet>
                                                         <f:facet name="targetCaption">Fechas asignadas</f:facet>

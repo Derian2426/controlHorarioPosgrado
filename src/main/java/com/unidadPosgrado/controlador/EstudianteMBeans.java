@@ -10,26 +10,20 @@ import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Estudiante;
 import com.unidadPosgrado.modelo.Inscripcion;
 import com.unidadPosgrado.modelo.Maestria;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
@@ -81,7 +75,7 @@ public class EstudianteMBeans {
     public void init() {
         listaEstudiante = estudianteDAO.getListaEstudiante();
         busquedaEstudianteAux = listaEstudiante;
-        listaMaestria = maestriaDAO.getListaMaestriaPeriodo();
+        listaMaestria = maestriaDAO.getListaMaestriaPeriodoEstudiante();
         busquedaMaestriaAux = listaMaestria;
     }
 
@@ -309,6 +303,10 @@ public class EstudianteMBeans {
         // Cerrar el archivo y el objeto Workbook
         inputStream.close();
         workbook.close();
+    }
+    public void redireccionDetalle() throws IOException{
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+         externalContext.redirect("detalleInscripcionMaestria.xhtml");
     }
 
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {

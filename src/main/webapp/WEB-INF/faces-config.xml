@@ -83,4 +83,9 @@
         <managed-bean-class>com.unidadPosgrado.controlador.GeneragorHorarioMBeans</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>InscripcionDetalleMB</managed-bean-name>
+        <managed-bean-class>com.unidadPosgrado.controlador.DetalleInscripcionMBeans</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
 </faces-config>

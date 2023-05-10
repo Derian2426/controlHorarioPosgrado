@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/HeaderFooterPrincipal.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="titulo">
+        Detalle Inscripción
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="form_detalleInscripcion">
+            <p:growl id="msgs" showDetail="true"/>
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        <p:commandButton value="Inscripciones" style="margin-right: 6px;" icon="pi pi-users" actionListener="#{InscripcionDetalleMB.redireccionDetalle()}"/>
+                    </div>
+                </p:toolbarGroup>
+            </p:toolbar>
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:dataTable id="detalleInscripcipnoMaestria" var="maestrias" value="#{InscripcionDetalleMB.listaMaestria}" scrollable="true" scrollHeight="500">
+                        <p:column headerText="Nombre Maestría">
+                            <h:outputText value="#{maestrias.nombre}"/>
+                        </p:column>
+                        <p:column headerText="	Fecha Inicio">
+                            <h:outputText value="#{maestrias.fechaInicio}"/>
+                        </p:column>
+                        <p:column headerText="	Fecha Fin">
+                            <h:outputText value="#{maestrias.fechaFin}"/>
+                        </p:column>
+                        <p:column headerText="Acciones">
+                            <p:commandButton id="accionesHorario" value="Acciones" type="button" icon="pi pi-chevron-down" styleClass="ui-button-outlined" />
+                            <p:menu overlay="true" trigger="accionesHorario" my="left top" at="left bottom">
+                                <p:submenu label="Acciones">
+                                    <p:menuitem value="Detalle" icon="pi pi-file-o" actionListener="#{GeneradorHorarioMB.dealleHorarioMaestria(horario.idCurso, horario.idMaestria)}"
+                                                />
+                                    <p:menuitem value="Editar" icon="pi pi-pencil" actionListener="#{GeneradorHorarioMB.editHorarioPeriodoAcademico(horario.idCurso, horario.idMaestria, horario.fechaInicio, horario.fechaFin)}"
+                                                />
+                                </p:submenu>
+                            </p:menu>
+                        </p:column>
+                    </p:dataTable>
+                </p:toolbarGroup>
+            </p:toolbar>
+            
+        </h:form>
+    </ui:define>
+
+</ui:composition>

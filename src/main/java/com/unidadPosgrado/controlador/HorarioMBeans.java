@@ -744,12 +744,16 @@ public class HorarioMBeans {
         return listaFechas;
     }
 
+    public String formatoFecha(Date fecha) {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd-MMM-yyyy", new Locale("es", "ES"));
+        return sdf.format(fecha).toUpperCase();
+    }
+
     public void onTransfer(TransferEvent event) {
         SimpleDateFormat formato = new SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
         Date fechaDate;
         for (Object item : event.getItems()) {
             String fecha = item.toString();
-            System.out.println("");
             try {
                 fechaDate = formato.parse(fecha);
                 if (!busquedaFechaSource(fechaDate)) {

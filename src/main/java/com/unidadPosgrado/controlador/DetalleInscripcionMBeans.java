@@ -1,5 +1,6 @@
 package com.unidadPosgrado.controlador;
 
+import com.seguridad.modelo.Usuario;
 import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Maestria;
 import java.io.IOException;
@@ -16,15 +17,19 @@ public class DetalleInscripcionMBeans {
 
     private List<Maestria> listaMaestria;
     MaestriaDAO maestriaDAO;
+    Usuario user;
+    FacesContext contexto;
 
     public DetalleInscripcionMBeans() {
         maestriaDAO = new MaestriaDAO();
+        user = new Usuario();
     }
-    
 
     @PostConstruct
     public void init() {
-        listaMaestria = maestriaDAO.getListaMaestriaPeriodoEstudiante();
+        contexto = FacesContext.getCurrentInstance();
+        user = (Usuario) contexto.getExternalContext().getSessionMap().get("usuario");
+        listaMaestria = maestriaDAO.getListaMaestriaPeriodoEstudiante(user);
     }
 
     public void redireccionDetalle() throws IOException {

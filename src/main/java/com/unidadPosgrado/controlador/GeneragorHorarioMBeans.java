@@ -5,6 +5,7 @@
  */
 package com.unidadPosgrado.controlador;
 
+import com.seguridad.modelo.Usuario;
 import com.unidadPosgrado.dao.HorarioDAO;
 import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Docente;
@@ -75,6 +76,8 @@ public class GeneragorHorarioMBeans {
     private List<Horario> listadoDetalleAsignaciones;
     private List<Periodo> listaPeriodo;
     private ExcelOptions excelOpt;
+    Usuario user;
+    FacesContext contexto;
 
     public GeneragorHorarioMBeans() {
         listaDocente = new ArrayList<>();
@@ -104,14 +107,17 @@ public class GeneragorHorarioMBeans {
         maestriaEdit = new Maestria();
         listaVerificacionTiempo = new ArrayList<>();
         docenteEdit = new Docente();
+        user = new Usuario();
     }
 
     @PostConstruct
     public void init() {
-        listaMaestria = horarioDAO.getListaMaestriaPeriodo();
-        listaMaestriaPeriodo = maestriaDAO.getListaMaestria_Periodo();
+        contexto = FacesContext.getCurrentInstance();
+        user = (Usuario) contexto.getExternalContext().getSessionMap().get("usuario");
+        listaMaestria = horarioDAO.getListaMaestriaPeriodo(user);
+        listaMaestriaPeriodo = maestriaDAO.getListaMaestria_Periodo(user);
         busquedaMaestriaAuxP = listaMaestriaPeriodo;
-        listaPeriodo = maestriaDAO.getListaPeriodo();
+        listaPeriodo = maestriaDAO.getListaPeriodo(user);
     }
 
     public List<Maestria> getListaMaestria() {
@@ -195,7 +201,7 @@ public class GeneragorHorarioMBeans {
     }
 
     public void actualizaLista() {
-        listaMaestria = horarioDAO.getListaMaestriaPeriodo();
+        listaMaestria = horarioDAO.getListaMaestriaPeriodo(user);
     }
 
     public Periodo getEditPeriodo() {
@@ -940,8 +946,8 @@ public class GeneragorHorarioMBeans {
                     integracionMaestria = new Maestria();
                     periodo = new Periodo();
                     maestriaBusqueda = new Maestria();
-                    listaPeriodo = maestriaDAO.getListaPeriodo();
-                    listaMaestria = horarioDAO.getListaMaestriaPeriodo();
+                    listaPeriodo = maestriaDAO.getListaPeriodo(user);
+                    listaMaestria = horarioDAO.getListaMaestriaPeriodo(user);
                 } else {
                     showWarn("Error al registrar el periodo, esta fecha ya se ha utilizado para la planificación"
                             + " de esta maestría.");
@@ -1012,8 +1018,8 @@ public class GeneragorHorarioMBeans {
             estado = maestriaDAO.editarPeriodo(editPeriodo);
             PrimeFaces.current().executeScript("PF('editPeriodo').hide()");
             showInfo(estado);
-            listaMaestria = horarioDAO.getListaMaestriaPeriodo();
-            listaPeriodo = maestriaDAO.getListaPeriodo();
+            listaMaestria = horarioDAO.getListaMaestriaPeriodo(user);
+            listaPeriodo = maestriaDAO.getListaPeriodo(user);
         }
     }
 

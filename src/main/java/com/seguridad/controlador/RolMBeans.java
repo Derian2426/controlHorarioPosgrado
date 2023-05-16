@@ -7,6 +7,7 @@ package com.seguridad.controlador;
 
 import com.seguridad.dao.RolDAO;
 import com.seguridad.modelo.Rol;
+import com.seguridad.modelo.Usuario;
 import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Maestria;
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ public class RolMBeans {
     private List<Maestria> listaMaestriaSeleccion;
     MaestriaDAO maestriaDAO;
     private List<Maestria> listaMaestriaEdit;
+    Usuario user;
+    FacesContext contexto;
 
     public RolMBeans() {
         rolDAO = new RolDAO();
@@ -44,13 +47,16 @@ public class RolMBeans {
         listaMaestriaEdit = new ArrayList<>();
         maestriaDAO = new MaestriaDAO();
         editRol = new Rol();
+        user = new Usuario();
     }
 
     @PostConstruct
     public void init() {
         listaRol = rolDAO.getListaRol();
-        listaMaestria = maestriaDAO.getListaMaestria_Periodo();
-        listaMaestrias = maestriaDAO.getListaMaestria_Periodo();
+        contexto = FacesContext.getCurrentInstance();
+        user = (Usuario) contexto.getExternalContext().getSessionMap().get("usuario");
+        listaMaestria = maestriaDAO.getListaMaestria_Periodo(user);
+        listaMaestrias = maestriaDAO.getListaMaestria_Periodo(user);
     }
 
     public void registrarRol() {
@@ -68,7 +74,7 @@ public class RolMBeans {
                 if (resultadoRegistro > 0) {
                     showInfo(rol.getNombre().trim().replace(".", ".") + " Registrado exitoso.");
                     listaRol = rolDAO.getListaRol();
-                    listaMaestria = maestriaDAO.getListaMaestria_Periodo();
+                    listaMaestria = maestriaDAO.getListaMaestria_Periodo(user);
                     listaMaestriaSeleccion = new ArrayList<>();
                     PrimeFaces.current().executeScript("PF('dlgRol').hide()");
                     rol = new Rol();
@@ -104,7 +110,7 @@ public class RolMBeans {
             listaRol = new ArrayList<>();
             listaRol = rolDAO.getListaRol();
             editRol = new Rol();
-            listaMaestrias = maestriaDAO.getListaMaestria_Periodo();
+            listaMaestrias = maestriaDAO.getListaMaestria_Periodo(user);
             PrimeFaces.current().executeScript("PF('dlgEditRol').hide()");
         } catch (Exception e) {
             showWarn(e.getMessage());
@@ -199,7 +205,7 @@ public class RolMBeans {
 
     public void canclearEdit() {
         listaRol = rolDAO.getListaRol();
-        listaMaestria = maestriaDAO.getListaMaestria_Periodo();
+        listaMaestria = maestriaDAO.getListaMaestria_Periodo(user);
         listaMaestriaSeleccion = new ArrayList<>();
         showWarn("Edición del rol: " + rol.getNombre() + ", fue cancelado.");
         rol = new Rol();
@@ -210,7 +216,7 @@ public class RolMBeans {
         if (rolDAO.deleteRolMaestria(editRol, maestria) == 1 && listaMaestriaEdit.size() > 1) {
             listaMaestriaEdit.remove(maestria);
             listaMaestriaEdit = rolDAO.listaMestriasRol(editRol.getIdRol());
-            listaMaestrias = maestriaDAO.getListaMaestria_Periodo();
+            listaMaestrias = maestriaDAO.getListaMaestria_Periodo(user);
             for (Maestria maestriaObject : listaMaestriaEdit) {
                 for (Maestria maestriabusqueda : listaMaestrias) {
                     if (maestriabusqueda.getIdMaestria() == maestriaObject.getIdMaestria()) {

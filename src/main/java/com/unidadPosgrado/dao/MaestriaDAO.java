@@ -6,6 +6,7 @@
 package com.unidadPosgrado.dao;
 
 import com.global.config.Conexion;
+import com.seguridad.modelo.Usuario;
 import com.unidadPosgrado.modelo.Maestria;
 import com.unidadPosgrado.modelo.Modulo;
 import com.unidadPosgrado.modelo.Periodo;
@@ -31,9 +32,9 @@ public class MaestriaDAO {
     }
 
     //TABLE(_id_periodo integer, _nombre_maestria character varying, _fecha_inicio date, _fecha_fin date,_estado character(1))
-    public List<Periodo> getListaPeriodo() {
+    public List<Periodo> getListaPeriodo(Usuario user) {
         List<Periodo> listadoPeriodo = new ArrayList<>();
-        sentencia = String.format("SELECT * from public.\"getListaPeriodo\"();");
+        sentencia = String.format("SELECT * from public.\"getListaPeriodo\"(" + user.getIdUsuarioSesion() + ");");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             String estado;
@@ -80,7 +81,7 @@ public class MaestriaDAO {
 
     public List<Maestria> getListaMaestria(int idUsuario) {
         List<Maestria> listadoMaestria = new ArrayList<>();
-        sentencia = String.format("select * from public.\"getListaMaestrias\"("+idUsuario+")");
+        sentencia = String.format("select * from public.\"getListaMaestrias\"(" + idUsuario + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
@@ -94,9 +95,9 @@ public class MaestriaDAO {
         }
     }
 
-    public List<Maestria> getListaMaestria_Periodo() {
+    public List<Maestria> getListaMaestria_Periodo(Usuario user) {
         List<Maestria> listadoMaestria = new ArrayList<>();
-        sentencia = String.format("select * from public.\"getListaMaestria_Periodo\"()");
+        sentencia = String.format("select * from public.\"getListaMaestria_Periodo\"(" + user.getIdUsuarioSesion() + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
@@ -110,9 +111,9 @@ public class MaestriaDAO {
         }
     }
 
-    public List<Maestria> getListaMaestriaPeriodo() {
+    public List<Maestria> getListaMaestriaPeriodo(Usuario user) {
         List<Maestria> listadoMaestria = new ArrayList<>();
-        sentencia = String.format("SELECT* from public.\"getListaMaestriasPeriodo\"()");
+        sentencia = String.format("SELECT* from public.\"getListaMaestriasPeriodo\"(" + user.getIdUsuarioSesion() + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
@@ -127,9 +128,9 @@ public class MaestriaDAO {
         }
     }
 
-    public List<Maestria> getListaMaestriaPeriodoEstudiante() {
+    public List<Maestria> getListaMaestriaPeriodoEstudiante(Usuario user) {
         List<Maestria> listadoMaestria = new ArrayList<>();
-        sentencia = String.format("SELECT* from public.\"getListaMaestriasPeriodoEstudiante\"()");
+        sentencia = String.format("SELECT* from public.\"getListaMaestriasPeriodoEstudiante\"(" + user.getIdUsuarioSesion() + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
@@ -143,9 +144,10 @@ public class MaestriaDAO {
             conexion.desconectar();
         }
     }
+
     public List<Maestria> getListaMaestriaxModulo(int idUsuario) {
         List<Maestria> listadoMaestria = new ArrayList<>();
-        sentencia = String.format("SELECT * from public.\"tiempoMaestria\"("+ idUsuario+")");
+        sentencia = String.format("SELECT * from public.\"tiempoMaestria\"(" + idUsuario + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
@@ -207,8 +209,8 @@ public class MaestriaDAO {
                 sentencia += "{\n"
                         + "  \"idMateria\": " + modulo.getIdMateria() + ",\n"
                         + "  \"idMaestria\": " + integracionMaestria.getIdMaestria() + ",\n"
-                        + "  \"nombreModulo\": \"" + modulo.getNombreMateria()+ "\",\n"
-                        + "  \"descripcionModulo\": \"" + modulo.getDescripcion()+ "\",\n"
+                        + "  \"nombreModulo\": \"" + modulo.getNombreMateria() + "\",\n"
+                        + "  \"descripcionModulo\": \"" + modulo.getDescripcion() + "\",\n"
                         + "  \"hora\": " + modulo.getHora_materia() + "\n"
                         + "},";
             }

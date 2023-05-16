@@ -5,6 +5,7 @@
  */
 package com.unidadPosgrado.controlador;
 
+import com.seguridad.modelo.Usuario;
 import com.unidadPosgrado.dao.EstudianteDAO;
 import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Estudiante;
@@ -50,7 +51,8 @@ public class EstudianteMBeans {
     private Maestria maestriaBusqueda;
     List<Maestria> busquedaMaestria;
     List<Maestria> busquedaMaestriaAux;
-
+    Usuario user;
+    FacesContext contexto;
     private Estudiante estudianteBusqueda;
 
     public EstudianteMBeans() {
@@ -69,13 +71,16 @@ public class EstudianteMBeans {
         maestriaBusqueda = new Maestria();
         busquedaMaestria = new ArrayList<>();
         busquedaMaestriaAux = new ArrayList<>();
+        user = new Usuario();
     }
 
     @PostConstruct
     public void init() {
+        contexto = FacesContext.getCurrentInstance();
+        user = (Usuario) contexto.getExternalContext().getSessionMap().get("usuario");
         listaEstudiante = estudianteDAO.getListaEstudiante();
         busquedaEstudianteAux = listaEstudiante;
-        listaMaestria = maestriaDAO.getListaMaestriaPeriodoEstudiante();
+        listaMaestria = maestriaDAO.getListaMaestriaPeriodoEstudiante(user);
         busquedaMaestriaAux = listaMaestria;
     }
 
@@ -304,9 +309,10 @@ public class EstudianteMBeans {
         inputStream.close();
         workbook.close();
     }
-    public void redireccionDetalle() throws IOException{
+
+    public void redireccionDetalle() throws IOException {
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-         externalContext.redirect("detalleInscripcionMaestria.xhtml");
+        externalContext.redirect("detalleInscripcionMaestria.xhtml");
     }
 
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {

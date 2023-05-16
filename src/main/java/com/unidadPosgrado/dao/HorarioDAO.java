@@ -6,6 +6,7 @@
 package com.unidadPosgrado.dao;
 
 import com.global.config.Conexion;
+import com.seguridad.modelo.Usuario;
 import com.unidadPosgrado.modelo.Docente;
 import com.unidadPosgrado.modelo.Horario;
 import com.unidadPosgrado.modelo.Maestria;
@@ -189,7 +190,7 @@ public class HorarioDAO {
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                listadoFecha.add(new TiempoModulo(resultSet.getInt("validacion"),resultSet.getDate("_fecharetorno")));
+                listadoFecha.add(new TiempoModulo(resultSet.getInt("validacion"), resultSet.getDate("_fecharetorno")));
             }
             return listadoFecha;
         } catch (SQLException e) {
@@ -219,10 +220,10 @@ public class HorarioDAO {
         }
     }
 
-    public List<Maestria> getListaMaestriaPeriodo() {
+    public List<Maestria> getListaMaestriaPeriodo(Usuario user) {
         String estado = "";
         List<Maestria> listadoMaestria = new ArrayList<>();
-        sentencia = String.format("SELECT * from public.\"getListaHorariosMaestrias\"()");
+        sentencia = String.format("SELECT * from public.\"getListaHorariosMaestrias\"(" + user.getIdUsuarioSesion() + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {

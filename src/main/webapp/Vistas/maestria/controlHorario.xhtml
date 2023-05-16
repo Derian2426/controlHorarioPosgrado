@@ -60,7 +60,7 @@
                                     </p:column>
                                 </p:dataTable>
                             </p:outputPanel>
-                            <p:dialog widgetVar="editPeriodo" header="Editar Periodo Académico" showEffect="fade" height="50%" width="30%" modal="true" responsive="true">
+                            <p:dialog widgetVar="editPeriodo" header="Editar Periodo Académico" showEffect="fade" height="50%" width="60%" modal="true" responsive="true" position="center" draggable="true">
                                 <p:outputPanel id="editPeriodoAcademico" class="ui-fluid">
                                     <div class="ui-fluid p-formgrid p-grid">
                                         <div class="p-field p-col-12 p-md-12">
@@ -291,8 +291,10 @@
                                     </p:dataTable>
                                 </div>
                             </p:dialog>
-                            <p:dialog widgetVar="seleccionFecha" header="Asignación Horario" showEffect="fade" height="50%" width="50%" modal="true" responsive="true" maximizable="true" blockScroll="true">
+                            <p:dialog widgetVar="seleccionFecha" header="Asignación Horario" showEffect="fade" height="500" width="60%" modal="true" responsive="true" 
+                                      maximizable="true" blockScroll="true" draggable="true" position="center" dynamic="true">
                                 <p:ajax event="close" listener="#{horarioMB.cerrarDialigo()}" update="nuevoDocenteAsignado"/>
+
                                 <p:outputPanel id="nuevoDocenteAsignado" class="ui-fluid">
                                     <p:outputLabel id="moduloactualiza" value="Módulos" for="@next" styleClass="p-text-bold"/>
                                     <p:selectOneMenu editable="false" value="#{horarioMB.modulo.idMateria}" disabled="#{horarioMB.estadoAsignacion}">
@@ -310,13 +312,7 @@
                                         <p:ajax listener="#{horarioMB.obtenerValidacionHorario}" update=":form_horario:planificacionHorario:idFechasMaestriaAsignada,:form_horario:planificacionHorario:idFechasDocenteAsignacion,:form_horario:planificacionHorario:nuevoDocenteAsignado" process="nuevoDocenteAsignado @this"/>
                                     </p:selectOneMenu>
                                     <p:outputLabel value="Descripción:" styleClass="p-text-bold"/>
-                                    <p:inputTextarea maxlength="200" rows="2" cols="5" value="#{horarioMB.tiempoModulo.descripcion}" disabled="#{horarioMB.estadoAsignacion}"/>
-                                    <p:outputLabel value="Fecha de asignación:" styleClass="p-text-bold"/>
-                                    <p:datePicker value="#{horarioMB.tiempoModulo.fechaAsignacion}" pattern="yyyy/dd/MM" style="margin-bottom: 1vh;" disabled="true"/>
-
-
-
-
+                                    <p:inputTextarea maxlength="60" rows="2" cols="5" value="#{horarioMB.tiempoModulo.descripcion}" disabled="#{horarioMB.estadoAsignacion}"/>
                                     <p:outputLabel value="Fechas disponibles para las asignaciones:" styleClass="p-text-bold"/>
 
                                     <div class="ui-fluid formgrid grid">
@@ -345,6 +341,7 @@
                                                      update=":form_horario:planificacionHorario:calendarioAcademico,:form_horario:planificacionHorario:nuevoDocenteAsignado,:form_horario:messages,mensajeEstatico,mensajeEstatico1,:form_horario:planificacionHorario:horarioMaestria" style="margin-bottom: 1vh;"/>
 
                                 </p:outputPanel>
+
                             </p:dialog>
                             <p:dialog header="Fechas de asignaciones del docente" widgetVar="seleccionFechaAsinadaDocente" minHeight="100" width="550" showEffect="fade" modal ="true" responsive="true">
                                 <p:dataTable id="idFechasDocenteAsignacion" var="fechasDocenteAsignacion" value="#{horarioMB.listaVerificacionTiempo}" rows="5" paginator="true">

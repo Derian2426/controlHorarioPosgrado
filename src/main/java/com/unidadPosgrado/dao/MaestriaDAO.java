@@ -205,8 +205,10 @@ public class MaestriaDAO {
             sentencia = "[";
             for (Modulo modulo : listaModulos) {
                 sentencia += "{\n"
-                        + "  \"idMatera\": " + modulo.getIdMateria() + ",\n"
+                        + "  \"idMateria\": " + modulo.getIdMateria() + ",\n"
                         + "  \"idMaestria\": " + integracionMaestria.getIdMaestria() + ",\n"
+                        + "  \"nombreModulo\": \"" + modulo.getNombreMateria()+ "\",\n"
+                        + "  \"descripcionModulo\": \"" + modulo.getDescripcion()+ "\",\n"
                         + "  \"hora\": " + modulo.getHora_materia() + "\n"
                         + "},";
             }

@@ -26,6 +26,7 @@ import org.primefaces.model.TreeNode;
 public class MaestriaMBeans {
 
     private Maestria maestria;
+    private Modulo modulo;
     private Maestria maestriaBusqueda;
     private Maestria integracionMaestria;
     MaestriaDAO maestriaDAO;
@@ -37,6 +38,7 @@ public class MaestriaMBeans {
     TreeNode maestriaTree;
     TreeNode moduloNode;
     List<Modulo> listaModulosNode;
+    List<Modulo> listaTextModulo;
     List<Modulo> listaModulosVerificacion;
     List<Maestria> busquedaMaestriaAux;
     Usuario user;
@@ -44,6 +46,7 @@ public class MaestriaMBeans {
 
     public MaestriaMBeans() {
         maestria = new Maestria();
+        modulo = new Modulo();
         maestriaBusqueda = new Maestria();
         maestriaDAO = new MaestriaDAO();
         integracionMaestria = new Maestria();
@@ -51,6 +54,7 @@ public class MaestriaMBeans {
         listaModulos = new ArrayList<>();
         listaMaestriaxModulo = new ArrayList<>();
         listaModulosVerificacion = new ArrayList<>();
+        listaTextModulo = new ArrayList<>();
         rootIntegracion = new DefaultTreeNode("Root Node", null);
         busquedaMaestriaAux = new ArrayList<>();
         user = new Usuario();
@@ -114,6 +118,14 @@ public class MaestriaMBeans {
         this.maestriaBusqueda = maestriaBusqueda;
     }
 
+    public Modulo getModulo() {
+        return modulo;
+    }
+
+    public void setModulo(Modulo modulo) {
+        this.modulo = modulo;
+    }
+
     public void registrarMaestria() {
         try {
             if ("".equals(maestria.getNombre().trim())) {
@@ -136,6 +148,60 @@ public class MaestriaMBeans {
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+    }
+
+    public void verificarModulosPreseleccionados() {
+        for (Modulo m : listaTextModulo) {
+            boolean verificaLista = false;
+            for (Modulo mod : listaModulos) {
+                if (m.getNombreMateria().equals(mod.getNombreMateria())) {
+                    verificaLista = true;
+                    break;
+                }
+            }
+            if (!verificaLista) {
+                listaModulos.add(m);
+            }
+        }
+        modulo = new Modulo();
+        modulo.setVerifica(false);
+        listaTextModulo = new ArrayList<>();
+        PrimeFaces.current().executeScript("PF('listLoadModulos').hide()");
+    }
+
+    public void formatearTexto() {
+        if (!"".equals(modulo.getNombreMateria())) {
+            modulo.setNombreMateria(enumerarLineas(modulo.getNombreMateria()));
+            modulo.setVerifica(true);
+        }
+    }
+
+    private String enumerarLineas(String texto) {
+        StringBuilder resultado = new StringBuilder();
+        String[] lineas = texto.split("\\r?\\n");
+        List<String> elementos = new ArrayList<>();
+
+        for (int i = 0; i < lineas.length; i++) {
+            String linea = lineas[i].trim();
+
+            // Verificar si la línea ya tiene una enumeración
+            if (!linea.matches("^\\d+\\.-.*$")) {
+                elementos.add(linea);
+                resultado.append((i + 1)).append(".-").append(linea);
+            } else {
+                resultado.append(linea);
+            }
+
+            if (i < lineas.length - 1) {
+                resultado.append(System.lineSeparator());
+            }
+        }
+
+        for (int i = 0; i < elementos.size(); i++) {
+            listaTextModulo.add(new Modulo(0, elementos.get(i), elementos.get(i)));
+        }
+
+        return resultado.toString();
     }
 
     public void actualizaTiempo() {
@@ -274,6 +340,9 @@ public class MaestriaMBeans {
         integracionMaestria = new Maestria();
         maestria = new Maestria();
         listaModulos = new ArrayList<>();
+        modulo = new Modulo();
+        modulo.setVerifica(false);
+        maestriaBusqueda = new Maestria();
         showWarn("El registro se Cancelo.");
     }
 
@@ -339,6 +408,14 @@ public class MaestriaMBeans {
             showWarn("Seleccione una Maestría.");
         } else {
             PrimeFaces.current().executeScript("PF('listModulosSeleccion').show()");
+        }
+    }
+
+    public void verificaCamposMaestria() {
+        if (integracionMaestria.getNombre() == null && integracionMaestria.getIdMaestria() == 0) {
+            showWarn("Seleccione una Maestría.");
+        } else {
+            PrimeFaces.current().executeScript("PF('listLoadModulos').show()");
         }
     }
 

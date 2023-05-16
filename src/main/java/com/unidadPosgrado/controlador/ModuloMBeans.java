@@ -96,7 +96,7 @@ public class ModuloMBeans {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
             } else if ("".equals(event.getObject().getDescripcion())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
-            }else {
+            } else {
                 Modulo editModulo = new Modulo(event.getObject().getIdMateria(),
                         event.getObject().getNombreMateria(), event.getObject().getDescripcion());
                 int resultadoRegistro = moduloDAO.editarModulo(editModulo);
@@ -142,6 +142,7 @@ public class ModuloMBeans {
     }
 
     public void actualizaModulo() {
+        moduloBusqueda = new Modulo();
         listaModulo = moduloDAO.getListaModulo();
         busquedaModuloAux = listaModulo;
     }

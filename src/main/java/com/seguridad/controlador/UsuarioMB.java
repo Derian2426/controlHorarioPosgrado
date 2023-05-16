@@ -192,6 +192,8 @@ public class UsuarioMB {
         usuario.setPassSesion("");
         usuario.setNomUserSesion("");
         rol.setNombre("");
+        usuario= new Usuario();
+        usuarioSesion= new Usuario();
     }
 
     public void mensajeDeAdvertencia(String msj) {

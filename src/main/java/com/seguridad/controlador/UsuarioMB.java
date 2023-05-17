@@ -5,6 +5,8 @@
  */
 package com.seguridad.controlador;
 
+import com.global.config.Correo;
+import com.global.config.RandomStringGenerator;
 import com.seguridad.dao.RolDAO;
 import com.seguridad.dao.UsuarioDAO;
 import com.seguridad.modelo.Rol;
@@ -16,7 +18,9 @@ import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
+import org.primefaces.PrimeFaces;
 
 /**
  *
@@ -30,6 +34,7 @@ public class UsuarioMB {
     private Rol rol;
     private Usuario usuarioSesion;
     private Usuario usuarioEdit;
+    private Usuario usuarioCredenciales;
     private boolean estado;
 
     String warnMsj = "Advertencia";
@@ -39,6 +44,7 @@ public class UsuarioMB {
     HttpSession httpSession = (HttpSession) facesContext.getExternalContext().getSession(true);
 
     public UsuarioMB() {
+        usuarioCredenciales = new Usuario();
         userDAO = new UsuarioDAO();
         rolDAO = new RolDAO();
         usuario = new Usuario();
@@ -51,6 +57,14 @@ public class UsuarioMB {
     @PostConstruct
     public void init() {
 
+    }
+
+    public Usuario getUsuarioCredenciales() {
+        return usuarioCredenciales;
+    }
+
+    public void setUsuarioCredenciales(Usuario usuarioCredenciales) {
+        this.usuarioCredenciales = usuarioCredenciales;
     }
 
     public Usuario getUsuario() {
@@ -184,6 +198,73 @@ public class UsuarioMB {
         }
     }
 
+    public void verificarCredenciales() {
+        if (!"".equals(usuarioCredenciales.getCorreoSesion())) {
+            if (userDAO.verificaCorreoUsuario(usuarioCredenciales) == 1) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito:", "¡¡Usuario registrado!!"));
+                usuarioCredenciales.setEstado(true);
+            } else {
+                usuarioCredenciales.setEstado(false);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error:", "Usuario no encontrado. Vuelve a intentarlo con otro correo."));
+            }
+        } else {
+            mensajeDeAdvertencia("Introduce el correo electrónico para validar tu cuenta.");
+        }
+
+    }
+
+    public void cambiarPassword() {
+        if (usuarioCredenciales.getRol().equals(usuarioCredenciales.getMensajeAux()) && !"".equals(usuarioCredenciales.getRol())) {
+            if (!"".equals(usuarioCredenciales.getPassword()) && !"".equals(usuarioCredenciales.getConfpassword())) {
+                if (!usuarioCredenciales.getPassword().equals(usuarioCredenciales.getConfpassword())) {
+                    mensajeDeAdvertencia("Las contraseñas no coinciden.");
+                } else {
+                    if (userDAO.cambioPassword(usuarioCredenciales) == 1) {
+                        PrimeFaces.current().executeScript("PF('dlgCambioPassword').hide()");
+                        mensajeDeExito("Se cambio la contraseña con exito.");
+                        usuarioCredenciales = new Usuario();
+                    } else {
+                        PrimeFaces.current().executeScript("PF('dlgCambioPassword').hide()");
+                        mensajeDeAdvertencia("Ocurrio un error, vuelva a intentarlo más tarde.");
+                        usuarioCredenciales = new Usuario();
+                    }
+                }
+            } else {
+                mensajeDeAdvertencia("Ingrese una contraseña.");
+            }
+        } else {
+            mensajeDeAdvertencia("El codigo no coincide con el que se envio a su correo, vuelva a intentarlo.");
+        }
+
+    }
+
+    public void enviarCorreoElectronico() {
+        Correo enviarCorreo = new Correo("smtp-mail.outlook.com", 587, "UnidadPosgradoUTEQ@outlook.com", "LaUnidadTIC_SOFTWARE_VCKR");
+        try {
+            String userName = userDAO.cambioCredencialesUsuario(usuarioCredenciales);
+            usuarioCredenciales.setNomUserSesion(userName);
+            usuarioCredenciales.setMensajeAux(RandomStringGenerator.generateRandomString());
+            String mensaje = "Mensaje desde el Sistema de Control de Horarios\n"
+                    + "\n"
+                    + "Ud. ha solicitado el cambio de contraseña, sus datos son los siguientes:\n"
+                    + "Usuario: " + userName + "\n"
+                    + "Codigo para cambiar la contraseña: " + usuarioCredenciales.getMensajeAux() + "\n"
+                    + "\n"
+                    + "Esta es una dirección de correo automática que no está gestionada por ninguna persona, "
+                    + "por lo tanto, no obtendrá respuesta.\n"
+                    + "\n"
+                    + "Si tiene cualquier duda o inconveniente para acceder, debe contactarse con nosotros "
+                    + "a través del correo electrónico victor.chun2017@uteq.edu.ec";
+            enviarCorreo.sendEmail(usuarioCredenciales.getCorreoSesion(),
+                    "Solicitud de cambio de contraseña.", mensaje);
+            mensajeDeExito("Correo enviado exitosamente.");
+            PrimeFaces.current().executeScript("PF('dlgpassword').hide()");
+            PrimeFaces.current().executeScript("PF('dlgCambioPassword').show()");
+        } catch (MessagingException e) {
+            System.out.println("Error al enviar el correo: " + e.getMessage());
+        }
+    }
+
     public void cerrarSession() throws IOException {
         httpSession.removeAttribute("usuario");
         httpSession.removeAttribute("roles");
@@ -192,8 +273,8 @@ public class UsuarioMB {
         usuario.setPassSesion("");
         usuario.setNomUserSesion("");
         rol.setNombre("");
-        usuario= new Usuario();
-        usuarioSesion= new Usuario();
+        usuario = new Usuario();
+        usuarioSesion = new Usuario();
     }
 
     public void mensajeDeAdvertencia(String msj) {

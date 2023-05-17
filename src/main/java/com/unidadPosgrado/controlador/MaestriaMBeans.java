@@ -133,6 +133,8 @@ public class MaestriaMBeans {
             } else if ("".equals(maestria.getDescripcion().trim())) {
                 showWarn("Debe ingresar una descripción a la maestría.");
             } else {
+                maestria.setNombre(puntoFinal(maestria.getNombre()));
+                maestria.setDescripcion(puntoFinal(maestria.getDescripcion()));
                 int resultadoRegistro = maestriaDAO.registrarMaestria(maestria);
                 if (resultadoRegistro > 0) {
                     showInfo(maestria.getNombre().trim().replace(".", ",") + " registrada con éxito.");
@@ -150,6 +152,13 @@ public class MaestriaMBeans {
         }
     }
 
+    public String puntoFinal(String texto) {
+        if (texto.isEmpty() || texto.charAt(texto.length() - 1) != '.') {
+            return texto + '.';
+        }
+        return texto;
+    }
+
     public void verificarModulosPreseleccionados() {
         for (Modulo m : listaTextModulo) {
             boolean verificaLista = false;
@@ -160,6 +169,8 @@ public class MaestriaMBeans {
                 }
             }
             if (!verificaLista) {
+                m.setNombreMateria(puntoFinal(m.getNombreMateria().substring(0, 99)));
+                m.setDescripcion(puntoFinal(m.getDescripcion().substring(0, 99)));
                 listaModulos.add(m);
             }
         }

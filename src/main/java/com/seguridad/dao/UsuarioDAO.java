@@ -114,7 +114,7 @@ public class UsuarioDAO {
         int mensaje = 0;
         sentencia = String.format("SELECT public.\"actualizarUsuario\"(\n"
                 + "	" + user.getIdUsuario() + ", \n"
-                + "	" + user.getRol()+ ", \n"
+                + "	" + user.getRol() + ", \n"
                 + "	'" + user.getNombre() + "', \n"
                 + "	'" + user.getApellido() + "', \n"
                 + "	'" + user.getCorreo() + "', \n"
@@ -125,6 +125,62 @@ public class UsuarioDAO {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
                 mensaje = Integer.parseInt(resultSet.getString("actualizarUsuario"));
+            }
+            return mensaje;
+        } catch (NumberFormatException | SQLException e) {
+            return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public int verificaCorreoUsuario(Usuario user) {
+        int mensaje = 0;
+        sentencia = String.format("SELECT public.\"verificaCredenciales\"(\n"
+                + "	'" + user.getCorreoSesion() + "' \n"
+                + ")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("verificaCredenciales"));
+            }
+            return mensaje;
+        } catch (NumberFormatException | SQLException e) {
+            return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public int cambioPassword(Usuario user) {
+        int mensaje = 0;
+        sentencia = String.format("SELECT public.\"actualizarPassword\"(\n"
+                + "	'" + user.getCorreoSesion() + "', \n"
+                + "'" + encryptAES.getAESEncrypt(user.getPassword()) + "', \n"
+                + "'" + user.getNomUserSesion() + "' \n"
+                + ")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("actualizarPassword"));
+            }
+            return mensaje;
+        } catch (NumberFormatException | SQLException e) {
+            return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public String cambioCredencialesUsuario(Usuario user) {
+        String mensaje = "";
+        sentencia = String.format("SELECT * from public.\"cambioCredencialesUsuario\"(\n"
+                + "	'" + user.getCorreoSesion() + "' \n"
+                + ")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                mensaje = resultSet.getString("_nombre_usuario");
             }
             return mensaje;
         } catch (NumberFormatException | SQLException e) {

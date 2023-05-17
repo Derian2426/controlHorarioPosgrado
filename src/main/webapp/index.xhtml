@@ -5,7 +5,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>Login</title>
+        <title>Inicio de sesión</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link rel="icon" type="image/png" href="https://www.uteq.edu.ec/assets/img/icons/favicon.ico"/>
@@ -33,63 +33,92 @@
                         <img class="backImg" src="LogoFinalBack.jpg" alt=""/>
                     </div>
                 </div>
-                    <div class="form-content">
-                        <div class="login-form">
-                            <div class="title">Login</div>
-                            <div class="input-boxes">
-                                <div class="text textoA">Bienvenido !!</div>
-                                <div class="input-box">
-                                    <i class="fas fa-user"></i>
-                                    <p:inputText class="btnAcccion" type="text" placeholder="Ingrese su usuario" value="#{usuarioMB.usuario.nomUserSesion}"/>
-                                </div>
-                                <div class="input-box">
-                                    <i class="fas fa-lock"></i>
-                                    <p:inputText class="btnAcccion" type="password" placeholder="Ingrese su contraseña" value="#{usuarioMB.usuario.passSesion}"/>
-                                </div>
-                                <!--<div class="text"><a href="#">¿Olvidaste la contraseña?</a></div>-->
-                                <div class="input-box">
-                                    <p:commandButton class="btnAcccion btnStyle" action="#{usuarioMB.iniciarSesion()}" update=":user:msgs" value="Iniciar Sesión"></p:commandButton>
-                                    <!--<h:button class="btnAcccion btnStyle" outcome="Vistas/Global/principal.xhtml" value="Registrar"/>-->
-                                </div>
-                                <div class="text">¿No se encuentra registrado? <label for="flip">Registrarse ahora</label></div>
+                <div class="form-content">
+                    <div class="login-form">
+                        <div class="title">Login</div>
+                        <div class="input-boxes">
+                            <div class="text textoA">Bienvenido !!</div>
+                            <div class="input-box">
+                                <i class="fas fa-user"></i>
+                                <p:inputText class="btnAcccion" type="text" placeholder="Ingrese su usuario" maxlength="50" value="#{usuarioMB.usuario.nomUserSesion}"/>
                             </div>
+                            <div class="input-box">
+                                <i class="fas fa-lock"></i>
+                                <p:inputText class="btnAcccion" type="password" placeholder="Ingrese su contraseña" maxlength="90" value="#{usuarioMB.usuario.passSesion}"/>
+                            </div>
+                            <!--<div class="text"><a href="#">¿Olvidaste la contraseña?</a></div>-->
+                            <div class="input-box">
+                                <p:commandButton class="btnAcccion btnStyle" action="#{usuarioMB.iniciarSesion()}" update=":user:msgs" value="Iniciar Sesión"></p:commandButton>
+                                <!--<h:button class="btnAcccion btnStyle" outcome="Vistas/Global/principal.xhtml" value="Registrar"/>-->
+                            </div>
+                            <div class="text">¿No se encuentra registrado? <label for="flip">Registrarse ahora</label></div>
+                            <div class="text">¿Has olvidado tu contraseña? <p:commandLink id="ajax" onclick="PF('dlgpassword').show()" class="mr-4"
+                                                                                          value="Clic aquí!" style="color: seagreen;
+                                                                                          cursor: pointer;"/></div>
                         </div>
-                        <p:outputPanel id="regist" class="signup-form">
-                            <div class="title">Registrarse</div>
-                            <div class="input-boxes">
-                                <div class="input-box">
-                                    <i class="fas fa-user"></i>
-                                    <p:inputText class="btnAcccion" type="text" placeholder="Nombre" value="#{usuarioMB.usuario.nombre}"/>
-                                </div>
-                                <div class="input-box">
-                                    <i class="fas fa-user"></i>
-                                    <p:inputText class="btnAcccion" type="text" placeholder="Apellido" value="#{usuarioMB.usuario.apellido}"/>
-                                </div>
-                                <div class="input-box">
-                                    <i class="fas fa-user"></i>
-                                    <p:inputText class="btnAcccion" type="text" placeholder="Nombre de usuario" value="#{usuarioMB.usuario.nombreUsuario}"/>
-                                </div>
-                                <div class="input-box">
-                                    <i class="fas fa-envelope"></i>
-                                    <p:inputText class="btnAcccion" type="text" placeholder="E-mail" value="#{usuarioMB.usuario.correo}"/>
-                                </div>
-                                <div class="input-box">
-                                    <i class="fas fa-lock"></i>
-                                    <p:inputText class="btnAcccion" type="password" placeholder="Contraseña" value="#{usuarioMB.usuario.password}"/>
-                                </div>
-                                <div class="input-box">
-                                    <i class="fas fa-lock"></i>
-                                    <p:inputText class="btnAcccion" type="password" placeholder="Confirmar contraseña" value="#{usuarioMB.usuario.confpassword}"/>
-                                </div>
-                                <div class="input-box">
-                                    <p:commandButton class="btnAcccion btnStyle" action="#{usuarioMB.registrarUsuario()}" update=":user:msgs,:user:regist" value="Registrarse"></p:commandButton>
-                                </div>
-                                <div class="text">¿Ya se encuentra registrado? <label for="flip">Ingresar ahora</label></div>
-                            </div>
-                        </p:outputPanel>
-                        
                     </div>
+
+                    <p:outputPanel id="regist" class="signup-form">
+                        <div class="title">Registrarse</div>
+                        <div class="input-boxes">
+                            <div class="input-box">
+                                <i class="fas fa-user"></i>
+                                <p:inputText class="btnAcccion" type="text" placeholder="Nombre" maxlength="50" value="#{usuarioMB.usuario.nombre}"/>
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-user"></i>
+                                <p:inputText class="btnAcccion" type="text" placeholder="Apellido" maxlength="50" value="#{usuarioMB.usuario.apellido}"/>
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-user"></i>
+                                <p:inputText class="btnAcccion" type="text" placeholder="Nombre de usuario" maxlength="50" value="#{usuarioMB.usuario.nombreUsuario}"/>
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-envelope"></i>
+                                <p:inputText class="btnAcccion" type="text" placeholder="E-mail" maxlength="100" value="#{usuarioMB.usuario.correo}"/>
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-lock"></i>
+                                <p:inputText class="btnAcccion" type="password" placeholder="Contraseña" maxlength="90" value="#{usuarioMB.usuario.password}"/>
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-lock"></i>
+                                <p:inputText class="btnAcccion" type="password" placeholder="Confirmar contraseña" maxlength="90" value="#{usuarioMB.usuario.confpassword}"/>
+                            </div>
+                            <div class="input-box">
+                                <p:commandButton class="btnAcccion btnStyle" action="#{usuarioMB.registrarUsuario()}" update=":user:msgs,:user:regist" value="Registrarse"></p:commandButton>
+                            </div>
+                            <div class="text">¿Ya se encuentra registrado? <label for="flip">Ingresar ahora</label></div>
+                        </div>
+                    </p:outputPanel>
+
+                </div>
             </div>
+            <p:dialog header="Recuperación contraseña" widgetVar="dlgpassword" height="200" width="400" showEffect="fade" modal="true" responsive="true" position="center">
+                <p:messages id="messages" showDetail="true" closable="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                <p:outputLabel value="Introduce el correo electrónico para validar tu cuenta:" style="margin-top:30px"/>
+                <p:outputPanel id="recuperacionPassword">
+                    <p:inputText value="#{usuarioMB.usuarioCredenciales.correoSesion}" maxlength="100" size="30"/>
+                    <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-success" action="#{usuarioMB.verificarCredenciales}" style="margin-left: 10px" update="btn_restablecer"/>
+                    <p:commandButton id="btn_restablecer" value="Restablecer contraseña" disabled="#{!usuarioMB.usuarioCredenciales.estado}" 
+                                     action="#{usuarioMB.enviarCorreoElectronico()}" styleClass="ui-button-raised ui-button-success" 
+                                     style="margin-top: 10px; margin-left: 50px"
+                                     update=":user:msgs"
+                                     />
+                </p:outputPanel>
+            </p:dialog>
+            <p:dialog header="Cambio de contraseña" widgetVar="dlgCambioPassword" height="200" width="400" showEffect="fade" modal="true" responsive="true" position="center">
+                <p:outputPanel id="cambiarPassword">
+                    <p:inputText value="#{usuarioMB.usuarioCredenciales.rol}" maxlength="100" size="40" placeholder="Introduce el codigo enviado a tu correo"/>
+                    <p:inputText value="#{usuarioMB.usuarioCredenciales.password}" maxlength="100" size="40" placeholder="Nueva Contraseña"/>
+                    <p:inputText value="#{usuarioMB.usuarioCredenciales.confpassword}" maxlength="100" size="40" placeholder="Confirmar Contraseña"/>
+                    <p:commandButton id="btn_confirmarPassword" value="Guardar contraseña" action="#{usuarioMB.cambiarPassword()}" styleClass="ui-button-raised ui-button-success" 
+                                     update=":user:msgs,:user:cambiarPassword,:user:recuperacionPassword"
+                                     style="margin-top: 10px; margin-left: 50px"/>
+                </p:outputPanel>
+            </p:dialog>
         </h:form>
         <h:outputStylesheet name="login.css" library="css"/>
 

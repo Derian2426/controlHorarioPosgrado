@@ -66,6 +66,13 @@ public class ModuloMBeans {
         this.moduloBusqueda = moduloBusqueda;
     }
 
+    public String puntoFinal(String texto) {
+        if (texto.isEmpty() || texto.charAt(texto.length() - 1) != '.') {
+            return texto + '.';
+        }
+        return texto;
+    }
+
     public void registrarModulo() {
         try {
             if ("".equals(modulo.getNombreMateria())) {
@@ -73,6 +80,8 @@ public class ModuloMBeans {
             } else if ("".equals(modulo.getDescripcion())) {
                 showWarn("Ingrese una descripción al módulo");
             } else {
+                modulo.setNombreMateria(puntoFinal(modulo.getNombreMateria()));
+                modulo.setDescripcion(puntoFinal(modulo.getDescripcion()));
                 int resultadoRegistro = moduloDAO.registrarModulo(modulo);
                 if (resultadoRegistro > 0) {
                     showInfo(modulo.getNombreMateria().trim().replace(".", ",") + " registrado con éxito.");

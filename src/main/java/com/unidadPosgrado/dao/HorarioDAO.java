@@ -69,37 +69,6 @@ public class HorarioDAO {
         }
     }
 
-    public int registrarHorarioAsignacion(Modulo modulo, Docente docente, Maestria maestria, TiempoModulo tiempoModulo, List<TiempoModulo> tiempo) {
-        int mensaje = 0;
-        String json = "[";
-        for (TiempoModulo moduloT : tiempo) {
-            json += "{\n"
-                    + "  \"fechainicio\": \"" + moduloT.getFechaAsignacion() + "\"\n"
-                    + "},";
-        }
-        json = json.substring(0, json.length() - 1);
-        json += "]";
-        sentencia = String.format("SELECT public.\"asignacionHorarioPrueba001\"(\n"
-                + "	" + modulo.getIdMateria() + ", \n"
-                + "	" + docente.getId_docente() + ", \n"
-                + "	" + maestria.getIdCurso() + ", \n"
-                + "	'" + tiempoModulo.getDescripcion() + "', \n"
-                + "	" + tiempo.size() + ", \n"
-                + "	'" + json + "'\n"
-                + ")");
-        try {
-            resultSet = conexion.ejecutarSql(sentencia);
-            while (resultSet.next()) {
-                mensaje = Integer.parseInt(resultSet.getString("asignacionHorarioPrueba001"));
-            }
-            return mensaje;
-        } catch (SQLException e) {
-            return mensaje;
-        } finally {
-            conexion.desconectar();
-        }
-    }
-
     public List<TiempoModulo> registrarHorarioAsignaciones(Modulo modulo, Docente docente, Maestria maestria, TiempoModulo tiempoModulo, List<Date> tiempo) {
         int mensaje = 0;
         List<TiempoModulo> listadoFecha = new ArrayList<>();
@@ -111,7 +80,7 @@ public class HorarioDAO {
         }
         json = json.substring(0, json.length() - 1);
         json += "]";
-        sentencia = String.format("SELECT * from public.\"asignacionHorarioPrueba003\"(\n"
+        sentencia = String.format("SELECT * from public.\"asignacionHorario\"(\n"
                 + "	" + modulo.getIdMateria() + ", \n"
                 + "	" + docente.getId_docente() + ", \n"
                 + "	" + maestria.getIdMaestria() + ", \n"

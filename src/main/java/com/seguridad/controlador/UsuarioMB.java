@@ -123,13 +123,14 @@ public class UsuarioMB {
                     showInfo(usuario.getNombre().trim().replace(".", ",") + " Guardado con exito");
                     usuario = new Usuario();
                 } else {
-                    showWarn("El nombre de usuario ya se encuentra registrado");
+                    showWarn("El nombre de usuario o correo electronico ya se encuentra registrado.");
                 }
             } else {
                 showWarn("Contraseñas no coinciden");
             }
         } catch (Exception e) {
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void cambiaEstado(int idUsuario) {
@@ -190,12 +191,13 @@ public class UsuarioMB {
                         //aqui cargamos los datos del usuario
                     }
                 } else {
-                    mensajeDeAdvertencia("Error de conexión al intentar iniciar sesión.");
+                    mensajeDeAdvertencia("El usuario no está registrado o no tiene acceso. Por favor, ponte en contacto con nosotros en victor.chun2017@uteq.edu.ec");
                 }
             }
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void verificarCredenciales() {
@@ -210,7 +212,7 @@ public class UsuarioMB {
         } else {
             mensajeDeAdvertencia("Introduce el correo electrónico para validar tu cuenta.");
         }
-
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void cerrarPassword() {
@@ -239,7 +241,7 @@ public class UsuarioMB {
         } else {
             mensajeDeAdvertencia("El codigo no coincide con el que se envio a su correo, vuelva a intentarlo.");
         }
-
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void enviarCorreoElectronico() {
@@ -263,9 +265,11 @@ public class UsuarioMB {
                     "Solicitud de cambio de contraseña.", mensaje);
             mensajeDeExito("Correo enviado exitosamente.");
             PrimeFaces.current().executeScript("PF('dlgpassword').hide()");
+            PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
             PrimeFaces.current().executeScript("PF('dlgCambioPassword').show()");
         } catch (MessagingException e) {
-            System.out.println("Error al enviar el correo: " + e.getMessage());
+            PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
+            mensajeDeAdvertencia("Error al enviar el correo: " + e.getMessage());
         }
     }
 

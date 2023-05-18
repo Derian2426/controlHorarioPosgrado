@@ -48,7 +48,10 @@
                             </div>
                             <!--<div class="text"><a href="#">¿Olvidaste la contraseña?</a></div>-->
                             <div class="input-box">
-                                <p:commandButton class="btnAcccion btnStyle" action="#{usuarioMB.iniciarSesion()}" update=":user:msgs" value="Iniciar Sesión"></p:commandButton>
+                                <p:commandButton class="btnAcccion btnStyle" 
+                                                 onstart="PF('dlg_loader').show();"
+                                                 action="#{usuarioMB.iniciarSesion()}" 
+                                                 update=":user:msgs" value="Iniciar Sesión"></p:commandButton>
                                 <!--<h:button class="btnAcccion btnStyle" outcome="Vistas/Global/principal.xhtml" value="Registrar"/>-->
                             </div>
                             <div class="text">¿No se encuentra registrado? <label for="flip">Registrarse ahora</label></div>
@@ -86,7 +89,9 @@
                                 <p:inputText class="btnAcccion" type="password" placeholder="Confirmar contraseña" maxlength="90" value="#{usuarioMB.usuario.confpassword}"/>
                             </div>
                             <div class="input-box">
-                                <p:commandButton class="btnAcccion btnStyle" action="#{usuarioMB.registrarUsuario()}" update=":user:msgs,:user:regist" value="Registrarse"></p:commandButton>
+                                <p:commandButton class="btnAcccion btnStyle" 
+                                                 onstart="PF('dlg_loader').show();"
+                                                 action="#{usuarioMB.registrarUsuario()}" update=":user:msgs,:user:regist" value="Registrarse"></p:commandButton>
                             </div>
                             <div class="text">¿Ya se encuentra registrado? <label for="flip">Ingresar ahora</label></div>
                         </div>
@@ -102,9 +107,12 @@
                 <p:outputLabel value="Introduce el correo electrónico para validar tu cuenta:" style="margin-top:30px"/>
                 <p:outputPanel id="recuperacionPassword">
                     <p:inputText value="#{usuarioMB.usuarioCredenciales.correoSesion}" maxlength="100" size="30"/>
-                    <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-success" action="#{usuarioMB.verificarCredenciales}" style="margin-left: 10px" update="btn_restablecer"/>
+                    <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-success" 
+                                     onstart="PF('dlg_loader').show();"
+                                     action="#{usuarioMB.verificarCredenciales}" 
+                                     style="margin-left: 10px" update="btn_restablecer"/>
                     <p:commandButton id="btn_restablecer" value="Restablecer contraseña" disabled="#{!usuarioMB.usuarioCredenciales.estado}" 
-                                     action="#{usuarioMB.enviarCorreoElectronico()}" styleClass="ui-button-raised ui-button-success" 
+                                     action="#{usuarioMB.enviarCorreoElectronico()}" onstart="PF('dlg_loader').show();" styleClass="ui-button-raised ui-button-success" 
                                      style="margin-top: 10px; margin-left: 50px"
                                      update=":user:msgs"
                                      />
@@ -117,11 +125,16 @@
                     <p:inputText type="password" value="#{usuarioMB.usuarioCredenciales.password}" maxlength="100" size="40" placeholder="Nueva Contraseña" style="margin-top: 10px;"/>
                     <p:inputText type="password" value="#{usuarioMB.usuarioCredenciales.confpassword}" maxlength="100" size="40" placeholder="Confirmar Contraseña" style="margin-top: 10px;"/>
                     <p:commandButton id="btn_confirmarPassword" value="Guardar contraseña" action="#{usuarioMB.cambiarPassword()}" styleClass="ui-button-raised ui-button-success" 
+                                     onstart="PF('dlg_loader').show();"
                                      update=":user:msgs,:user:cambiarPassword,:user:recuperacionPassword"
                                      style="margin-top: 10px; margin-left: 75px"/>
                 </p:outputPanel>
             </p:dialog>
+
         </h:form>
+        <p:dialog widgetVar="dlg_loader" modal="true" draggable="false" closable="false" resizable="false" minHeight="100" maximizable="120">
+            <p:graphicImage name="loading.gif" library="imagenes" height="100" width="100"/>
+        </p:dialog>
         <h:outputStylesheet name="login.css" library="css"/>
 
     </h:body>

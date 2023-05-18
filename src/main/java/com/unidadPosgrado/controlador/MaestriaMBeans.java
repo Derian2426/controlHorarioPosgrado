@@ -150,6 +150,7 @@ public class MaestriaMBeans {
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public String puntoFinal(String texto) {
@@ -160,20 +161,34 @@ public class MaestriaMBeans {
     }
 
     public void verificarModulosPreseleccionados() {
-        for (Modulo m : listaTextModulo) {
-            boolean verificaLista = false;
-            for (Modulo mod : listaModulos) {
-                if (m.getNombreMateria().equals(mod.getNombreMateria())) {
-                    verificaLista = true;
-                    break;
+
+        if (listaModulos.size() > 0) {
+            for (Modulo m : listaTextModulo) {
+                boolean verificaLista = false;
+                for (Modulo mod : listaModulos) {
+                    if (m.getNombreMateria().equals(mod.getNombreMateria())) {
+                        verificaLista = true;
+                        break;
+                    }
+                }
+                if (!verificaLista) {
+                    m.setNombreMateria(puntoFinal(m.getNombreMateria().substring(0, 99)));
+                    m.setDescripcion(puntoFinal(m.getDescripcion().substring(0, 99)));
+                    listaModulos.add(m);
                 }
             }
-            if (!verificaLista) {
-                m.setNombreMateria(puntoFinal(m.getNombreMateria().substring(0, 99)));
-                m.setDescripcion(puntoFinal(m.getDescripcion().substring(0, 99)));
+        } else {
+
+            for (Modulo m : listaTextModulo) {
+                if (m.getNombreMateria().length() > 98) {
+                    m.setNombreMateria(puntoFinal(m.getNombreMateria().substring(0, 99)));
+                    m.setDescripcion(puntoFinal(m.getDescripcion().substring(0, 99)));
+                }
                 listaModulos.add(m);
             }
+
         }
+
         modulo = new Modulo();
         modulo.setVerifica(false);
         listaTextModulo = new ArrayList<>();
@@ -384,6 +399,7 @@ public class MaestriaMBeans {
         } catch (Exception e) {
             showWarn("Error" + e.getMessage());
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public boolean verificaHoras() {
@@ -444,6 +460,6 @@ public class MaestriaMBeans {
             busquedaMaestria = new ArrayList<>();
 //            maestriaBusqueda = new Maestria();
         }
-
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 }

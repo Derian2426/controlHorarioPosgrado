@@ -78,6 +78,7 @@
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{maestriaMB.registrarMaestria()}"
+                                                 onstart="PF('dlg_loader').show();"
                                                  update=":form_maestria:dtMaestrias,:form_maestria:msgs,nuevaMaestria,:form_maestria:dtSeleccionMaestria"/>
                             </div>
                             <div class="p-field p-col-12 p-md-6">
@@ -93,9 +94,12 @@
                                      emptyMessage="No se encontro la maestría">
                             <f:facet name="header">
                                 <span class="ui-input-icon-left">
-                                    <p:inputText placeholder="Buscar Maestría" value="#{maestriaMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
+                                    <p:inputText placeholder="Buscar Maestría" value="#{maestriaMB.maestriaBusqueda.nombre}" 
+                                                 style="margin-right: 6px">
                                     </p:inputText>
-                                    <p:commandButton icon="pi pi-search" update=":form_maestria:dtMaestrias" styleClass="rounded-button ui-button-secondary" actionListener="#{maestriaMB.buscarMaestria()}" process="dtMaestrias @this"/>
+                                    <p:commandButton icon="pi pi-search" update=":form_maestria:dtMaestrias" 
+                                                     onstart="PF('dlg_loader').show();"
+                                                     styleClass="rounded-button ui-button-secondary" actionListener="#{maestriaMB.buscarMaestria()}" process="dtMaestrias @this"/>
                                 </span>
                             </f:facet>
 
@@ -142,6 +146,7 @@
                             </div>
                             <div class="p-field p-col-12 p-md-6">
                                 <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{moduloMB.registrarModulo()}"
+                                                 onstart="PF('dlg_loader').show();"
                                                  update=":form_maestria:msgs,nuevoModulo,:form_maestria:dtModulo,:form_maestria:dtSeleccionModulo"/>
                             </div>
                             <div class="p-field p-col-12 p-md-6">
@@ -159,7 +164,9 @@
                                 <span class="ui-input-icon-left">
                                     <p:inputText placeholder="Buscar Módulo" value="#{moduloMB.moduloBusqueda.nombreMateria}" style="margin-right: 6px">
                                     </p:inputText>
-                                    <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-secondary" actionListener="#{moduloMB.buscarModulo()}" update=":form_maestria:dtModulo" process="dtModulo @this"/>
+                                    <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-secondary" 
+                                                     onstart="PF('dlg_loader').show();"
+                                                     actionListener="#{moduloMB.buscarModulo()}" update=":form_maestria:dtModulo" process="dtModulo @this"/>
                                 </span>
                             </f:facet>
 
@@ -253,6 +260,7 @@
                                          icon="pi pi-check"
                                          styleClass="ui-button-success"
                                          style="margin-right: 6px;"
+                                         onstart="PF('dlg_loader').show();"
                                          action="#{moduloMB.actualizaModulo()}"
                                          actionListener="#{maestriaMB.registarIntegracionModulo()}"
                                          update=":form_maestria:nuevaIntegracionModulo,:form_maestria:dtSeleccionModulo,:form_maestria:msgs,:form_maestria:integracionModulo,:form_maestria:dtMaestrias,:form_maestria:modulosListaText,:form_maestria:btn_confirmacion"/>
@@ -303,7 +311,9 @@
                                 <span class="ui-input-icon-left">
                                     <p:inputText placeholder="Buscar Maestría" value="#{maestriaMB.maestriaBusqueda.nombre}" style="margin-right: 6px">
                                     </p:inputText>
-                                    <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-secondary" actionListener="#{maestriaMB.buscarMaestria()}" update=":form_maestria:dtSeleccionMaestria" process="dtSeleccionMaestria @this"/>
+                                    <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-secondary" 
+                                                     onstart="PF('dlg_loader').show();"
+                                                     actionListener="#{maestriaMB.buscarMaestria()}" update=":form_maestria:dtSeleccionMaestria" process="dtSeleccionMaestria @this"/>
                                 </span>
                             </f:facet>
                             <p:column headerText="Acciones" style="width:6rem">
@@ -334,7 +344,9 @@
                             <span class="ui-input-icon-left">
                                 <p:inputText placeholder="Buscar Maestría" value="#{moduloMB.moduloBusqueda.nombreMateria}" style="margin-right: 6px">
                                 </p:inputText>
-                                <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-secondary" actionListener="#{moduloMB.buscarModulo()}" update=":form_maestria:dtSeleccionModulo" process="dtSeleccionModulo @this"/>
+                                <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-secondary" 
+                                                 onstart="PF('dlg_loader').show();"
+                                                 actionListener="#{moduloMB.buscarModulo()}" update=":form_maestria:dtSeleccionModulo" process="dtSeleccionModulo @this"/>
                             </span>
                         </f:facet>
                         <p:column headerText="Acciones" style="width:6rem">

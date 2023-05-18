@@ -96,6 +96,7 @@ public class ModuloMBeans {
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void onRowEdit(RowEditEvent<Modulo> event) {
@@ -148,12 +149,14 @@ public class ModuloMBeans {
 //            moduloBusqueda = new Modulo();
 
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void actualizaModulo() {
         moduloBusqueda = new Modulo();
         listaModulo = moduloDAO.getListaModulo();
         busquedaModuloAux = listaModulo;
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {

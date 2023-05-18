@@ -98,6 +98,7 @@
                 <p:messages id="messages" showDetail="true" closable="true">
                     <p:autoUpdate/>
                 </p:messages>
+                <p:ajax event="close" listener="#{usuarioMB.cerrarPassword()}" update="recuperacionPassword"/>
                 <p:outputLabel value="Introduce el correo electrónico para validar tu cuenta:" style="margin-top:30px"/>
                 <p:outputPanel id="recuperacionPassword">
                     <p:inputText value="#{usuarioMB.usuarioCredenciales.correoSesion}" maxlength="100" size="30"/>
@@ -110,13 +111,14 @@
                 </p:outputPanel>
             </p:dialog>
             <p:dialog header="Cambio de contraseña" widgetVar="dlgCambioPassword" height="200" width="400" showEffect="fade" modal="true" responsive="true" position="center">
+                <p:ajax event="close" listener="#{usuarioMB.cerrarPassword()}" update="cambiarPassword"/>
                 <p:outputPanel id="cambiarPassword">
-                    <p:inputText value="#{usuarioMB.usuarioCredenciales.rol}" maxlength="100" size="40" placeholder="Introduce el codigo enviado a tu correo"/>
-                    <p:inputText value="#{usuarioMB.usuarioCredenciales.password}" maxlength="100" size="40" placeholder="Nueva Contraseña"/>
-                    <p:inputText value="#{usuarioMB.usuarioCredenciales.confpassword}" maxlength="100" size="40" placeholder="Confirmar Contraseña"/>
+                    <p:inputText value="#{usuarioMB.usuarioCredenciales.rol}" maxlength="100" size="40" placeholder="Introduce el codigo enviado a tu correo" style="margin-top: 10px;"/>
+                    <p:inputText type="password" value="#{usuarioMB.usuarioCredenciales.password}" maxlength="100" size="40" placeholder="Nueva Contraseña" style="margin-top: 10px;"/>
+                    <p:inputText type="password" value="#{usuarioMB.usuarioCredenciales.confpassword}" maxlength="100" size="40" placeholder="Confirmar Contraseña" style="margin-top: 10px;"/>
                     <p:commandButton id="btn_confirmarPassword" value="Guardar contraseña" action="#{usuarioMB.cambiarPassword()}" styleClass="ui-button-raised ui-button-success" 
                                      update=":user:msgs,:user:cambiarPassword,:user:recuperacionPassword"
-                                     style="margin-top: 10px; margin-left: 50px"/>
+                                     style="margin-top: 10px; margin-left: 75px"/>
                 </p:outputPanel>
             </p:dialog>
         </h:form>

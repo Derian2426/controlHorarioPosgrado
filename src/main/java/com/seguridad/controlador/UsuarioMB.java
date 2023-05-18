@@ -213,6 +213,10 @@ public class UsuarioMB {
 
     }
 
+    public void cerrarPassword() {
+        usuarioCredenciales = new Usuario();
+    }
+
     public void cambiarPassword() {
         if (usuarioCredenciales.getRol().equals(usuarioCredenciales.getMensajeAux()) && !"".equals(usuarioCredenciales.getRol())) {
             if (!"".equals(usuarioCredenciales.getPassword()) && !"".equals(usuarioCredenciales.getConfpassword())) {

@@ -878,7 +878,7 @@ public class GeneragorHorarioMBeans {
         } catch (IOException ex) {
             Logger.getLogger(GeneragorHorarioMBeans.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public List<Date> getListaEntreFechas(Date fechaInicio, Date fechaFin) {
@@ -957,6 +957,7 @@ public class GeneragorHorarioMBeans {
         } catch (Exception e) {
             showError(e.getMessage() + "Error al registrar el periodo, vuelva a intentarlo.");
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void cancelarPeriodo() {
@@ -993,6 +994,7 @@ public class GeneragorHorarioMBeans {
     public void detallePeriodo(int idPeriodo) {
         descripcionPeriodo = horarioDAO.getDescrionPeriodo(idPeriodo);
         PrimeFaces.current().executeScript("PF('detallePeriodo').show()");
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void editarPeriodo(int idPeriodo, int idMaestria) {
@@ -1002,6 +1004,7 @@ public class GeneragorHorarioMBeans {
         PrimeFaces.current().executeScript("PF('editPeriodo').show()");
         descripcionPeriodo.setFechaInicio(editPeriodo.getFechaInicio());
         descripcionPeriodo.setFechaFin(editPeriodo.getFechaFin());
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void EditaPeriodo() {
@@ -1021,6 +1024,7 @@ public class GeneragorHorarioMBeans {
             listaMaestria = horarioDAO.getListaMaestriaPeriodo(user);
             listaPeriodo = maestriaDAO.getListaPeriodo(user);
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void llenaMaestriaPeriodo(Maestria maestria) {
@@ -1038,6 +1042,7 @@ public class GeneragorHorarioMBeans {
 
     public void dealleHorarioMaestria(int idCurso, int idMaestria) {
         listadoModuloDetalle = horarioDAO.getListaModuloDocente(idCurso, idMaestria);
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
         PrimeFaces.current().executeScript("PF('dlgDetallePeriodoAcademico').show()");
     }
 
@@ -1053,7 +1058,7 @@ public class GeneragorHorarioMBeans {
         maestriaEdit.setFechaFin(fin);
         maestriaEdit.setIdCurso(idCurso);
         maestriaEdit.setIdMaestria(idMaestria);
-
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
         PrimeFaces.current().executeScript("PF('dlgEditPeriodoAcademico').show()");
     }
 
@@ -1096,6 +1101,7 @@ public class GeneragorHorarioMBeans {
         docenteEdit.setNombre_docente(nameDocente);
         docenteEdit.setId_docente(idDocente);
         listaDocente = horarioDAO.getListaDocente(maestriaEdit.getIdMaestria(), maestriaEdit.getIdCurso());
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
         PrimeFaces.current().executeScript("PF('dlgEditPeriodoAcademicoDate').show()");
     }
 

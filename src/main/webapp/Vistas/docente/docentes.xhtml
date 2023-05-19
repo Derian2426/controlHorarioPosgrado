@@ -154,7 +154,9 @@
                             </div>
                             <div class="p-grid p-justify-end">
                                 <div class="p-col-4">
-                                    <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{docenteMB.registrarDocente()}"
+                                    <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success"
+                                                     onstart="PF('dlg_loader').show();"
+                                                     actionListener="#{docenteMB.registrarDocente()}"
                                                      update=":form_docentes:msgs,nuevoDocente,:form_docentes:dtDocente,:form_docentes:dtSeleccionMaestria"/>
                                 </div>
                                 <div class="p-field p-col-12 p-md-4">
@@ -241,10 +243,12 @@
                                 </p:confirmDialog>
 
                             </div>
-                            
+
                             <div class="p-grid p-justify-end">
                                 <div class="p-col-4">
-                                    <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{docenteMB.editarDocente()}" onclick="PF('dlgEditDocente').hide()"
+                                    <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" 
+                                                     onstart="PF('dlg_loader').show();"
+                                                     actionListener="#{docenteMB.editarDocente()}" onclick="PF('dlgEditDocente').hide()"
                                                      update=":form_docentes:msgs,editDocente,:form_docentes:dtDocente,:form_docentes:dtSeleccionMaestriaEdit"/>
                                 </div>
                                 <div class="p-field p-col-12 p-md-4">

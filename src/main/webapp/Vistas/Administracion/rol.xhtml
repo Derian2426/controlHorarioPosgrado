@@ -117,7 +117,8 @@
                         </div>
                         <div class="p-grid p-justify-end">
                             <div class="p-col-4">
-                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{rolMB.registrarRol()}"
+                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" onstart="PF('dlg_loader').show();" 
+                                                 actionListener="#{rolMB.registrarRol()}"
                                                  update=":form_rol:msgs,nuevoRol,:form_rol:dtRol,:form_rol:maestriaListaSeleccion"/>
                             </div>
                             <div class="p-field p-col-12 p-md-4">
@@ -185,7 +186,8 @@
                                         <h:outputText value="#{maestrias.descripcion}"/>
                                     </p:column>
                                     <p:column headerText="Acciones" style="width:6rem">
-                                        <p:commandButton icon="pi pi-trash" styleClass="rounded-button ui-button-danger" 
+                                        <p:commandButton icon="pi pi-trash" styleClass="rounded-button ui-button-danger"
+                                                         onstart="PF('dlg_loader').show();"
                                                          actionListener="#{rolMB.eliminarMaestria(maestrias)}"
                                                          update=":form_rol:msgs,dtMaestriasEdit,:form_rol:maestriaListaEditSeleccion"/>
                                     </p:column>
@@ -194,7 +196,9 @@
                         </div>
                         <div class="p-grid p-justify-end">
                             <div class="p-col-4">
-                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{rolMB.rolEdit()}"
+                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success"
+                                                 onstart="PF('dlg_loader').show();"
+                                                 actionListener="#{rolMB.rolEdit()}"
                                                  update=":form_rol:msgs,editRol,:form_rol:dtRol,:form_rol:maestriaListaEditSeleccion"/>
                             </div>
                             <div class="p-field p-col-12 p-md-4">

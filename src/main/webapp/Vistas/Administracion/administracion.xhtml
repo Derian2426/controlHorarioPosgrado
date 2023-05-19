@@ -30,14 +30,6 @@
                     <p:dataTable id="dtUsuarios" var="usuario" value="#{adminMB.listaUsuario}" editable="true" paginatorPosition="bottom"
                                  style="margin-bottom:20px" reflow="true" rows="6" paginator="true"
                                  emptyMessage="No se encontro el estudiante">
-                        <!--<f:facet name="header">
-                            <span class="ui-input-icon-left">
-                                <p:inputText placeholder="Buscar Usuario" value="#{estudianteMB.estudianteBusqueda.nombre_estudiante}" style="margin-right: 6px">
-                                </p:inputText>
-                                <p:commandButton icon="pi pi-search" update=":form_admin:dtUsuarios" styleClass="rounded-button ui-button-secondary" action="#{estudianteMB.buscarEstudiante()}" process="dtUsuarios @this">
-                                </p:commandButton>
-                            </span>
-                        </f:facet>-->
                         <p:ajax event="rowEdit" listener="#{adminMB.onRowEdit}" update=":form_admin:msgs,:form_admin:dtUsuarios"/>
                         <p:ajax event="rowEditCancel" listener="#{adminMB.onRowCancel}" update=":form_admin:msgs,:form_admin:dtUsuarios"/>
 

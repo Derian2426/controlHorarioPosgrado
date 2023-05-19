@@ -85,6 +85,7 @@ public class RolMBeans {
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void rolEdit() {
@@ -115,6 +116,7 @@ public class RolMBeans {
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void actualizaRol() {
@@ -228,6 +230,7 @@ public class RolMBeans {
         } else {
             showWarn("Al menos debe tener asignado una Maestria.");
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void addMessage(FacesMessage.Severity severity, String summary, String detail) {

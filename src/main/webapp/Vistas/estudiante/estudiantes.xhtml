@@ -44,7 +44,8 @@
                                 </p:commandButton>
                             </span>
                         </f:facet>
-                        <p:ajax event="rowEdit" listener="#{estudianteMB.onRowEdit}" update=":form_estudiante:msgs,:form_estudiante:dtEstudiante"/>
+                        <p:ajax event="rowEdit" listener="#{estudianteMB.onRowEdit}"
+                                update=":form_estudiante:msgs,:form_estudiante:dtEstudiante"/>
                         <p:ajax event="rowEditCancel" listener="#{estudianteMB.onRowCancel}" update=":form_estudiante:msgs,:form_estudiante:dtEstudiante"/>
 
                         <p:column headerText="Nombre" style="text-align: justify" sortBy="#{estudiante.nombre_estudiante}">
@@ -160,7 +161,9 @@
                         </div>
                         <div class="p-grid p-justify-end">
                             <div class="p-col-4">
-                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{estudianteMB.registrarEstudiante()}"
+                                <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success"
+                                                 onstart="PF('dlg_loader').show();"
+                                                 actionListener="#{estudianteMB.registrarEstudiante()}"
                                                  update=":form_estudiante:msgs,nuevoEstudiante,:form_estudiante:dtEstudiante"/>
                             </div>
                             <div class="p-field p-col-12 p-md-4">
@@ -237,6 +240,7 @@
                                          icon="pi pi-check"
                                          styleClass="ui-button-success"
                                          style="margin-right: 6px;"
+                                         onstart="PF('dlg_loader').show();"
                                          actionListener="#{estudianteMB.registrarEstudianteMaestria()}"
                                          update=":form_estudiante:nuevaIncripcion ,:form_estudiante:dtSeleccionMaestria,:form_estudiante:dtEstudiante,:form_estudiante:msgs,:form_estudiante:estudiantechec"/>
                         <p:commandButton value="Cancelar" icon="pi pi-times" actionListener="#{estudianteMB.cancelarRegistro()}"

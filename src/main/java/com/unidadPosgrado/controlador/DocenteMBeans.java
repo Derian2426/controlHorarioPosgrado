@@ -110,6 +110,7 @@ public class DocenteMBeans {
             }
         } catch (Exception e) {
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void cancelarRegistro() {
@@ -153,6 +154,7 @@ public class DocenteMBeans {
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void onRowCancel(RowEditEvent<Docente> event) {

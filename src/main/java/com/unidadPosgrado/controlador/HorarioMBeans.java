@@ -414,7 +414,7 @@ public class HorarioMBeans {
         } catch (Exception e) {
             showError(e.getMessage() + "Error al registrar el periodo, vuelva a intentarlo.");
         }
-
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void cerrarDialigo() {

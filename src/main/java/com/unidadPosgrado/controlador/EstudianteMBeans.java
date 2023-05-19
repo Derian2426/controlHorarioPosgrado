@@ -113,6 +113,7 @@ public class EstudianteMBeans {
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void onRowEdit(RowEditEvent<Estudiante> event) {
@@ -182,6 +183,7 @@ public class EstudianteMBeans {
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void cancelarRegistro() {

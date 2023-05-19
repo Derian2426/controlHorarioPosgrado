@@ -51,9 +51,13 @@
                                         <p:commandButton id="accionesPeriodo" value="Acciones" type="button" icon="pi pi-chevron-down" styleClass="ui-button-outlined" />
                                         <p:menu overlay="true" trigger="accionesPeriodo" my="left top" at="left bottom">
                                             <p:submenu label="Acciones">
-                                                <p:menuitem value="Detalle" icon="pi pi-file-o" actionListener="#{GeneradorHorarioMB.detallePeriodo(periodo.idPeriodo)}"
+                                                <p:menuitem value="Detalle" icon="pi pi-file-o" 
+                                                            onstart="PF('dlg_loader').show();"
+                                                            actionListener="#{GeneradorHorarioMB.detallePeriodo(periodo.idPeriodo)}"
                                                             update="form_horario:planificacionHorario:detallePeriodoAcademico"/>
-                                                <p:menuitem value="Editar" icon="pi pi-pencil" rendered="#{periodo.estado eq 'Activo'}" actionListener="#{GeneradorHorarioMB.editarPeriodo(periodo.idPeriodo,periodo.idMaestria)}"
+                                                <p:menuitem value="Editar" icon="pi pi-pencil" rendered="#{periodo.estado eq 'Activo'}" 
+                                                            onstart="PF('dlg_loader').show();"
+                                                            actionListener="#{GeneradorHorarioMB.editarPeriodo(periodo.idPeriodo,periodo.idMaestria)}"
                                                             update="form_horario:planificacionHorario:editPeriodoAcademico,:form_horario:planificacionHorario:horarioPeriodo"/>
                                             </p:submenu>
                                         </p:menu>
@@ -97,7 +101,9 @@
 
                                         </div>
                                         <div class="p-field p-col-12 p-md-6">
-                                            <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{GeneradorHorarioMB.EditaPeriodo()}"
+                                            <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success"
+                                                             onstart="PF('dlg_loader').show();"
+                                                             actionListener="#{GeneradorHorarioMB.EditaPeriodo()}"
                                                              action="#{horarioMB.actualizaListas()}"
                                                              update=":form_horario:messages ,:form_horario:planificacionHorario:editPeriodoAcademico,:form_horario:planificacionHorario:horarioPeriodo,:form_horario:planificacionHorario:dtSeleccionMaestriaPeriodo,:form_horario:planificacionHorario:horarioMaestria"/>
                                         </div>
@@ -162,7 +168,9 @@
                                         </div>
 
                                         <div class="p-field p-col-12 p-md-6">
-                                            <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" actionListener="#{GeneradorHorarioMB.registrarPeriodo()}" action="#{horarioMB.actualizaListas()}"
+                                            <p:commandButton value="Guardar " icon="pi pi-check" styleClass="ui-button-success" 
+                                                             onstart="PF('dlg_loader').show();"
+                                                             actionListener="#{GeneradorHorarioMB.registrarPeriodo()}" action="#{horarioMB.actualizaListas()}"
                                                              update=":form_horario:messages ,:form_horario:planificacionHorario:nuevoPerido,:form_horario:planificacionHorario:horarioPeriodo,:form_horario:planificacionHorario:dtSeleccionMaestriaPeriodo,:form_horario:planificacionHorario:horarioMaestria"/>
                                         </div>
                                         <div class="p-field p-col-12 p-md-6">
@@ -337,7 +345,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <p:commandButton actionListener="#{horarioMB.registrarPeriodo()}" action="#{GeneradorHorarioMB.actualizaLista()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" 
+                                    <p:commandButton onstart="PF('dlg_loader').show();" actionListener="#{horarioMB.registrarPeriodo()}" action="#{GeneradorHorarioMB.actualizaLista()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" 
                                                      update=":form_horario:planificacionHorario:calendarioAcademico,:form_horario:planificacionHorario:nuevoDocenteAsignado,:form_horario:messages,mensajeEstatico,mensajeEstatico1,:form_horario:planificacionHorario:horarioMaestria" style="margin-bottom: 1vh;"/>
 
                                 </p:outputPanel>
@@ -416,15 +424,20 @@
                                     </p:column>
                                     <p:column headerText="Archivo">
                                         <p:commandButton value="Descargar" icon="pi pi-download" styleClass="ui-button-outlined ui-button-success" 
+                                                         onstart="PF('dlg_loader').show();"
                                                          action="#{GeneradorHorarioMB.generarArchivoExcel(horario.idCurso,horario.nombre,horario.fechaInicio,horario.fechaFin,horario.idMaestria)}" ajax="false"/>
                                     </p:column>
                                     <p:column headerText="Acciones">
                                         <p:commandButton id="accionesHorario" value="Acciones" type="button" icon="pi pi-chevron-down" styleClass="ui-button-outlined" />
                                         <p:menu overlay="true" trigger="accionesHorario" my="left top" at="left bottom">
                                             <p:submenu label="Acciones">
-                                                <p:menuitem value="Detalle" icon="pi pi-file-o" actionListener="#{GeneradorHorarioMB.dealleHorarioMaestria(horario.idCurso, horario.idMaestria)}"
+                                                <p:menuitem value="Detalle" icon="pi pi-file-o" 
+                                                            onstart="PF('dlg_loader').show();"
+                                                            actionListener="#{GeneradorHorarioMB.dealleHorarioMaestria(horario.idCurso, horario.idMaestria)}"
                                                             update=":form_horario:planificacionHorario:detalleHorarioMaestria" rendered="#{horario.estado eq 'En proceso' or horario.estado eq 'Planificado'}"/>
-                                                <p:menuitem value="Editar" icon="pi pi-pencil" actionListener="#{GeneradorHorarioMB.editHorarioPeriodoAcademico(horario.idCurso, horario.idMaestria, horario.fechaInicio, horario.fechaFin)}"
+                                                <p:menuitem value="Editar" icon="pi pi-pencil" 
+                                                            onstart="PF('dlg_loader').show();"
+                                                            actionListener="#{GeneradorHorarioMB.editHorarioPeriodoAcademico(horario.idCurso, horario.idMaestria, horario.fechaInicio, horario.fechaFin)}"
                                                             update=":form_horario:planificacionHorario:editHorarioMaestria,:form_horario:planificacionHorario:docenteEditData"/>
                                             </p:submenu>
                                         </p:menu>
@@ -480,6 +493,7 @@
                                         </p:column>
                                         <p:column>
                                             <p:commandButton icon="pi pi-pencil" styleClass="rounded-button ui-button-outlined" 
+                                                             onstart="PF('dlg_loader').show();"
                                                              actionListener="#{GeneradorHorarioMB.llenarFechaAsignacionEdit(editFecha.idCurso, editFecha.idDocente, editFecha.idModulo,editFecha.nombreDocente)}"
                                                              update=":form_horario:planificacionHorario:pickEditList,:form_horario:planificacionHorario:docenteEditData"/>
                                         </p:column>

@@ -220,19 +220,23 @@ public class UsuarioMB {
     }
 
     public void cambiarPassword() {
-        if (usuarioCredenciales.getRol().equals(usuarioCredenciales.getMensajeAux()) && !"".equals(usuarioCredenciales.getRol())) {
+        if (usuarioCredenciales.getRol().equals(usuarioEdit.getMensajeAux())) {
             if (!"".equals(usuarioCredenciales.getPassword()) && !"".equals(usuarioCredenciales.getConfpassword())) {
                 if (!usuarioCredenciales.getPassword().equals(usuarioCredenciales.getConfpassword())) {
                     mensajeDeAdvertencia("Las contraseñas no coinciden.");
                 } else {
+                    usuarioCredenciales.setNomUserSesion(usuarioEdit.getNomUserSesion());
+                    usuarioCredenciales.setCorreoSesion(usuarioEdit.getCorreoSesion());
                     if (userDAO.cambioPassword(usuarioCredenciales) == 1) {
                         PrimeFaces.current().executeScript("PF('dlgCambioPassword').hide()");
                         mensajeDeExito("Se cambio la contraseña con exito.");
                         usuarioCredenciales = new Usuario();
+                        usuarioEdit = new Usuario();
                     } else {
                         PrimeFaces.current().executeScript("PF('dlgCambioPassword').hide()");
                         mensajeDeAdvertencia("Ocurrio un error, vuelva a intentarlo más tarde.");
                         usuarioCredenciales = new Usuario();
+                        usuarioEdit = new Usuario();
                     }
                 }
             } else {
@@ -249,7 +253,10 @@ public class UsuarioMB {
         try {
             String userName = userDAO.cambioCredencialesUsuario(usuarioCredenciales);
             usuarioCredenciales.setNomUserSesion(userName);
+            usuarioEdit.setNomUserSesion(userName);
             usuarioCredenciales.setMensajeAux(RandomStringGenerator.generateRandomString());
+            usuarioEdit.setMensajeAux(usuarioCredenciales.getMensajeAux());
+            usuarioEdit.setCorreoSesion(usuarioCredenciales.getCorreoSesion());
             String mensaje = "Mensaje desde el Sistema de Control de Horarios\n"
                     + "\n"
                     + "Ud. ha solicitado el cambio de contraseña, sus datos son los siguientes:\n"

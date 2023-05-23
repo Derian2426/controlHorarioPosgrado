@@ -352,14 +352,18 @@
 
                             </p:dialog>
                             <p:dialog header="Fechas de asignaciones del docente" widgetVar="seleccionFechaAsinadaDocente" minHeight="100" width="550" showEffect="fade" modal ="true" responsive="true">
-                                <p:dataTable id="idFechasDocenteAsignacion" var="fechasDocenteAsignacion" value="#{horarioMB.listaVerificacionTiempo}" rows="5" paginator="true">
+                                <p:dataTable id="idFechasDocenteAsignacion" var="fechasDocenteAsignacion" value="#{horarioMB.listaVerificacionTiempo}" 
+                                             paginatorPosition="bottom"
+                                             rows="5" paginator="true">
                                     <p:column headerText="Fecha de asignación">
                                         <h:outputText value="#{fechasDocenteAsignacion.fechaAsignacion}"/>
                                     </p:column>
                                 </p:dataTable>
                             </p:dialog>
                             <p:dialog header="Fechas de asignaciones de la maestría" widgetVar="seleccionFechaAsinadaMaestria" minHeight="100" width="550" showEffect="fade" modal ="true" responsive="true">
-                                <p:dataTable id="idFechasMaestriaAsignada" var="fechasMaestriaAsignada" value="#{horarioMB.listaHorario}" rows="5" paginator="true">
+                                <p:dataTable id="idFechasMaestriaAsignada" var="fechasMaestriaAsignada" value="#{horarioMB.listaHorario}" rows="5" 
+                                             paginatorPosition="bottom"
+                                             paginator="true">
                                     <p:column headerText="Maestría">
                                         <h:outputText value="#{horarioMB.integracionMaestria.nombre}"/>
                                     </p:column>

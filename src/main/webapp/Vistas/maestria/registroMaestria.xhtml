@@ -17,7 +17,7 @@
 
                 <div class="card">
                     <p:tabMenu activeIndex="#{param.i}">
-                        <p:menuitem value="Inicio" icon="pi pi-fw pi-home">
+                        <p:menuitem value="Inicio" icon="pi pi-fw pi-home" actionListener="#{maestriaMB.redireccionInicio()}">
                             <f:param name="i" value="0"/>
                         </p:menuitem>
                         <p:menuitem value="Nueva Maestría" icon="pi pi-plus" onclick="PF('dlgMaestria').show()" >
@@ -63,6 +63,17 @@
                         <p:column headerText="Horas" style="text-align: center">
                             <h:outputText value="#{document.tiempoMaestria}"/>
                         </p:column>
+                        <p:column headerText="Acciones">
+                            <p:commandButton id="btnAccionesIntegracionMaestria" value="Acciones" type="button" icon="pi pi-chevron-down" styleClass="ui-button-outlined" 
+                                             rendered="#{document.nombreParalelo==null eq false}"/>
+                            <p:menu overlay="true" trigger="btnAccionesIntegracionMaestria" my="left top" at="left bottom">
+                                <p:submenu label="Acciones">
+                                    <p:menuitem value="Editar" icon="pi pi-pencil" actionListener="#{maestriaMB.editarIntegracion(document)}" 
+                                                onstart="PF('dlg_loader').show();"
+                                                update=":form_maestria:dtEditListaModulosSeleccionado,:form_maestria:editIntegracionModulo"/>
+                                </p:submenu>
+                            </p:menu>
+                        </p:column>
                     </p:treeTable>
                 </div>    
                 <p:dialog header="Registro de Maestría" widgetVar="dlgMaestria" minHeight="100" width="550" showEffect="fade" modal="true" responsive="true" position="center">
@@ -87,7 +98,7 @@
                         </div>
                     </p:outputPanel>
                 </p:dialog>
-                <p:dialog header="Listado de Maestrías" widgetVar="listadoMaestria" height="400" width="900" showEffect="fade" modal="true" responsive="true">
+                <p:dialog header="Listado de Maestrías" widgetVar="listadoMaestria" height="500" width="900" showEffect="fade" modal="true" responsive="true" position="center">
                     <div class="card">
                         <p:dataTable id="dtMaestrias" var="maestrias" value="#{maestriaMB.listaMaestria}" editable="true" paginatorPosition="bottom"
                                      style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
@@ -155,7 +166,7 @@
                         </div>
                     </p:outputPanel>
                 </p:dialog>
-                <p:dialog header="Listado de Modulos" widgetVar="listadoModulo" minHeight="300" width="1000" showEffect="fade" modal="true" responsive="true">
+                <p:dialog header="Listado de Modulos" widgetVar="listadoModulo" height="400" width="1000" showEffect="fade" modal="true" responsive="true" position="center">
                     <div class="card">
                         <p:dataTable id="dtModulo" var="modulo" value="#{moduloMB.listaModulo}" editable="true" paginatorPosition="bottom"
                                      style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
@@ -200,12 +211,12 @@
                         </p:dataTable>
                     </div>
                 </p:dialog>
-                <p:dialog header="Integración Módulos" widgetVar="listadoModuloMaestria" height="500" width="1000" showEffect="fade" modal="true" responsive="true" closable="false">
+                <p:dialog header="Integración Módulos" widgetVar="listadoModuloMaestria" height="500" width="1000" showEffect="fade" modal="true" responsive="true" closable="false" position="center">
                     <p:outputPanel id="nuevaIntegracionModulo" class="ui-fluid">
                         <div class="card">
                             <div class="ui-fluid p-formgrid p-grid">
                                 <div class="p-field p-col-12 p-md-7">
-                                    <p:outputLabel value="Nombre Mastría:"/>
+                                    <p:outputLabel value="Nombre Meastría:"/>
                                     <p:inputText maxlength="100" value="#{maestriaMB.integracionMaestria.nombre}" readonly="true"/>
                                 </div>
                                 <div class="p-field p-col-12 p-md-2">
@@ -215,12 +226,12 @@
                                 <div class="p-field p-col-12 p-md-3">
                                     <p:outputLabel value="." style="color: white" />
                                     <p:commandButton style="margin-right: 6px;" value="Buscar Maestría" 
-                                                     styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('listMaestria').show()">
+                                                     icon="pi pi-search" oncomplete="PF('listMaestria').show()">
                                     </p:commandButton>
                                 </div>
                                 <div class="p-field p-col-12 p-md-3">
-                                    <p:commandButton style="margin-right: 6px;" value="Buscar Módulos" 
-                                                     styleClass="ui-button-secondary" icon="pi pi-search"
+                                    <p:commandButton style="margin-right: 6px;" value="Buscar Módulos"
+                                                     icon="pi pi-search"
                                                      actionListener="#{maestriaMB.verificaCampos()}" update=":form_maestria:msgs">
                                     </p:commandButton>
                                 </div>
@@ -256,23 +267,39 @@
                         </div>
                     </p:outputPanel>
                     <div class="p-grid p-justify-end">
-                        <p:commandButton value="Guardar"  
+                        <p:commandButton value="Guardar" 
                                          icon="pi pi-check"
                                          styleClass="ui-button-success"
                                          style="margin-right: 6px;"
                                          onstart="PF('dlg_loader').show();"
                                          action="#{moduloMB.actualizaModulo()}"
                                          actionListener="#{maestriaMB.registarIntegracionModulo()}"
-                                         update=":form_maestria:nuevaIntegracionModulo,:form_maestria:dtSeleccionModulo,:form_maestria:msgs,:form_maestria:integracionModulo,:form_maestria:dtMaestrias,:form_maestria:modulosListaText,:form_maestria:btn_confirmacion"/>
+                                         update=":form_maestria:nuevaIntegracionModulo,
+                                         :form_maestria:editIntegracionModulo,
+                                         :form_maestria:dtSeleccionModulo,
+                                         :form_maestria:dtSeleccionModuloEdit,
+                                         :form_maestria:msgs,
+                                         :form_maestria:integracionModulo,
+                                         :form_maestria:dtMaestrias,
+                                         :form_maestria:modulosListaText,
+                                         :form_maestria:btn_confirmacion,
+                                         :form_maestria:dtEditListaModulosSeleccionado"/>            
                         <p:commandButton value="Cancelar" icon="pi pi-times"
                                          styleClass="ui-button-danger" actionListener="#{maestriaMB.vaciarCamposIntegracionModulo()}" action="#{moduloMB.actualizaModulo()}"
                                          oncomplete="PF('listadoModuloMaestria').hide()" 
-                                         update=":form_maestria:nuevaIntegracionModulo,:form_maestria:dtSeleccionModulo,:form_maestria:msgs,:form_maestria:modulosListaText,:form_maestria:btn_confirmacion" 
+                                         update=":form_maestria:nuevaIntegracionModulo,
+                                         :form_maestria:editIntegracionModulo,
+                                         :form_maestria:dtSeleccionModuloEdit,
+                                         :form_maestria:dtSeleccionModulo,
+                                         :form_maestria:msgs,
+                                         :form_maestria:modulosListaText,
+                                         :form_maestria:btn_confirmacion,
+                                         :form_maestria:dtEditListaModulosSeleccionado" 
                                          style="margin-right: 6px;"/>
                     </div>
                 </p:dialog>
                 <!-- Escribir Modulos para cargar -->
-                <p:dialog header="Ingrese la lista de los módulos" widgetVar="listLoadModulos" height="400" width="800" showEffect="fade" modal="true" responsive="true">
+                <p:dialog header="Ingrese la lista de los módulos" widgetVar="listLoadModulos" height="400" width="800" showEffect="fade" modal="true" responsive="true" position="center">
                     <p:outputPanel id="modulosListaText" class="ui-fluid">
                         <div class="card">
                             <div class="ui-fluid p-formgrid p-grid">
@@ -292,7 +319,7 @@
                     </p:outputPanel>
                     <div class="p-grid p-justify-end">
                         <p:commandButton id="btn_confirmacion" value="Confirmar" icon="pi pi-check-square" 
-                                         update=":form_maestria:nuevaIntegracionModulo,modulosListaText,:form_maestria:dtlistaModulosSeleccionado,:form_maestria:btn_confirmacion"
+                                         update=":form_maestria:nuevaIntegracionModulo,modulosListaText,:form_maestria:dtlistaModulosSeleccionado,:form_maestria:btn_confirmacion,:form_maestria:msgs"
                                          actionListener="#{maestriaMB.verificarModulosPreseleccionados()}" styleClass="ui-button-raised ui-button-success"
                                          style="margin-right: 6px;" disabled="#{!maestriaMB.modulo.verifica}"/>
                         <p:commandButton value="Enumerar" icon="pi pi-sort-numeric-up" update=":form_maestria:modulosListaText,:form_maestria:btn_confirmacion" actionListener="#{maestriaMB.formatearTexto()}"
@@ -302,7 +329,7 @@
                 </p:dialog>
                 <!-- Escribir Modulos para cargar -->
 
-                <p:dialog header="Seleccione una de las  Maestrías" widgetVar="listMaestria" height="300" width="800" showEffect="fade" modal="true" responsive="true">
+                <p:dialog header="Seleccione una de las  Maestrías" widgetVar="listMaestria" height="500" width="800" showEffect="fade" modal="true" responsive="true" position="center">
                     <div class="card">
                         <p:dataTable id="dtSeleccionMaestria" var="maestrias" value="#{maestriaMB.listaMaestria}" editable="true" paginatorPosition="bottom"
                                      style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
@@ -336,7 +363,7 @@
                         </p:dataTable>
                     </div>
                 </p:dialog>
-                <p:dialog header="Seleccione los Módulos" widgetVar="listModulosSeleccion" minHeight="300" width="800" showEffect="fade" modal="true" responsive="true">
+                <p:dialog header="Seleccione los Módulos" widgetVar="listModulosSeleccion" height="400" width="800" showEffect="fade" modal="true" responsive="true" position="center">
                     <p:dataTable id="dtSeleccionModulo" var="modulo" value="#{moduloMB.listaModulo}" editable="true" paginatorPosition="bottom"
                                  style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
                                  emptyMessage="No se encontro la maestría">
@@ -352,6 +379,116 @@
                         <p:column headerText="Acciones" style="width:6rem">
                             <p:selectBooleanCheckbox value="#{modulo.verifica}">
                                 <p:ajax listener="#{maestriaMB.addModulos(modulo)}" update=":form_maestria:dtlistaModulosSeleccionado,:form_maestria:nuevaIntegracionModulo,:form_maestria:msgs,:form_maestria:dtSeleccionModulo"/>
+                            </p:selectBooleanCheckbox>
+                        </p:column>
+                        <p:column headerText="Nombre Maestría" style="text-align: justify">
+                            <h:outputText value="#{modulo.nombreMateria}"/>
+                        </p:column>
+
+                        <p:column headerText="Descripción" style="text-align: justify">
+                            <h:outputText value="#{modulo.descripcion}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:dialog>
+                <!-- Editar Integracion Modulos -->
+                <p:dialog header="Modificar Integración Módulos" widgetVar="editListadoModuloMaestria" height="500" width="1000" showEffect="fade" modal="true" responsive="true" closable="false" position="center">
+                    <p:outputPanel id="editIntegracionModulo" class="ui-fluid">
+                        <div class="card">
+                            <div class="ui-fluid p-formgrid p-grid">
+                                <div class="p-field p-col-12 p-md-8">
+                                    <p:outputLabel value="Nombre Meastría:"/>
+                                    <p:inputText maxlength="100" value="#{maestriaMB.integracionMaestria.nombre}" readonly="true"/>
+                                </div>
+                                <div class="p-field p-col-12 p-md-4">
+                                    <p:outputLabel value="Tiempo Mastría:"/>
+                                    <p:inputText maxlength="10" value="#{maestriaMB.integracionMaestria.tiempoMaestria}" readonly="true"/>
+                                </div>
+                                <div class="p-field p-col-12 p-md-3">
+                                    <p:commandButton style="margin-right: 6px;" value="Buscar Módulos"
+                                                     icon="pi pi-search"
+                                                     actionListener="#{maestriaMB.verificaCamposEdit()}" update=":form_maestria:msgs">
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                            <p:dataTable id="dtEditListaModulosSeleccionado" var="modulocheck" value="#{maestriaMB.listaModulosEdit}" editable="true" paginatorPosition="bottom"
+                                         style="margin-bottom:20px" reflow="true" rows="3" paginator="true">
+                                <p:column headerText="Nombre Módulo" style="text-align: justify">
+                                    <h:outputText value="#{modulocheck.nombreMateria}"/>
+                                </p:column>
+                                <p:column headerText="Descripción" style="text-align: justify">
+                                    <h:outputText value="#{modulocheck.descripcion}"/>
+                                </p:column>
+                                <p:column headerText="Tiempo" style="text-align: justify">
+                                    <p:inputNumber value="#{modulocheck.hora_materia}">
+                                        <p:ajax event="change" update=":form_maestria:editIntegracionModulo" listener="#{maestriaMB.actualizaTiempoEdit()}"/>
+                                    </p:inputNumber>
+                                </p:column>
+                                <p:column headerText="Acciones" style="text-align: justify">
+                                    <p:commandButton icon="pi pi-trash" action="#{maestriaMB.deleteFila(modulocheck)}"
+                                                     styleClass="edit-button rounded-button ui-button-danger"
+                                                     process="@this" update=":form_maestria:dtEditListaModulosSeleccionado,:form_maestria:msgs,:form_maestria:editIntegracionModulo">
+                                        <p:confirm header="Confirmación" 
+                                                   message="¿Está completamente seguro de que desea eliminar este módulo? 
+                                                   Esta acción eliminará permanentemente el módulo y toda la información relacionada. 
+                                                   Por favor, tenga en cuenta que no se podrán recuperar los datos una vez que se haya realizado esta acción. 
+                                                   Recomendamos asegurarse de que la eliminación sea necesaria y no haya otras opciones alternativas. 
+                                                   ¿Está seguro de proceder con esta acción?" 
+                                                   icon="pi pi-exclamation-triangle"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </p:outputPanel>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="650">
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
+                    </p:confirmDialog>
+                    <div class="p-grid p-justify-end">
+                        <p:commandButton value="Modificar" 
+                                         icon="pi pi-check"
+                                         styleClass="ui-button-success"
+                                         style="margin-right: 6px;"
+                                         onstart="PF('dlg_loader').show();"
+                                         action="#{moduloMB.actualizaModulo()}"
+                                         actionListener="#{maestriaMB.editarIntegracionModulo()}"
+                                         update=":form_maestria:editIntegracionModulo,
+                                         :form_maestria:integracionModulo,
+                                         :form_maestria:dtSeleccionModulo,:form_maestria:dtSeleccionModuloEdit,:form_maestria:msgs,
+                                         :form_maestria:modulosListaText,:form_maestria:btn_confirmacion,
+                                         :form_maestria:nuevaIntegracionModulo,:form_maestria:dtSeleccionModulo,
+                                         :form_maestria:dtEditListaModulosSeleccionado"/>
+                        <p:commandButton value="Cancelar" icon="pi pi-times"
+                                         styleClass="ui-button-danger" actionListener="#{maestriaMB.vaciarCamposIntegracionModulo()}" 
+                                         action="#{moduloMB.actualizaModulo()}"
+                                         oncomplete="PF('editListadoModuloMaestria').hide()" 
+                                         update=":form_maestria:editIntegracionModulo,
+                                         :form_maestria:dtSeleccionModulo,:form_maestria:dtSeleccionModuloEdit,:form_maestria:msgs,
+                                         :form_maestria:modulosListaText,:form_maestria:btn_confirmacion,
+                                         :form_maestria:nuevaIntegracionModulo,:form_maestria:dtSeleccionModulo,
+                                         :form_maestria:dtEditListaModulosSeleccionado" 
+                                         style="margin-right: 6px;"/>
+                    </div>
+                </p:dialog>
+                <!-- selecion editar modulo -->
+                <p:dialog header="Seleccione los Módulos" widgetVar="listModulosSeleccionEdit" height="400" width="800" showEffect="fade" modal="true" responsive="true" position="center">
+                    <p:dataTable id="dtSeleccionModuloEdit" var="modulo" value="#{moduloMB.listaModulo}" editable="true" paginatorPosition="bottom"
+                                 style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                 emptyMessage="No se encontro la maestría">
+                        <f:facet name="header">
+                            <span class="ui-input-icon-left">
+                                <p:inputText placeholder="Buscar Maestría" value="#{moduloMB.moduloBusqueda.nombreMateria}" style="margin-right: 6px">
+                                </p:inputText>
+                                <p:commandButton icon="pi pi-search" styleClass="rounded-button ui-button-secondary" 
+                                                 onstart="PF('dlg_loader').show();"
+                                                 actionListener="#{moduloMB.buscarModulo()}" update=":form_maestria:dtSeleccionModuloEdit" process="dtSeleccionModuloEdit @this"/>
+                            </span>
+                        </f:facet>
+                        <p:column headerText="Acciones" style="width:6rem">
+                            <p:selectBooleanCheckbox value="#{modulo.verifica}">
+                                <p:ajax listener="#{maestriaMB.addModulosEdit(modulo)}" 
+                                        update=":form_maestria:dtEditListaModulosSeleccionado,
+                                        :form_maestria:editIntegracionModulo,:form_maestria:msgs,
+                                        :form_maestria:dtSeleccionModuloEdit"/>
                             </p:selectBooleanCheckbox>
                         </p:column>
                         <p:column headerText="Nombre Maestría" style="text-align: justify">

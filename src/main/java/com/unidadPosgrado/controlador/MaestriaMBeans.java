@@ -9,10 +9,12 @@ import com.seguridad.modelo.Usuario;
 import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Maestria;
 import com.unidadPosgrado.modelo.Modulo;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
@@ -34,6 +36,7 @@ public class MaestriaMBeans {
     List<Maestria> busquedaMaestria;
     List<Maestria> listaMaestriaxModulo;
     private List<Modulo> listaModulos;
+    private List<Modulo> listaModulosEdit;
     private TreeNode rootIntegracion;
     TreeNode maestriaTree;
     TreeNode moduloNode;
@@ -55,6 +58,7 @@ public class MaestriaMBeans {
         listaMaestriaxModulo = new ArrayList<>();
         listaModulosVerificacion = new ArrayList<>();
         listaTextModulo = new ArrayList<>();
+        listaModulosEdit = new ArrayList<>();
         rootIntegracion = new DefaultTreeNode("Root Node", null);
         busquedaMaestriaAux = new ArrayList<>();
         user = new Usuario();
@@ -126,6 +130,14 @@ public class MaestriaMBeans {
         this.modulo = modulo;
     }
 
+    public List<Modulo> getListaModulosEdit() {
+        return listaModulosEdit;
+    }
+
+    public void setListaModulosEdit(List<Modulo> listaModulosEdit) {
+        this.listaModulosEdit = listaModulosEdit;
+    }
+
     public void registrarMaestria() {
         try {
             if ("".equals(maestria.getNombre().trim())) {
@@ -153,6 +165,28 @@ public class MaestriaMBeans {
         PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
+    public void registroIntegracionOpen() {
+        integracionMaestria = new Maestria();
+        integracionMaestria.setVerifica(true);
+        listaModulos = new ArrayList<>();
+        PrimeFaces.current().executeScript("PF('listadoModuloMaestria').show()");
+    }
+
+    public void editarIntegracion(Maestria maestria) {
+        integracionMaestria = new Maestria();
+        integracionMaestria = maestria;
+        integracionMaestria.setVerifica(false);
+        listaModulosEdit = new ArrayList<>();
+        listaModulosEdit = maestriaDAO.getListaModulo(integracionMaestria.getIdMaestria());
+        int contador = 0;
+        for (Modulo mod : listaModulosEdit) {
+            contador += mod.getHora_materia();
+            integracionMaestria.setTiempoMaestria(contador);
+        }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
+        PrimeFaces.current().executeScript("PF('editListadoModuloMaestria').show()");
+    }
+
     public String puntoFinal(String texto) {
         if (texto.isEmpty() || texto.charAt(texto.length() - 1) != '.') {
             return texto + '.';
@@ -161,7 +195,6 @@ public class MaestriaMBeans {
     }
 
     public void verificarModulosPreseleccionados() {
-
         if (listaModulos.size() > 0) {
             for (Modulo m : listaTextModulo) {
                 boolean verificaLista = false;
@@ -172,9 +205,17 @@ public class MaestriaMBeans {
                     }
                 }
                 if (!verificaLista) {
-                    m.setNombreMateria(puntoFinal(m.getNombreMateria().substring(0, 99)));
-                    m.setDescripcion(puntoFinal(m.getDescripcion().substring(0, 99)));
-                    listaModulos.add(m);
+                    if (m.getNombreMateria().length() > 98) {
+                        m.setNombreMateria(puntoFinal(m.getNombreMateria().substring(0, 99)));
+                        m.setDescripcion(puntoFinal(m.getDescripcion().substring(0, 99)));
+                    }
+                    m.setNombreMateria(puntoFinal(m.getNombreMateria()));
+                    m.setDescripcion(puntoFinal(m.getDescripcion()));
+                    if (!verificaIntegracionModulos(m.getNombreMateria())) {
+                        listaModulos.add(m);
+                    } else {
+                        showWarn("Esta maestría " + m.getNombreMateria() + " ya se encuentra registrada, se agregaran solo las que no se encuentren.");
+                    }
                 }
             }
         } else {
@@ -184,15 +225,30 @@ public class MaestriaMBeans {
                     m.setNombreMateria(puntoFinal(m.getNombreMateria().substring(0, 99)));
                     m.setDescripcion(puntoFinal(m.getDescripcion().substring(0, 99)));
                 }
-                listaModulos.add(m);
+                m.setNombreMateria(puntoFinal(m.getNombreMateria()));
+                m.setDescripcion(puntoFinal(m.getDescripcion()));
+                if (!verificaIntegracionModulos(m.getNombreMateria())) {
+                    listaModulos.add(m);
+                } else {
+                    showWarn("Esta maestría " + m.getNombreMateria() + " ya se encuentra registrada, se agregaran solo las que no se encuentren.");
+                }
             }
-
         }
-
         modulo = new Modulo();
         modulo.setVerifica(false);
         listaTextModulo = new ArrayList<>();
         PrimeFaces.current().executeScript("PF('listLoadModulos').hide()");
+    }
+
+    public boolean verificaIntegracionModulos(String modulo) {
+        boolean verifica = false;
+        for (Modulo mod : listaModulosVerificacion) {
+            if (mod.getNombreMateria().equals(modulo)) {
+                verifica = true;
+                break;
+            }
+        }
+        return verifica;
     }
 
     public void formatearTexto() {
@@ -233,6 +289,17 @@ public class MaestriaMBeans {
     public void actualizaTiempo() {
         float tiempoAcumulado = 0;
         for (Modulo total : listaModulos) {
+            if (total.getHora_materia() < 0) {
+                total.setHora_materia(total.getHora_materia() * -1);
+            }
+            tiempoAcumulado += total.getHora_materia();
+        }
+        integracionMaestria.setTiempoMaestria(tiempoAcumulado);
+    }
+
+    public void actualizaTiempoEdit() {
+        float tiempoAcumulado = 0;
+        for (Modulo total : listaModulosEdit) {
             if (total.getHora_materia() < 0) {
                 total.setHora_materia(total.getHora_materia() * -1);
             }
@@ -316,7 +383,24 @@ public class MaestriaMBeans {
     }
 
     public void deleteFila(Modulo modulo) {
-        listaModulos.remove(modulo);
+        if (listaModulosEdit.size() <= 1) {
+            showWarn("Al menos debe tener un módulo registrado.");
+        } else {
+            int confirmacion = maestriaDAO.deleteModuloMaestria(modulo);
+            switch (confirmacion) {
+                case 0:
+                    showWarn("No se puede eliminar el módulo " + modulo.getNombreMateria() + " porque ya existen planificaciones de horarios.");
+                    break;
+                case -1:
+                    showWarn("Transacción Fallida");
+                    break;
+                default:
+                    showInfo(modulo.getNombreMateria() + " se elimino con exito.");
+                    integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() - modulo.getHora_materia());
+                    listaModulosEdit.remove(modulo);
+                    break;
+            }
+        }
     }
 
     public void addModulos(Modulo modulo) {
@@ -340,10 +424,42 @@ public class MaestriaMBeans {
 
     }
 
+    public void addModulosEdit(Modulo modulo) {
+        try {
+            if (!verificaListaModulosIntegracion(modulo.getNombreMateria())) {
+                if (modulo.isVerifica()) {
+                    listaModulosEdit.add(modulo);
+                    integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() + modulo.getHora_materia());
+                } else {
+                    listaModulosEdit.remove(modulo);
+                    integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() - modulo.getHora_materia());
+                }
+            } else {
+                showWarn(modulo.getNombreMateria().replace(".", ",") + " ya se encuentra registrada, seleccione otro módulo.");
+                modulo.setVerifica(false);
+            }
+
+        } catch (Exception e) {
+            showWarn("Error" + e.getMessage());
+        }
+
+    }
+
+    public boolean verificaListaModulosIntegracion(String modulo) {
+        boolean verifica = false;
+        for (Modulo mod : listaModulosEdit) {
+            if (modulo.equals(mod.getNombreMateria())) {
+                verifica = true;
+                break;
+            }
+        }
+        return verifica;
+    }
+
     public boolean verfifiaIntegracio(int idModulo) {
         boolean verifica = false;
-        for (Modulo modulo : listaModulosVerificacion) {
-            if (modulo.getIdMateria() == idModulo) {
+        for (Modulo mod : listaModulosVerificacion) {
+            if (mod.getIdMateria() == idModulo) {
                 verifica = true;
                 break;
             }
@@ -353,8 +469,8 @@ public class MaestriaMBeans {
 
     public boolean verificaModulo(int idModulo) {
         boolean verifica = true;
-        for (Modulo modulo : listaModulos) {
-            if (modulo.getIdMateria() == idModulo) {
+        for (Modulo mod : listaModulos) {
+            if (mod.getIdMateria() == idModulo) {
                 verifica = false;
                 break;
             }
@@ -363,8 +479,10 @@ public class MaestriaMBeans {
     }
 
     public void vaciarCamposIntegracionModulo() {
+        listaTextModulo = new ArrayList<>();
         integracionMaestria = new Maestria();
         maestria = new Maestria();
+        listaModulosEdit = new ArrayList<>();
         listaModulos = new ArrayList<>();
         modulo = new Modulo();
         modulo.setVerifica(false);
@@ -402,10 +520,50 @@ public class MaestriaMBeans {
         PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
+    public void editarIntegracionModulo() {
+        try {
+            if (integracionMaestria.getNombre() == null && integracionMaestria.getIdMaestria() == 0) {
+                showWarn("Seleccione una Maestría.");
+            } else if (listaModulosEdit.size() < 1) {
+                showWarn("Seleccione al menos un módulo.");
+            }
+            if (!verificaHorasEdit()) {
+                showWarn("Ingrese las horas en los módulos.");
+            } else if (maestriaDAO.editarIntegracionModulo(integracionMaestria, listaModulosEdit) > 0) {
+                showInfo("Integración de Módulos modificada con éxito.");
+                integracionMaestria = new Maestria();
+                listaModulosEdit = new ArrayList<>();
+                listaMaestria = new ArrayList<>();
+                rootIntegracion = new DefaultTreeNode("Root Node", null);
+                listaMaestriaxModulo = new ArrayList<>();
+                maestriaBusqueda = new Maestria();
+                listaMaestria = busquedaMaestriaAux;
+                listaMaestriaxModulo = maestriaDAO.getListaMaestriaxModulo(user.getIdUsuarioSesion());
+                PrimeFaces.current().executeScript("PF('editListadoModuloMaestria').hide()");
+                llenarLista();
+            } else {
+                showWarn("Transacción fallida.");
+            }
+        } catch (Exception e) {
+            showWarn("Error" + e.getMessage());
+        }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
+    }
+
     public boolean verificaHoras() {
         boolean verifica = true;
-        for (Modulo modulo : listaModulos) {
-            if (modulo.getHora_materia() < 1) {
+        for (Modulo mod : listaModulos) {
+            if (mod.getHora_materia() < 1) {
+                verifica = false;
+            }
+        }
+        return verifica;
+    }
+
+    public boolean verificaHorasEdit() {
+        boolean verifica = true;
+        for (Modulo mod : listaModulosEdit) {
+            if (mod.getHora_materia() < 1) {
                 verifica = false;
             }
         }
@@ -416,12 +574,12 @@ public class MaestriaMBeans {
         int indiceMaestria = 1;
         int indiceModulo = 1;
         for (Maestria maestriaT : listaMaestriaxModulo) {
-            maestriaTree = new DefaultTreeNode(new Maestria(maestriaT.getIdMaestria(),
+            maestriaTree = new DefaultTreeNode(new Maestria("", maestriaT.getIdMaestria(),
                     (indiceMaestria) + ". " + maestriaT.getNombre(), maestriaT.getDescripcion(), maestriaT.getTiempoMaestria()), this.rootIntegracion);
             listaModulosNode = maestriaDAO.getListaModulo(maestriaT.getIdMaestria());
 
             for (Modulo moduloN : listaModulosNode) {
-                moduloNode = new DefaultTreeNode(new Maestria(moduloN.getIdMateria(), (indiceMaestria) + "." + (indiceModulo) + ". " + moduloN.getNombreMateria(), moduloN.getDescripcion(), moduloN.getHora_materia()), maestriaTree);
+                moduloNode = new DefaultTreeNode(new Maestria(maestriaT.getNombreParalelo(), moduloN.getIdMateria(), (indiceMaestria) + "." + (indiceModulo) + ". " + moduloN.getNombreMateria(), moduloN.getDescripcion(), moduloN.getHora_materia()), maestriaTree);
                 indiceModulo++;
             }
             indiceModulo = 1;
@@ -430,11 +588,24 @@ public class MaestriaMBeans {
         }
     }
 
+    public void redireccionInicio() throws IOException {
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        externalContext.redirect("../Global/principal.xhtml");
+    }
+
     public void verificaCampos() {
         if (integracionMaestria.getNombre() == null && integracionMaestria.getIdMaestria() == 0) {
             showWarn("Seleccione una Maestría.");
         } else {
             PrimeFaces.current().executeScript("PF('listModulosSeleccion').show()");
+        }
+    }
+
+    public void verificaCamposEdit() {
+        if (integracionMaestria.getNombre() == null && integracionMaestria.getIdMaestria() == 0) {
+            showWarn("Seleccione una Maestría.");
+        } else {
+            PrimeFaces.current().executeScript("PF('listModulosSeleccionEdit').show()");
         }
     }
 

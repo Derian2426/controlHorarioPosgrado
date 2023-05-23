@@ -151,11 +151,27 @@ public class MaestriaDAO {
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                listadoMaestria.add(new Maestria(resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"), resultSet.getString("_descripcion"), resultSet.getFloat("_hora")));
+                listadoMaestria.add(new Maestria(null, resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"), resultSet.getString("_descripcion"), resultSet.getFloat("_hora")));
             }
             return listadoMaestria;
         } catch (SQLException e) {
             return listadoMaestria;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public int deleteModuloMaestria(Modulo modulo) {
+        int mensaje = 0;
+        sentencia = String.format("SELECT public.\"deleteModuloMaestria\"(" + modulo.getIdMateria() + ");");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("deleteModuloMaestria"));
+            }
+            return mensaje;
+        } catch (SQLException e) {
+            return mensaje;
         } finally {
             conexion.desconectar();
         }
@@ -222,6 +238,37 @@ public class MaestriaDAO {
             resultSet = conexion.ejecutarSql(consulta);
             while (resultSet.next()) {
                 mensaje = Integer.parseInt(resultSet.getString("registrarIntegracion"));
+            }
+            return mensaje;
+        } catch (NumberFormatException | SQLException e) {
+            return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public int editarIntegracionModulo(Maestria integracionMaestria, List<Modulo> listaModulos) {
+        int mensaje = 0;
+        String consulta;
+        try {
+            sentencia = "[";
+            for (Modulo modulo : listaModulos) {
+                sentencia += "{\n"
+                        + "  \"idMateria\": " + modulo.getIdMateria() + ",\n"
+                        + "  \"idMaestria\": " + integracionMaestria.getIdMaestria() + ",\n"
+                        + "  \"nombreModulo\": \"" + modulo.getNombreMateria() + "\",\n"
+                        + "  \"descripcionModulo\": \"" + modulo.getDescripcion() + "\",\n"
+                        + "  \"hora\": " + modulo.getHora_materia() + "\n"
+                        + "},";
+            }
+            sentencia = sentencia.substring(0, sentencia.length() - 1);
+            sentencia += "]";
+            consulta = "SELECT public.\"modificarIntegracion\"(\n"
+                    + "	'" + sentencia + "'\n"
+                    + ")";
+            resultSet = conexion.ejecutarSql(consulta);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("modificarIntegracion"));
             }
             return mensaje;
         } catch (NumberFormatException | SQLException e) {

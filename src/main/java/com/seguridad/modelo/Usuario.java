@@ -5,11 +5,13 @@
  */
 package com.seguridad.modelo;
 
+import java.io.Serializable;
+
 /**
  *
  * @author HP
  */
-public class Usuario {
+public class Usuario implements Serializable {
 
     private int idUsuario;
     private int idRol;

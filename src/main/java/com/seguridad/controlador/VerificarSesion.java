@@ -8,24 +8,25 @@ package com.seguridad.controlador;
 import com.seguridad.modelo.Rol;
 import com.seguridad.modelo.Usuario;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 /**
  *
- * @author Alex
+ * @author Hp
  */
-public class VerificarSesion {
-    
+public class VerificarSesion implements Serializable {
+
     boolean estado = true;
-    
+
     FacesContext context = FacesContext.getCurrentInstance();
     List<Rol> listaRoles = (List<Rol>) context.getExternalContext().getSessionMap().get("roles");
     ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 
     public VerificarSesion() {
-        
+
     }
 
     public void verificarSesion() {
@@ -40,7 +41,7 @@ public class VerificarSesion {
         } catch (Exception e) {
         }
     }
-    
+
     public void redireccionExternas() throws IOException {
         if (!"Administrador".equals(listaRoles.get(0).getNombre())) {
             externalContext.redirect("../Global/principal.xhtml");
@@ -48,7 +49,7 @@ public class VerificarSesion {
     }
 
     public String verificarAdmin() {
-        if ("Administrador".equals(listaRoles.get(0).getNombre()) ) {
+        if ("Administrador".equals(listaRoles.get(0).getNombre())) {
             return "true";
         } else {
             return "false";

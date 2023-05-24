@@ -39,7 +39,7 @@
                             <p:menu overlay="true" trigger="accionesHorario" my="left top" at="left bottom">
                                 <p:submenu label="Acciones">
                                     <p:menuitem value="Detalle" icon="pi pi-file-o" actionListener="#{InscripcionDetalleMB.listaEstudiateRegistrado(maestrias)}"
-                                                update=":form_detalleInscripcion:dtEstudiante"/>
+                                                update=":form_detalleInscripcion:dtEstudiante,:form_detalleInscripcion:detalleIncripcion"/>
                                     <p:menuitem value="Editar" icon="pi pi-pencil" 
                                                 />
                                 </p:submenu>
@@ -49,31 +49,54 @@
                 </p:toolbarGroup>
             </p:toolbar>
             <p:dialog header="Detalles de Inscripción de Estudiantes:
-                      Información detallada sobre los estudiantes." style="text-align: center;color: black;" widgetVar="dlgEstudiante" height="400" position="center" width="950" showEffect="fade" modal="true" responsive="true">
-                <p:dataTable id="dtEstudiante" var="estudiante" value="#{InscripcionDetalleMB.listaEstudiante}" paginatorPosition="bottom"
-                             style="margin-bottom:20px" reflow="true" rows="4" paginator="true"
-                             emptyMessage="No se encontro registro de estudiantes">
-                    <f:facet name="header">
-                        <h:outputText value="#{InscripcionDetalleMB.maestria.nombre}" style="text-align: center;color: black;"/>
-                    </f:facet>
-                    <p:column headerText="Nombre" style="text-align: justify" sortBy="#{estudiante.nombre_estudiante}">
-                        <h:outputText value="#{estudiante.nombre_estudiante}"/>
-                    </p:column>
-                    <p:column headerText="Apellido" style="text-align: justify">
-                        <h:outputText value="#{estudiante.apellido_estudiante}"/>
-                    </p:column>
-                    <p:column headerText="Teléfono" style="text-align: justify">
-                        <h:outputText value="#{estudiante.telefono_estudiante}"/>
-                    </p:column>
-                    <p:column headerText="Cédula" style="text-align: justify">
-                        <h:outputText value="#{estudiante.cedula_estudiante}"/>
-                    </p:column>
-                    <p:column headerText="Correo" style="text-align: left">
-                        <h:outputText value="#{estudiante.correo_estudiante}"/>
-                    </p:column>
-                </p:dataTable>
+                      Información detallada sobre los estudiantes." widgetVar="dlgEstudiante" height="400" position="center" width="950" showEffect="fade" modal="true" responsive="true">
+                <p:outputPanel id="detalleIncripcion" class="ui-fluid">
+                    <div class="card">
+                        <div class="ui-fluid p-formgrid p-grid">
+                            <div class="p-field p-col-12 p-md-8">
+                                <p:outputLabel value="Nombre Mastría:" style="color: black; text-align: left; font-weight: bold;"/>
+                                <p:inputText maxlength="100" value="#{InscripcionDetalleMB.maestria.nombre}" readonly="true"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-4">
+                                <p:outputLabel value="Valor Inscripción:" style="color: black; text-align: left; font-weight: bold;"/>
+                                <p:inputText maxlength="100" value="#{InscripcionDetalleMB.maestria.tiempoMaestria}" readonly="true">
+                                    <p:keyFilter mask="num" />
+                                </p:inputText>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Fecha Inscripción:" style="color: black; text-align: left; font-weight: bold;"/>
+                                <p:inputText maxlength="100" value="#{InscripcionDetalleMB.maestria.fechaInicio}" readonly="true"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Paralelo:" style="color: black; text-align: left; font-weight: bold;"/>
+                                <p:inputText maxlength="100" value="#{InscripcionDetalleMB.maestria.nombreParalelo}" readonly="true"/>
+                            </div>
+                        </div>
+                        <p:dataTable id="dtEstudiante" var="estudiante" value="#{InscripcionDetalleMB.listaEstudiante}" paginatorPosition="bottom"
+                                     style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                     emptyMessage="No se encontro registro de estudiantes">
+                            <f:facet name="header">
+                                <h:outputText value="#{InscripcionDetalleMB.maestria.nombre}" style="text-align: center;color: black;"/>
+                            </f:facet>
+                            <p:column headerText="Nombre" style="text-align: justify" sortBy="#{estudiante.nombre_estudiante}">
+                                <h:outputText value="#{estudiante.nombre_estudiante}"/>
+                            </p:column>
+                            <p:column headerText="Apellido" style="text-align: justify">
+                                <h:outputText value="#{estudiante.apellido_estudiante}"/>
+                            </p:column>
+                            <p:column headerText="Teléfono" style="text-align: justify">
+                                <h:outputText value="#{estudiante.telefono_estudiante}"/>
+                            </p:column>
+                            <p:column headerText="Cédula" style="text-align: justify">
+                                <h:outputText value="#{estudiante.cedula_estudiante}"/>
+                            </p:column>
+                            <p:column headerText="Correo" style="text-align: left">
+                                <h:outputText value="#{estudiante.correo_estudiante}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </p:outputPanel>
             </p:dialog>
-
         </h:form>
     </ui:define>
 

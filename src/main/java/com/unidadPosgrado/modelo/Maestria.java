@@ -49,6 +49,14 @@ public class Maestria {
         this.nombreDocente = nombreDocente;
     }
 
+    public Maestria(int idCurso, String nombre, String nombreParalelo, float tiempoMaestria, Date fechaInicio) {
+        this.idCurso = idCurso;
+        this.nombre = nombre;
+        this.nombreParalelo = nombreParalelo;
+        this.tiempoMaestria = tiempoMaestria;
+        this.fechaInicio = fechaInicio;
+    }
+
     public Maestria(String nombreParalelo, int idMaestria, String nombre, String descripcion, float tiempoMaestria) {
         this.nombreParalelo = nombreParalelo;
         this.idMaestria = idMaestria;

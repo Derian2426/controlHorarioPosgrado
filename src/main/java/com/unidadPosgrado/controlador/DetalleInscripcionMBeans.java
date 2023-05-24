@@ -7,8 +7,11 @@ import com.unidadPosgrado.modelo.Estudiante;
 import com.unidadPosgrado.modelo.Maestria;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -29,6 +32,7 @@ public class DetalleInscripcionMBeans implements Serializable {
     EstudianteDAO estudianteDAO;
 
     public DetalleInscripcionMBeans() {
+        listaMaestria = new ArrayList<>();
         listaEstudiante = new ArrayList<>();
         maestriaDAO = new MaestriaDAO();
         user = new Usuario();
@@ -50,8 +54,13 @@ public class DetalleInscripcionMBeans implements Serializable {
 
     public void listaEstudiateRegistrado(Maestria maestria) {
         listaEstudiante = estudianteDAO.getListaEstudianteMaestria(maestria);
-        this.maestria = maestria;
+        this.maestria = maestriaDAO.inscripcionMaestria(maestria);
         PrimeFaces.current().executeScript("PF('dlgEstudiante').show()");
+    }
+
+    public String formatoFecha(Date fecha) {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd-MMM-yyyy HH:mm:ss", new Locale("es", "ES"));
+        return sdf.format(fecha).toUpperCase();
     }
 
     public List<Estudiante> getListaEstudiante() {

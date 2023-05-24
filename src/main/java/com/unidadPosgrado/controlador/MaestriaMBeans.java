@@ -10,6 +10,7 @@ import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Maestria;
 import com.unidadPosgrado.modelo.Modulo;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -25,7 +26,7 @@ import org.primefaces.model.TreeNode;
  *
  * @author HP
  */
-public class MaestriaMBeans {
+public class MaestriaMBeans implements Serializable{
 
     private Maestria maestria;
     private Modulo modulo;

@@ -7,6 +7,7 @@ package com.unidadPosgrado.controlador;
 
 import com.unidadPosgrado.dao.ModuloDAO;
 import com.unidadPosgrado.modelo.Modulo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -19,7 +20,7 @@ import org.primefaces.event.RowEditEvent;
  *
  * @author HP
  */
-public class ModuloMBeans {
+public class ModuloMBeans implements Serializable{
 
     private Modulo modulo;
     private Modulo moduloBusqueda;

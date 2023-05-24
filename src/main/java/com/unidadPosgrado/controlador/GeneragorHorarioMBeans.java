@@ -15,6 +15,7 @@ import com.unidadPosgrado.modelo.Periodo;
 import com.unidadPosgrado.modelo.TiempoModulo;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,7 +48,7 @@ import org.primefaces.model.DualListModel;
  *
  * @author HP
  */
-public class GeneragorHorarioMBeans {
+public class GeneragorHorarioMBeans implements Serializable{
 
     private DualListModel<Date> tiempoHorario;
     private List<Docente> listaDocente;

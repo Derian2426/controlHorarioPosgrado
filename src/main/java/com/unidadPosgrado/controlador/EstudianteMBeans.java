@@ -13,6 +13,7 @@ import com.unidadPosgrado.modelo.Inscripcion;
 import com.unidadPosgrado.modelo.Maestria;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +36,7 @@ import org.primefaces.model.file.UploadedFile;
  *
  * @author Alex
  */
-public class EstudianteMBeans {
+public class EstudianteMBeans implements Serializable{
 
     private Estudiante estudiante;
     EstudianteDAO estudianteDAO;

@@ -10,6 +10,7 @@ import com.seguridad.modelo.Rol;
 import com.seguridad.modelo.Usuario;
 import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Maestria;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,7 +24,7 @@ import org.primefaces.event.RowEditEvent;
  *
  * @author Alex
  */
-public class RolMBeans {
+public class RolMBeans implements Serializable{
 
     RolDAO rolDAO;
     private Rol rol;

@@ -13,6 +13,7 @@ import com.unidadPosgrado.modelo.Maestria;
 import com.unidadPosgrado.modelo.Modulo;
 import com.unidadPosgrado.modelo.Periodo;
 import com.unidadPosgrado.modelo.TiempoModulo;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,7 +44,7 @@ import org.primefaces.model.ScheduleModel;
  *
  * @author HP
  */
-public class HorarioMBeans {
+public class HorarioMBeans implements Serializable{
 
     /**
      * Creates a new instance of HorarioMBeans

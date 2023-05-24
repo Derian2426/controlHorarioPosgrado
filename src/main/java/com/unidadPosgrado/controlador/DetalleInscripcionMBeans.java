@@ -4,6 +4,7 @@ import com.seguridad.modelo.Usuario;
 import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Maestria;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
@@ -13,7 +14,7 @@ import javax.faces.context.FacesContext;
  *
  * @author HP
  */
-public class DetalleInscripcionMBeans {
+public class DetalleInscripcionMBeans implements Serializable{
 
     private List<Maestria> listaMaestria;
     MaestriaDAO maestriaDAO;

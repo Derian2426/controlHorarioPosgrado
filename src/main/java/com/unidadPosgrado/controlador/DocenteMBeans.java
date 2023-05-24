@@ -10,6 +10,7 @@ import com.unidadPosgrado.dao.DocenteDAO;
 import com.unidadPosgrado.dao.MaestriaDAO;
 import com.unidadPosgrado.modelo.Docente;
 import com.unidadPosgrado.modelo.Maestria;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -22,7 +23,7 @@ import org.primefaces.event.RowEditEvent;
  *
  * @author Alex
  */
-public class DocenteMBeans {
+public class DocenteMBeans implements Serializable{
 
     private Docente editDocente;
     private Docente docente;

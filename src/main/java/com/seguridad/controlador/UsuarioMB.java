@@ -12,6 +12,7 @@ import com.seguridad.dao.UsuarioDAO;
 import com.seguridad.modelo.Rol;
 import com.seguridad.modelo.Usuario;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +27,7 @@ import org.primefaces.PrimeFaces;
  *
  * @author Alex
  */
-public class UsuarioMB {
+public class UsuarioMB implements Serializable{
 
     UsuarioDAO userDAO;
     RolDAO rolDAO;

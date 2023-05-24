@@ -9,6 +9,7 @@ import com.seguridad.dao.RolDAO;
 import com.seguridad.dao.UsuarioDAO;
 import com.seguridad.modelo.Rol;
 import com.seguridad.modelo.Usuario;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -21,7 +22,7 @@ import org.primefaces.event.RowEditEvent;
  *
  * @author Alex
  */
-public class AdminMBeans {
+public class AdminMBeans implements Serializable{
 
     UsuarioDAO userDAO;
     private Usuario usuario;

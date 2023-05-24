@@ -145,6 +145,23 @@ public class MaestriaDAO {
         }
     }
 
+    public List<Maestria> getListaMaestriaPeriodoEstudianteInscripcion(Usuario user) {
+        List<Maestria> listadoMaestria = new ArrayList<>();
+        sentencia = String.format("SELECT* from public.\"getListaMaestriasPeriodoEstudianteInscripcion\"(" + user.getIdUsuarioSesion() + ")");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoMaestria.add(new Maestria(resultSet.getInt("_id_maestria"), resultSet.getString("_nombre_maestria"), resultSet.getString("_nombre_periodo"), resultSet.getDate("_fecha_inicio"), resultSet.getDate("_fecha_fin"),
+                        resultSet.getInt("_id_curso"), resultSet.getString("_nombre_curso")));
+            }
+            return listadoMaestria;
+        } catch (SQLException e) {
+            return listadoMaestria;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
     public List<Maestria> getListaMaestriaxModulo(int idUsuario) {
         List<Maestria> listadoMaestria = new ArrayList<>();
         sentencia = String.format("SELECT * from public.\"tiempoMaestria\"(" + idUsuario + ")");

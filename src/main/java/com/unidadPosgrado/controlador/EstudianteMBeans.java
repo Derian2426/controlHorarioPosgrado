@@ -14,9 +14,11 @@ import com.unidadPosgrado.modelo.Maestria;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
@@ -36,7 +38,7 @@ import org.primefaces.model.file.UploadedFile;
  *
  * @author Alex
  */
-public class EstudianteMBeans implements Serializable{
+public class EstudianteMBeans implements Serializable {
 
     private Estudiante estudiante;
     EstudianteDAO estudianteDAO;
@@ -117,6 +119,11 @@ public class EstudianteMBeans implements Serializable{
         PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
+    public String formatoFecha(Date fecha) {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd-MMM-yyyy HH:mm:ss", new Locale("es", "ES"));
+        return sdf.format(fecha).toUpperCase();
+    }
+
     public void onRowEdit(RowEditEvent<Estudiante> event) {
         try {
             if ("".equals(event.getObject().getNombre_estudiante().trim())) {
@@ -176,6 +183,8 @@ public class EstudianteMBeans implements Serializable{
                     busquedaEstudianteAux = listaEstudiante;
                     inscripcion.setFecha_inscripcion(new Date());
                     maestriaBusqueda = new Maestria();
+                    listaMaestria = maestriaDAO.getListaMaestriaPeriodoEstudiante(user);
+                    busquedaMaestriaAux = listaMaestria;
                     PrimeFaces.current().executeScript("PF('dlgInscripciones').hide()");
                 } else {
                     showWarn("No se pudo generar el registro");

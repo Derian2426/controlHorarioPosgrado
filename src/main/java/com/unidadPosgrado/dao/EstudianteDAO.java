@@ -8,6 +8,7 @@ package com.unidadPosgrado.dao;
 import com.global.config.Conexion;
 import com.unidadPosgrado.modelo.Estudiante;
 import com.unidadPosgrado.modelo.Inscripcion;
+import com.unidadPosgrado.modelo.Maestria;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,6 +31,23 @@ public class EstudianteDAO {
     public List<Estudiante> getListaEstudiante() {
         List<Estudiante> listadoEstudiante = new ArrayList<>();
         sentencia = String.format("select * from public.\"getListaEstudiantes\"()");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoEstudiante.add(new Estudiante(resultSet.getInt("_id_estudiante"), resultSet.getString("_nombre_estudiante"), resultSet.getString("_apellido_estudiante"),
+                        resultSet.getString("_telefono_estudiante"), resultSet.getString("_cedula_estudiante"), resultSet.getString("_sexo"), resultSet.getString("_correo_estudiante")));
+            }
+            return listadoEstudiante;
+        } catch (SQLException e) {
+            return listadoEstudiante;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public List<Estudiante> getListaEstudianteMaestria(Maestria maestria) {
+        List<Estudiante> listadoEstudiante = new ArrayList<>();
+        sentencia = String.format("select * from public.\"getListaEstudiantesMaestria\"(" + maestria.getIdCurso() + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {

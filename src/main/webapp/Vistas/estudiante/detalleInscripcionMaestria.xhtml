@@ -23,7 +23,8 @@
             </p:toolbar>
             <p:toolbar>
                 <p:toolbarGroup>
-                    <p:dataTable id="detalleInscripcipnoMaestria" var="maestrias" value="#{InscripcionDetalleMB.listaMaestria}" scrollable="true" scrollHeight="500">
+                    <p:dataTable id="detalleInscripcipnoMaestria" var="maestrias" value="#{InscripcionDetalleMB.listaMaestria}" scrollable="true" scrollHeight="500"
+                                 rows="4" paginator="true" paginatorPosition="bottom">
                         <p:column headerText="Nombre Maestría">
                             <h:outputText value="#{maestrias.nombre}"/>
                         </p:column>
@@ -37,9 +38,9 @@
                             <p:commandButton id="accionesHorario" value="Acciones" type="button" icon="pi pi-chevron-down" styleClass="ui-button-outlined" />
                             <p:menu overlay="true" trigger="accionesHorario" my="left top" at="left bottom">
                                 <p:submenu label="Acciones">
-                                    <p:menuitem value="Detalle" icon="pi pi-file-o" actionListener="#{GeneradorHorarioMB.dealleHorarioMaestria(horario.idCurso, horario.idMaestria)}"
-                                                />
-                                    <p:menuitem value="Editar" icon="pi pi-pencil" actionListener="#{GeneradorHorarioMB.editHorarioPeriodoAcademico(horario.idCurso, horario.idMaestria, horario.fechaInicio, horario.fechaFin)}"
+                                    <p:menuitem value="Detalle" icon="pi pi-file-o" actionListener="#{InscripcionDetalleMB.listaEstudiateRegistrado(maestrias)}"
+                                                update=":form_detalleInscripcion:dtEstudiante"/>
+                                    <p:menuitem value="Editar" icon="pi pi-pencil" 
                                                 />
                                 </p:submenu>
                             </p:menu>
@@ -47,7 +48,32 @@
                     </p:dataTable>
                 </p:toolbarGroup>
             </p:toolbar>
-            
+            <p:dialog header="Detalles de Inscripción de Estudiantes:
+                      Información detallada sobre los estudiantes." style="text-align: center;color: black;" widgetVar="dlgEstudiante" height="400" position="center" width="950" showEffect="fade" modal="true" responsive="true">
+                <p:dataTable id="dtEstudiante" var="estudiante" value="#{InscripcionDetalleMB.listaEstudiante}" paginatorPosition="bottom"
+                             style="margin-bottom:20px" reflow="true" rows="4" paginator="true"
+                             emptyMessage="No se encontro registro de estudiantes">
+                    <f:facet name="header">
+                        <h:outputText value="#{InscripcionDetalleMB.maestria.nombre}" style="text-align: center;color: black;"/>
+                    </f:facet>
+                    <p:column headerText="Nombre" style="text-align: justify" sortBy="#{estudiante.nombre_estudiante}">
+                        <h:outputText value="#{estudiante.nombre_estudiante}"/>
+                    </p:column>
+                    <p:column headerText="Apellido" style="text-align: justify">
+                        <h:outputText value="#{estudiante.apellido_estudiante}"/>
+                    </p:column>
+                    <p:column headerText="Teléfono" style="text-align: justify">
+                        <h:outputText value="#{estudiante.telefono_estudiante}"/>
+                    </p:column>
+                    <p:column headerText="Cédula" style="text-align: justify">
+                        <h:outputText value="#{estudiante.cedula_estudiante}"/>
+                    </p:column>
+                    <p:column headerText="Correo" style="text-align: left">
+                        <h:outputText value="#{estudiante.correo_estudiante}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+
         </h:form>
     </ui:define>
 

@@ -189,7 +189,7 @@
                                 </div>
                                 <div class="p-field p-col-12 p-md-6">
                                     <p:outputLabel value="Fecha Inscripción:"/>
-                                    <p:inputText maxlength="100" value="#{estudianteMB.inscripcion.fecha_inscripcion}" readonly="true"/>
+                                    <p:inputText maxlength="100" value="#{estudianteMB.formatoFecha(estudianteMB.inscripcion.fecha_inscripcion)}" readonly="true"/>
                                 </div>
                                 <div class="p-field p-col-12 p-md-3">
                                     <p:outputLabel value="Valor Inscripción:"/>
@@ -242,7 +242,11 @@
                                          style="margin-right: 6px;"
                                          onstart="PF('dlg_loader').show();"
                                          actionListener="#{estudianteMB.registrarEstudianteMaestria()}"
-                                         update=":form_estudiante:nuevaIncripcion ,:form_estudiante:dtSeleccionMaestria,:form_estudiante:dtEstudiante,:form_estudiante:msgs,:form_estudiante:estudiantechec"/>
+                                         update=":form_estudiante:nuevaIncripcion ,
+                                         :form_estudiante:dtSeleccionMaestria,
+                                         :form_estudiante:dtEstudiante,:form_estudiante:msgs,
+                                         :form_estudiante:estudiantechec,
+                                         :form_estudiante:dtSeleccionMaestria"/>
                         <p:commandButton value="Cancelar" icon="pi pi-times" actionListener="#{estudianteMB.cancelarRegistro()}"
                                          style="margin-right: 6px;"
                                          styleClass="ui-button-danger"

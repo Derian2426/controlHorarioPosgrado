@@ -38,18 +38,142 @@
                             <p:commandButton id="accionesHorario" value="Acciones" type="button" icon="pi pi-chevron-down" styleClass="ui-button-outlined" />
                             <p:menu overlay="true" trigger="accionesHorario" my="left top" at="left bottom">
                                 <p:submenu label="Acciones">
-                                    <p:menuitem value="Detalle" icon="pi pi-file-o" actionListener="#{InscripcionDetalleMB.listaEstudiateRegistrado(maestrias)}"
+                                    <p:menuitem value="Detalle" icon="pi pi-file-o" onstart="PF('dlg_loader').show();" actionListener="#{InscripcionDetalleMB.listaEstudiateRegistrado(maestrias)}"
                                                 update=":form_detalleInscripcion:dtEstudiante,:form_detalleInscripcion:detalleIncripcion"/>
                                     <p:menuitem value="Editar" icon="pi pi-pencil" 
-                                                />
+                                                onstart="PF('dlg_loader').show();"
+                                                actionListener="#{InscripcionDetalleMB.modificarEstudiateRegistrado(maestrias)}"
+                                                update=":form_detalleInscripcion:dtEditEstudiante,:form_detalleInscripcion:editIncripcion,:form_detalleInscripcion:estudiantechec"/>
                                 </p:submenu>
                             </p:menu>
                         </p:column>
                     </p:dataTable>
                 </p:toolbarGroup>
             </p:toolbar>
+            <!-- Editar inscripciones de estudiantes -->
+
+            <p:dialog header="Modificar Inscripciones de estudiantes." widgetVar="dlgEditEstudiante" height="480" position="center" 
+                      width="950" showEffect="fade" modal="true" responsive="true" closable="false">
+                <p:outputPanel id="editIncripcion" class="ui-fluid">
+                    <div class="card">
+                        <div class="ui-fluid p-formgrid p-grid">
+                            <div class="p-field p-col-12 p-md-8">
+                                <p:outputLabel value="Nombre Mastría:" style="color: black; text-align: left; font-weight: bold;"/>
+                                <p:inputText maxlength="100" value="#{InscripcionDetalleMB.maestria.nombre}" readonly="true"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-4">
+                                <p:outputLabel value="Valor Inscripción:" style="color: black; text-align: left; font-weight: bold;"/>
+                                <p:inputText maxlength="100" value="#{InscripcionDetalleMB.maestria.tiempoMaestria}">
+                                    <p:keyFilter mask="num" />
+                                </p:inputText>
+                            </div>
+                            <div class="p-field p-col-12 p-md-4">
+                                <p:outputLabel value="Fecha Inscripción:" style="color: black; text-align: left; font-weight: bold;"/>
+                                <p:inputText maxlength="100" value="#{InscripcionDetalleMB.maestria.fechaInicio}" readonly="true"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-4">
+                                <p:outputLabel value="Paralelo:" style="color: black; text-align: left; font-weight: bold;"/>
+                                <p:inputText maxlength="100" value="#{InscripcionDetalleMB.maestria.nombreParalelo}" readonly="true"/>
+                            </div>
+                            <div class="p-field p-col-12 p-md-4">
+                                <p:outputLabel value="." style="color: white"/>
+                                <p:commandButton value="Nómina de estudiantes" styleClass="ui-button-secondary" type="button" icon="pi pi-search" onclick="PF('listEstudiantesSeleccion').show()"/>
+                            </div>
+                        </div>
+                        <p:dataTable id="dtEditEstudiante" var="estudiante" value="#{InscripcionDetalleMB.listaEstudiante}" paginatorPosition="bottom"
+                                     style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                     emptyMessage="No se encontro registro de estudiantes">
+                            <f:facet name="header">
+                                <h:outputText value="#{InscripcionDetalleMB.maestria.nombre}" style="text-align: center;color: black;"/>
+                            </f:facet>
+                            <p:column headerText="Nombre" style="text-align: justify" sortBy="#{estudiante.nombre_estudiante}">
+                                <h:outputText value="#{estudiante.nombre_estudiante}"/>
+                            </p:column>
+                            <p:column headerText="Apellido" style="text-align: justify">
+                                <h:outputText value="#{estudiante.apellido_estudiante}"/>
+                            </p:column>
+                            <p:column headerText="Teléfono" style="text-align: justify">
+                                <h:outputText value="#{estudiante.telefono_estudiante}"/>
+                            </p:column>
+                            <p:column headerText="Cédula" style="text-align: justify">
+                                <h:outputText value="#{estudiante.cedula_estudiante}"/>
+                            </p:column>
+                            <p:column headerText="Acciones" style="text-align: left">
+                                <p:commandButton icon="pi pi-trash"
+                                                 styleClass="edit-button rounded-button ui-button-danger"
+                                                 process="@this"
+                                                 action="#{InscripcionDetalleMB.deleteAlumnoInscripcionMaestria(estudiante)}"
+                                                 update=":form_detalleInscripcion:dtEditEstudiante,,:form_detalleInscripcion:msgs">
+                                    <p:confirm header="Confirmación" 
+                                               message="¿Está seguro de que desea eliminar este alumno?
+                                               Esta acción eliminará de forma permanente la inscripción a la maestría y toda la información relacionada. 
+                                               Tenga en cuenta que no podrá recuperar los datos una vez que se haya realizado esta acción. 
+                                               Le recomendamos asegurarse de que la eliminación sea necesaria y de que no haya otras opciones alternativas disponibles. 
+                                               ¿Está seguro de que desea proceder con esta acción?" 
+                                               icon="pi pi-exclamation-triangle"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </p:outputPanel>
+                <div class="p-grid p-justify-end" style="margin-top: 10px">
+                    <p:commandButton value="Guardar"  
+                                     icon="pi pi-check"
+                                     actionListener="#{InscripcionDetalleMB.editarInscripcion()}"
+                                     onstart="PF('dlg_loader').show();"
+                                     update=":form_detalleInscripcion:estudiantechec,:form_detalleInscripcion:dtEditEstudiante
+                                     ,:form_detalleInscripcion:editIncripcion
+                                     ,:form_detalleInscripcion:msgs"
+                                     styleClass="ui-button-success"
+                                     style="margin-right: 6px;"
+                                     />
+                    <p:commandButton value="Cancelar" icon="pi pi-times"
+                                     style="margin-right: 6px;"
+                                     styleClass="ui-button-danger"
+                                     actionListener="#{InscripcionDetalleMB.cancelarEdicionInscripcion()}"
+                                     update=":form_detalleInscripcion:estudiantechec,:form_detalleInscripcion:dtEditEstudiante,
+                                     :form_detalleInscripcion:editIncripcion
+                                     ,:form_detalleInscripcion:msgs"/>
+                </div>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="650">
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
+                </p:confirmDialog>
+            </p:dialog>
+            <!-- Seleccion de estudiante -->
+            <p:dialog header="Seleccione los Estudiantes" widgetVar="listEstudiantesSeleccion" height="350" width="800" showEffect="fade" modal="true" responsive="true">
+                <p:dataTable id="estudiantechec" var="estudianteSelect" value="#{InscripcionDetalleMB.listaEstudianteSeleccion}" rows="4" paginator="true" 
+                             paginatorPosition="bottom" editable="true" selection="#{InscripcionDetalleMB.estudiante}">
+                    <f:facet name="header">
+                        <span class="ui-input-icon-left">
+                            <p:inputText placeholder="Buscar Estudiante" value="#{InscripcionDetalleMB.estudianteBusqueda.nombre_estudiante}" style="margin-right: 6px">
+                            </p:inputText>
+                            <p:commandButton icon="pi pi-search" update=":form_detalleInscripcion:estudiantechec" styleClass="rounded-button ui-button-secondary" action="#{InscripcionDetalleMB.buscarEstudiante()}" process="estudiantechec @this">
+                            </p:commandButton>
+                        </span>
+                    </f:facet>
+                    <p:column headerText="Acciones" style="width:6rem">
+                        <p:selectBooleanCheckbox value="#{estudianteSelect.verifica}">
+                            <p:ajax listener="#{InscripcionDetalleMB.addEstudiantes(estudianteSelect)}" update=":form_detalleInscripcion:estudiantechec,:form_detalleInscripcion:dtEditEstudiante,:form_detalleInscripcion:msgs"/>
+                        </p:selectBooleanCheckbox>
+                    </p:column>
+                    <p:column headerText="Nombre" sortBy="#{estudiante.nombre_estudiante}">
+                        <h:outputText value="#{estudianteSelect.nombre_estudiante}"/>
+                    </p:column>
+
+                    <p:column headerText="Apellido" sortBy="#{estudiante.apellido_estudiante}">
+                        <h:outputText value="#{estudianteSelect.apellido_estudiante}"/>
+                    </p:column>
+
+                    <p:column headerText="Cédula">
+                        <h:outputText value="#{estudianteSelect.cedula_estudiante}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+
+            <!-- Detalle inscripciones de estudiantes -->
             <p:dialog header="Detalles de Inscripción de Estudiantes:
-                      Información detallada sobre los estudiantes." widgetVar="dlgEstudiante" height="400" position="center" width="950" showEffect="fade" modal="true" responsive="true">
+                      Información detallada sobre los estudiantes." widgetVar="dlgEstudiante" height="480" position="center" width="950" showEffect="fade" modal="true" responsive="true">
                 <p:outputPanel id="detalleIncripcion" class="ui-fluid">
                     <div class="card">
                         <div class="ui-fluid p-formgrid p-grid">

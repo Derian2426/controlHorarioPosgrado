@@ -85,6 +85,22 @@ public class EstudianteDAO {
         }
     }
 
+    public int deleteEstudianteMaestria(int idEstudiante, int idCurso) {
+        int mensaje = 0;
+        sentencia = String.format("SELECT public.delete_alumno_inscripcion_maestria(" + idCurso + "," + idEstudiante + ");");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("delete_alumno_inscripcion_maestria"));
+            }
+            return mensaje;
+        } catch (SQLException e) {
+            return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
     public int editarEstudiante(Estudiante estudia) {
         int mensaje = 0;
         sentencia = String.format("SELECT public.\"actualizarEstudiante\"(\n"
@@ -172,6 +188,29 @@ public class EstudianteDAO {
         } finally {
             conexion.desconectar();
         }
+    }
 
+    public int editListaEstudianteInscripcion(int idCurso, float valor, List<Estudiante> listaEstudiantes) {
+        int mensaje = -1;
+        try {
+            String jsonEstudiantes = "[";
+            for (Estudiante e : listaEstudiantes) {
+                jsonEstudiantes += "{\n"
+                        + "  \"idEstudiante\": " + e.getId_estudiante() + "\n"
+                        + "},";
+            }
+            jsonEstudiantes = jsonEstudiantes.substring(0, jsonEstudiantes.length() - 1);
+            jsonEstudiantes += "]";
+            sentencia = String.format("SELECT public.\"editInscripcionMaestriaEstudiante\"('" + jsonEstudiantes + "'," + idCurso + "," + valor + ");");
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                mensaje = Integer.parseInt(resultSet.getString("editInscripcionMaestriaEstudiante"));
+            }
+            return mensaje;
+        } catch (NumberFormatException | SQLException e) {
+            return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
     }
 }

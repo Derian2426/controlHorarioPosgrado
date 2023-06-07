@@ -34,7 +34,9 @@ public class DocenteDAO {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
                 listadoDocente.add(new Docente(resultSet.getInt("_id_docente"), resultSet.getString("_nombre_docente"), resultSet.getString("_apellido_docente"),
-                        resultSet.getString("_cedula_docente"), resultSet.getString("_telefono_docente"), resultSet.getString("_correo_docente"), resultSet.getBoolean("_estado")));
+                        resultSet.getString("_cedula_docente"), resultSet.getString("_telefono_docente"),
+                        resultSet.getString("_correo_docente"), resultSet.getBoolean("_estado"),
+                        resultSet.getString("_especializacion"), resultSet.getString("_nivel_educativo")));
             }
             return listadoDocente;
         } catch (SQLException e) {
@@ -55,12 +57,16 @@ public class DocenteDAO {
         json = json.substring(0, json.length() - 1);
         json += "]";
         sentencia = String.format("SELECT public.\"registrarDocente\"(\n"
+                + "	" + docent.getId_docente() + ", \n"
                 + "	'" + docent.getNombre_docente() + "', \n"
                 + "	'" + docent.getApellido_docente() + "', \n"
                 + "	'" + docent.getCedula_docente() + "', \n"
                 + "	'" + docent.getTelefono_docente() + "', \n"
                 + "	'" + docent.getCorreo_docente() + "', \n"
-                + "	'" + json + "'\n"
+                + "	'" + json + "',\n"
+                + "	'" + docent.getEspecializacion() + "', \n"
+                + "	'" + docent.getNivel_educativo() + "', \n"
+                + "	'" + docent.getSexo() + "' \n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
@@ -100,16 +106,38 @@ public class DocenteDAO {
                 + "	'" + docent.getCedula_docente() + "', \n"
                 + "	'" + docent.getTelefono_docente() + "', \n"
                 + "	'" + docent.getCorreo_docente() + "',\n"
-                + "	'" + json + "'\n"
+                + "	'" + json + "',\n"
+                + "	'" + docent.getEspecializacion() + "',\n"
+                + "	'" + docent.getNivel_educativo() + "',\n"
+                + "	'" + docent.getSexo() + "'\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
             while (resultSet.next()) {
-                mensaje = Integer.parseInt(resultSet.getString("actualizarDocente"));
+                mensaje = Integer.parseInt(resultSet.getString("actualizarDocenteJson"));
             }
             return mensaje;
         } catch (NumberFormatException | SQLException e) {
             return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public Docente verificarDocente(Docente docente) {
+        Docente listadoDocente = new Docente();
+        sentencia = String.format("SELECT * from public.verificar_docente('" + docente.getCedula_docente() + "');");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoDocente = (new Docente(resultSet.getInt("_id_docente"), resultSet.getString("_nombre_docente"), resultSet.getString("_apellido_docente"),
+                        resultSet.getString("_cedula_docente"), resultSet.getString("_telefono_docente"),
+                        resultSet.getString("_correo_docente"), resultSet.getBoolean("_estado"),
+                        resultSet.getString("_especializacion"), resultSet.getString("_nivel_educativo")));
+            }
+            return listadoDocente;
+        } catch (SQLException e) {
+            return listadoDocente;
         } finally {
             conexion.desconectar();
         }

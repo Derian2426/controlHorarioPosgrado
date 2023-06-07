@@ -100,7 +100,8 @@
                         <p:column headerText="Acciones" style="width:6rem">
                             <p:commandButton icon="pi pi-pencil" styleClass="rounded-button ui-button-flat">
                                 <p:ajax listener="#{docenteMB.recibirEditDocente(docente)}" 
-                                        update=":form_docentes:editDocente,:form_docentes:msgs"/>
+                                        onstart="PF('dlg_loader').show();"
+                                        update=":form_docentes:editDocente,:form_docentes:msgs,:form_docentes:genero"/>
                             </p:commandButton>
                         </p:column>
 
@@ -112,6 +113,13 @@
                         <div class="card">
                             <div class="ui-fluid p-formgrid p-grid">
                                 <div class="p-field p-col-12 p-md-6">
+                                    <p:outputLabel value="Cédula:"/>
+                                    <p:inputText maxlength="15" value="#{docenteMB.docente.cedula_docente}">
+                                        <p:keyFilter mask="num"/>
+                                        <p:ajax event="keyup" listener="#{docenteMB.verificarPersona}" update=":form_docentes:msgs,:form_docentes:nuevoDocente"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="p-field p-col-12 p-md-6">
                                     <p:outputLabel value="Nombre: *"/>
                                     <p:inputText maxlength="30" value="#{docenteMB.docente.nombre_docente}"/>
                                 </div>
@@ -120,16 +128,29 @@
                                     <p:inputText maxlength="30" value="#{docenteMB.docente.apellido_docente}"/>
                                 </div>
                                 <div class="p-field p-col-12 p-md-6">
-                                    <p:outputLabel value="Cédula:"/>
-                                    <p:inputText maxlength="15" value="#{docenteMB.docente.cedula_docente}">
-                                        <p:keyFilter mask="num"/>
-                                    </p:inputText>
-                                </div>
-                                <div class="p-field p-col-12 p-md-6">
                                     <p:outputLabel value="Teléfono: *"/>
                                     <p:inputText maxlength="15" value="#{docenteMB.docente.telefono_docente}">
                                         <p:keyFilter mask="num"/>
                                     </p:inputText>
+                                </div>
+                                <div class="p-field p-col-12 p-md-4">
+                                    <p:outputLabel value="Especialización: *"/>
+                                    <p:inputText maxlength="15" value="#{docenteMB.docente.especializacion}">
+                                    </p:inputText>
+                                </div>
+                                <div class="p-field p-col-12 p-md-4">
+                                    <p:outputLabel value="Nivel Educativo: *"/>
+                                    <p:inputText maxlength="15" value="#{docenteMB.docente.nivel_educativo}">
+                                    </p:inputText>
+                                </div>
+                                <div class="p-field p-col-12 p-md-4">
+                                    <p:outputLabel value="Género:"/>
+                                    <p:selectOneMenu id="generoedit" value="#{docenteMB.docente.sexo}">
+                                        <p:ajax update="@this" process="@this"/>
+                                        <f:selectItem itemLabel="MASCULINO" itemValue="Masculino"/>
+                                        <f:selectItem itemLabel="FEMENINO" itemValue="Femenino"/>
+                                        <f:selectItem itemLabel="OTRO" itemValue="Otro"/>
+                                    </p:selectOneMenu>
                                 </div>
                                 <div class="p-field p-col-12 p-md-6">
                                     <p:outputLabel value="Correo: *"/>
@@ -216,6 +237,25 @@
                                     <p:inputText maxlength="15" value="#{docenteMB.editDocente.telefono_docente}">
                                         <p:keyFilter mask="num"/>
                                     </p:inputText>
+                                </div>
+                                <div class="p-field p-col-12 p-md-4">
+                                    <p:outputLabel value="Especialización: *"/>
+                                    <p:inputText maxlength="15" value="#{docenteMB.editDocente.especializacion}">
+                                    </p:inputText>
+                                </div>
+                                <div class="p-field p-col-12 p-md-4">
+                                    <p:outputLabel value="Nivel Educativo: *"/>
+                                    <p:inputText maxlength="15" value="#{docenteMB.editDocente.nivel_educativo}">
+                                    </p:inputText>
+                                </div>
+                                <div class="p-field p-col-12 p-md-4">
+                                    <p:outputLabel value="Género:"/>
+                                    <p:selectOneMenu id="genero" value="#{docenteMB.editDocente.sexo}">
+                                        <p:ajax update="@this" process="@this"/>
+                                        <f:selectItem itemLabel="MASCULINO" itemValue="Masculino"/>
+                                        <f:selectItem itemLabel="FEMENINO" itemValue="Femenino"/>
+                                        <f:selectItem itemLabel="OTRO" itemValue="Otro"/>
+                                    </p:selectOneMenu>
                                 </div>
                                 <div class="p-field p-col-12 p-md-6">
                                     <p:outputLabel value="Correo: *"/>

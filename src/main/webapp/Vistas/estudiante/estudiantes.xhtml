@@ -126,6 +126,13 @@
 
                         <div class="ui-fluid p-formgrid p-grid">
                             <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Cédula:"/>
+                                <p:inputText maxlength="15" value="#{estudianteMB.estudiante.cedula_estudiante}">
+                                    <p:keyFilter mask="num"/>
+                                    <p:ajax event="keyup" listener="#{estudianteMB.verificarInstanciaEstudiante}" update=":form_estudiante:msgs,:form_estudiante:nuevoEstudiante"/>
+                                </p:inputText>
+                            </div>
+                            <div class="p-field p-col-12 p-md-6">
                                 <p:outputLabel value="Nombre:"/>
                                 <p:inputText maxlength="30" value="#{estudianteMB.estudiante.nombre_estudiante}"/>
                             </div>
@@ -136,12 +143,6 @@
                             <div class="p-field p-col-12 p-md-6">
                                 <p:outputLabel value="Teléfono:"/>
                                 <p:inputText maxlength="15" value="#{estudianteMB.estudiante.telefono_estudiante}">
-                                    <p:keyFilter mask="num"/>
-                                </p:inputText>
-                            </div>
-                            <div class="p-field p-col-12 p-md-6">
-                                <p:outputLabel value="Cédula:"/>
-                                <p:inputText maxlength="15" value="#{estudianteMB.estudiante.cedula_estudiante}">
                                     <p:keyFilter mask="num"/>
                                 </p:inputText>
                             </div>

@@ -23,7 +23,7 @@ import org.primefaces.event.RowEditEvent;
  *
  * @author Alex
  */
-public class DocenteMBeans implements Serializable{
+public class DocenteMBeans implements Serializable {
 
     private Docente editDocente;
     private Docente docente;
@@ -72,6 +72,21 @@ public class DocenteMBeans implements Serializable{
         listaDocenteBusqueda = listaDocente;
     }
 
+    public void verificarPersona() {
+        String cedula = "";
+        if (docente.getCedula_docente().length() > 8) {
+            cedula = docente.getCedula_docente();
+            docente = docenteDAO.verificarDocente(docente);
+
+            if (cedula.equals(docente.getCedula_docente())) {
+                showWarn(docente.getNombre_docente() + " ya se encuentra registrado como estudiante. Si procede con el registro, se deshabilitará como estudiante y se registrará como docente.");
+            } else {
+                docente = new Docente();
+                docente.setCedula_docente(cedula);
+            }
+        }
+    }
+
     public void registrarDocente() {
         try {
             if ("".equals(docente.getNombre_docente().trim())) {
@@ -84,29 +99,48 @@ public class DocenteMBeans implements Serializable{
                 showWarn("Debe ingresar una teléfono.");
             } else if ("".equals(docente.getCorreo_docente().trim())) {
                 showWarn("Debe ingresar un correo.");
+            } else if ("".equals(docente.getEspecializacion().trim())) {
+                showWarn("Debe ingresar una Especialización.");
+            } else if ("".equals(docente.getNivel_educativo().trim())) {
+                showWarn("Debe ingresar un nivrl educativo.");
             } else if (seleccionMaestria.size() < 1) {
                 showWarn("Debe asignar al menos una maestría al docente.");
             } else {
                 int resultadoRegistro = docenteDAO.registrarDocente(docente, seleccionMaestria);
-                if (resultadoRegistro > 0) {
-                    showInfo(docente.getNombre_docente().trim().replace(".", ",") + " Guardado con éxito.");
-                    docente = new Docente();
-                    seleccionMaestria = new ArrayList<>();
-                    PrimeFaces.current().executeScript("PF('dlgDocente').hide()");
-                    listaDocente = docenteDAO.getListaDocente();
-                    listaDocenteBusqueda = docenteDAO.getListaDocente();
-                    listaMaestria = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
-                    busquedaMaestriaAux = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
-                    maestriaBusqueda = new Maestria();
-                } else {
-                    showWarn("La cédula " + docente.getCedula_docente().trim().replace(".", ",") + " ya se encuentra registrada.");
-                    docente = new Docente();
-                    seleccionMaestria = new ArrayList<>();
-                    listaDocente = docenteDAO.getListaDocente();
-                    listaDocenteBusqueda = docenteDAO.getListaDocente();
-                    listaMaestria = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
-                    busquedaMaestriaAux = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
-                    maestriaBusqueda = new Maestria();
+                switch (resultadoRegistro) {
+                    case 1:
+                        showInfo(docente.getNombre_docente().trim().replace(".", ",") + " Guardado con éxito.");
+                        docente = new Docente();
+                        seleccionMaestria = new ArrayList<>();
+                        PrimeFaces.current().executeScript("PF('dlgDocente').hide()");
+                        listaDocente = docenteDAO.getListaDocente();
+                        listaDocenteBusqueda = docenteDAO.getListaDocente();
+                        listaMaestria = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
+                        busquedaMaestriaAux = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
+                        maestriaBusqueda = new Maestria();
+                        break;
+                    case 2:
+                        showInfo(docente.getNombre_docente().trim().replace(".", ",") + " ha sido registrado exitosamente y asignado correctamente.");
+                        docente = new Docente();
+                        seleccionMaestria = new ArrayList<>();
+                        PrimeFaces.current().executeScript("PF('dlgDocente').hide()");
+                        listaDocente = docenteDAO.getListaDocente();
+                        listaDocenteBusqueda = docenteDAO.getListaDocente();
+                        listaMaestria = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
+                        busquedaMaestriaAux = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
+                        maestriaBusqueda = new Maestria();
+                        break;
+                    default:
+                        showWarn("La cédula " + docente.getCedula_docente().trim().replace(".", ",") + "ya se encuentra registrada como estudiante. Se habilitará para que sea un docente.");
+                        PrimeFaces.current().executeScript("PF('dlgDocente').hide()");
+                        docente = new Docente();
+                        seleccionMaestria = new ArrayList<>();
+                        listaDocente = docenteDAO.getListaDocente();
+                        listaDocenteBusqueda = docenteDAO.getListaDocente();
+                        listaMaestria = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
+                        busquedaMaestriaAux = maestriaDAO.getListaMaestria(user.getIdUsuarioSesion());
+                        maestriaBusqueda = new Maestria();
+                        break;
                 }
             }
         } catch (Exception e) {
@@ -131,6 +165,10 @@ public class DocenteMBeans implements Serializable{
             } else if ("".equals(editDocente.getApellido_docente().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
             } else if ("".equals(editDocente.getCedula_docente().trim())) {
+                showWarn("No se puede modificar el registro porque el campo esta vacio.");
+            } else if ("".equals(editDocente.getEspecializacion().trim())) {
+                showWarn("No se puede modificar el registro porque el campo esta vacio.");
+            } else if ("".equals(editDocente.getNivel_educativo().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
             } else if ("".equals(editDocente.getTelefono_docente().trim())) {
                 showWarn("No se puede modificar el registro porque el campo esta vacio.");
@@ -257,6 +295,7 @@ public class DocenteMBeans implements Serializable{
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+        PrimeFaces.current().executeScript("PF('dlg_loader').hide()");
     }
 
     public void deleteFila(Maestria mEliminar) {

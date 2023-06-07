@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -48,7 +49,7 @@ import org.primefaces.model.DualListModel;
  *
  * @author HP
  */
-public class GeneragorHorarioMBeans implements Serializable{
+public class GeneragorHorarioMBeans implements Serializable {
 
     private DualListModel<Date> tiempoHorario;
     private List<Docente> listaDocente;
@@ -1084,6 +1085,11 @@ public class GeneragorHorarioMBeans implements Serializable{
 
     public void cancelarPlanificacion() {
         PrimeFaces.current().executeScript("PF('dlgEditPeriodoAcademicoDate').hide()");
+    }
+
+    public void llenarEditAsinaciones(int idDocente) {
+        horaTarget = horarioDAO.getListaEditAsignacionDocente(asignacion.getIdCurso(), idDocente);
+        horaSource = getListaEntreDias(periodoEditAsignacion.getFechaInicio(), periodoEditAsignacion.getFechaFin());
     }
 
     public void llenarFechaAsignacionEdit(int idCurso, int idDocente, int idModulo, String nameDocente) {

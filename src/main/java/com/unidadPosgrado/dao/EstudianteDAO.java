@@ -65,12 +65,14 @@ public class EstudianteDAO {
     public int registrarEstudiante(Estudiante estudia) {
         int mensaje = 0;
         sentencia = String.format("SELECT public.\"registrarEstudiante\"(\n"
+                + "	" + estudia.getId_estudiante() + ", \n"
                 + "	'" + estudia.getNombre_estudiante() + "', \n"
                 + "	'" + estudia.getApellido_estudiante() + "', \n"
                 + "	'" + estudia.getTelefono_estudiante() + "', \n"
                 + "	'" + estudia.getCedula_estudiante() + "', \n"
                 + "	'" + estudia.getSexo() + "', \n"
-                + "	'" + estudia.getCorreo_estudiante() + "'\n"
+                + "	'" + estudia.getCorreo_estudiante() + "',\n"
+                + "	' Ninguno'\n"
                 + ")");
         try {
             resultSet = conexion.ejecutarSql(sentencia);
@@ -80,6 +82,23 @@ public class EstudianteDAO {
             return mensaje;
         } catch (SQLException e) {
             return mensaje;
+        } finally {
+            conexion.desconectar();
+        }
+    }
+
+    public Estudiante verificarEstudiante(Estudiante estudiante) {
+        Estudiante listadoEstudiante = new Estudiante();
+        sentencia = String.format("SELECT * from public.verificar_estudiante('" + estudiante.getCedula_estudiante() + "');");
+        try {
+            resultSet = conexion.ejecutarSql(sentencia);
+            while (resultSet.next()) {
+                listadoEstudiante = (new Estudiante(resultSet.getInt("_id_estudiante"), resultSet.getString("_nombre_estudiante"), resultSet.getString("_apellido_estudiante"),
+                        resultSet.getString("_telefono_estudiante"), resultSet.getString("_cedula_estudiante"), resultSet.getString("_sexo"), resultSet.getString("_correo_estudiante")));
+            }
+            return listadoEstudiante;
+        } catch (SQLException e) {
+            return listadoEstudiante;
         } finally {
             conexion.desconectar();
         }

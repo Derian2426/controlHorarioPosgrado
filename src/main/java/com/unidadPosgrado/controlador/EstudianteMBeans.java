@@ -25,6 +25,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -85,6 +86,20 @@ public class EstudianteMBeans implements Serializable {
         busquedaEstudianteAux = listaEstudiante;
         listaMaestria = maestriaDAO.getListaMaestriaPeriodoEstudiante(user);
         busquedaMaestriaAux = listaMaestria;
+    }
+
+    public void verificarInstanciaEstudiante() {
+        String cedula = "";
+        if (estudiante.getCedula_estudiante().length() > 8) {
+            cedula = estudiante.getCedula_estudiante();
+            estudiante = estudianteDAO.verificarEstudiante(estudiante);
+            if (cedula.equals(estudiante.getCedula_estudiante())) {
+                showWarn(estudiante.getNombre_estudiante() + " ya se encuentra registrado como docente. Si procede con el registro, se deshabilitará como docente y se registrará como estudiante.");
+            } else {
+                estudiante = new Estudiante();
+                estudiante.setCedula_estudiante(cedula);
+            }
+        }
     }
 
     public void registrarEstudiante() {
@@ -257,6 +272,12 @@ public class EstudianteMBeans implements Serializable {
 
     }
 
+    public void obtenerDatosEstudianteExistente() {
+        if (estudiante.getCedula_estudiante().length() > 9) {
+            showInfo("Se dio");
+        }
+    }
+
     public void buscarMaestria() {
         if (maestriaBusqueda.getNombre() == null || "".equals(maestriaBusqueda.getNombre())) {
             listaMaestria = busquedaMaestriaAux;
@@ -287,39 +308,72 @@ public class EstudianteMBeans implements Serializable {
         }
         // Obtener la hoja de trabajo (worksheet) que se va a leer (en este caso, la primera hoja)
         Sheet sheet = workbook.getSheetAt(0);
-        Row encabezados = sheet.getRow(3);
-        int columnaNombres = -1, columnaApellidos = -1, columnaSexo = -1, columnaEmail = -1, columnaCelular = -1, columnaIdentificacion = -1;
-        for (Cell celda : encabezados) {
-            String valorCelda = celda.getStringCellValue().trim();
-            if (valorCelda.equalsIgnoreCase("NOMBRES")) {
-                columnaNombres = celda.getColumnIndex();
-            } else if (valorCelda.equalsIgnoreCase("APELLIDOS")) {
-                columnaApellidos = celda.getColumnIndex();
-            } else if (valorCelda.equalsIgnoreCase("SEXO")) {
-                columnaSexo = celda.getColumnIndex();
-            } else if (valorCelda.equalsIgnoreCase("EMAILINST")) {
-                columnaEmail = celda.getColumnIndex();
-            } else if (valorCelda.equalsIgnoreCase("CELULAR")) {
-                columnaCelular = celda.getColumnIndex();
-            } else if (valorCelda.equalsIgnoreCase("IDENTIFICACIÓN")) {
-                columnaIdentificacion = celda.getColumnIndex();
+        int encabezadoInicio = buscarNombre(sheet);
+        if (encabezadoInicio > 0) {
+            Row encabezados = sheet.getRow(encabezadoInicio);
+            int columnaNombres = -1, columnaApellidos = -1, columnaSexo = -1, columnaEmail = -1, columnaCelular = -1, columnaIdentificacion = -1;
+            for (Cell celda : encabezados) {
+                String valorCelda = celda.getStringCellValue().trim();
+                if (valorCelda.equalsIgnoreCase("NOMBRES")) {
+                    columnaNombres = celda.getColumnIndex();
+                } else if (valorCelda.equalsIgnoreCase("APELLIDOS")) {
+                    columnaApellidos = celda.getColumnIndex();
+                } else if (valorCelda.equalsIgnoreCase("SEXO")) {
+                    columnaSexo = celda.getColumnIndex();
+                } else if (valorCelda.equalsIgnoreCase("EMAILINST")) {
+                    columnaEmail = celda.getColumnIndex();
+                } else if (valorCelda.equalsIgnoreCase("CELULAR")) {
+                    columnaCelular = celda.getColumnIndex();
+                } else if (valorCelda.equalsIgnoreCase("IDENTIFICACIÓN")) {
+                    columnaIdentificacion = celda.getColumnIndex();
+                }
             }
+            if (columnaNombres > 0) {
+                for (int i = 4; i <= sheet.getLastRowNum(); i++) {
+                    Row fila = sheet.getRow(i);
+                    // Leer las celdas específicas de la fila
+                    String nombres = fila.getCell(columnaNombres).getStringCellValue();
+                    String apellidos = fila.getCell(columnaApellidos).getStringCellValue();
+                    String sexo = fila.getCell(columnaSexo).getStringCellValue();
+                    String email = fila.getCell(columnaEmail).getStringCellValue();
+                    String celular = fila.getCell(columnaCelular).getStringCellValue();
+                    String identificacion = fila.getCell(columnaIdentificacion).getStringCellValue();
+                    listaEstudianteSeleccionado.add(new Estudiante(nombres, apellidos, celular,
+                            identificacion, sexo, email));
+                }
+                showInfo("Se han cargado los datos del archivo correctamente.");
+            } else {
+                showWarn("Imposible leer el archivo, por favor intente con otro archivo.");
+            }
+
+        } else {
+            showWarn("Imposible leer el archivo, por favor intente con otro archivo.");
         }
-        for (int i = 4; i <= sheet.getLastRowNum(); i++) {
-            Row fila = sheet.getRow(i);
-            // Leer las celdas específicas de la fila
-            String nombres = fila.getCell(columnaNombres).getStringCellValue();
-            String apellidos = fila.getCell(columnaApellidos).getStringCellValue();
-            String sexo = fila.getCell(columnaSexo).getStringCellValue();
-            String email = fila.getCell(columnaEmail).getStringCellValue();
-            String celular = fila.getCell(columnaCelular).getStringCellValue();
-            String identificacion = fila.getCell(columnaIdentificacion).getStringCellValue();
-            listaEstudianteSeleccionado.add(new Estudiante(nombres, apellidos, celular,
-                    identificacion, sexo, email));
-        }
+
         // Cerrar el archivo y el objeto Workbook
         inputStream.close();
         workbook.close();
+    }
+
+    public int buscarNombre(Sheet sheet) {
+        try {
+            for (int i = 0; i <= sheet.getLastRowNum(); i++) {
+                Row fila = sheet.getRow(i);
+                if (fila != null) { // Verificar si la fila no es nula
+                    for (Cell celda : fila) {
+                        if (celda != null && celda.getCellType() == CellType.STRING) { // Verificar si la celda no es nula y es de tipo String
+                            String valorCelda = celda.getStringCellValue().trim();
+                            if (valorCelda.equalsIgnoreCase("PERIODO") || valorCelda.equalsIgnoreCase("NOMBRES")) {
+                                return i;
+                            }
+                        }
+                    }
+                }
+            }
+            return -1;
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
     public void redireccionDetalle() throws IOException {

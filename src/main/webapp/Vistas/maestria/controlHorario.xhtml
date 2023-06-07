@@ -111,7 +111,7 @@
                                 </p:outputPanel>
                             </p:dialog>
 
-                            <p:dialog widgetVar="detallePeriodo" header="Detalle del Periodo Académico" showEffect="fade" height="50%" width="30%" modal="true" responsive="true">
+                            <p:dialog widgetVar="detallePeriodo" header="Detalle del Periodo Académico" showEffect="fade" height="50%" width="30%" modal="true" responsive="true" position="center">
                                 <p:outputPanel id="detallePeriodoAcademico" class="ui-fluid">
                                     <p:outputLabel value="Nombre de la Maestría" for="@next" styleClass="p-text-bold"/>
                                     <p:inputText value="#{GeneradorHorarioMB.descripcionPeriodo.nombrePeriodo}" readonly="true"/>
@@ -127,7 +127,7 @@
                                     <p:datePicker value="#{GeneradorHorarioMB.descripcionPeriodo.cantidadEstudiante}" readonly="true"/>
                                 </p:outputPanel>
                             </p:dialog>
-                            <p:dialog header="Planificación Periodo" widgetVar="dlgPlanificacion" minHeight="100" width="650" showEffect="fade" modal="true" responsive="true" position="center" closable="false">
+                            <p:dialog header="Planificación Periodo" widgetVar="dlgPlanificacion" height="390" width="650" showEffect="fade" modal="true" responsive="true" position="center" closable="false">
                                 <p:outputPanel id="nuevoPerido" class="ui-fluid">
                                     <div class="ui-fluid p-formgrid p-grid">
                                         <div class="p-field p-col-12 p-md-8">
@@ -346,7 +346,7 @@
                                         </div>
                                     </div>
                                     <p:commandButton onstart="PF('dlg_loader').show();" actionListener="#{horarioMB.registrarPeriodo()}" action="#{GeneradorHorarioMB.actualizaLista()}" value="Guardar" process="nuevoDocenteAsignado @this" styleClass="p-text-bold ui-button-outlined" 
-                                                     update=":form_horario:planificacionHorario:calendarioAcademico,:form_horario:planificacionHorario:nuevoDocenteAsignado,:form_horario:messages,mensajeEstatico,mensajeEstatico1,:form_horario:planificacionHorario:horarioMaestria" style="margin-bottom: 1vh;"/>
+                                                     update=":form_horario:planificacionHorario:calendarioAcademico,:form_horario:planificacionHorario:nuevoDocenteAsignado,:form_horario:messages,:form_horario:planificacionHorario:horarioMaestria" style="margin-bottom: 1vh;"/>
 
                                 </p:outputPanel>
 
@@ -448,7 +448,7 @@
                                     </p:column>
                                 </p:dataTable>
                             </p:outputPanel>
-                            <p:dialog header="Detalles de la planificación de Horarios" widgetVar="dlgDetallePeriodoAcademico" height="50%" width="50%" showEffect="fade" modal="true" responsive="true">
+                            <p:dialog header="Detalles de la planificación de Horarios" widgetVar="dlgDetallePeriodoAcademico" height="400" width="50%" showEffect="fade" modal="true" responsive="true" position="center">
                                 <p:dataTable id="detalleHorarioMaestria" var="modulo" value="#{GeneradorHorarioMB.listadoModuloDetalle}" scrollable="true" scrollHeight="500">
                                     <p:ajax event="rowToggle" update="detalleHorarioMaestria" listener="#{GeneradorHorarioMB.detalleFechaAsignacion(modulo.idCurso, modulo.idDocente)}"/>
                                     <f:facet name="header">
@@ -483,7 +483,7 @@
 
                                 </p:dataTable>
                             </p:dialog>
-                            <p:dialog header="Editar la planificación del Horario" widgetVar="dlgEditPeriodoAcademico" height="50%" width="60%" showEffect="fade" modal="true" responsive="true">
+                            <p:dialog header="Editar la planificación del Horario" widgetVar="dlgEditPeriodoAcademico" height="400" width="60%" showEffect="fade" modal="true" responsive="true" position="center">
                                 <p:outputPanel id="editHorarioDocente" class="ui-fluid">
                                     <p:dataTable stripedRows="true" id="editHorarioMaestria" var="editFecha" value="#{GeneradorHorarioMB.listadoModuloDetalle}" scrollable="true" scrollHeight="500">
                                         <p:column headerText="Modulo">
@@ -499,7 +499,7 @@
                                             <p:commandButton icon="pi pi-pencil" styleClass="rounded-button ui-button-outlined" 
                                                              onstart="PF('dlg_loader').show();"
                                                              actionListener="#{GeneradorHorarioMB.llenarFechaAsignacionEdit(editFecha.idCurso, editFecha.idDocente, editFecha.idModulo,editFecha.nombreDocente)}"
-                                                             update=":form_horario:planificacionHorario:pickEditList,:form_horario:planificacionHorario:docenteEditData"/>
+                                                             update=":form_horario:planificacionHorario:pickEditList,:form_horario:planificacionHorario:docenteEditData,:form_horario:planificacionHorario:dtSeleccionDocenteEditNuevoHorario"/>
                                         </p:column>
                                     </p:dataTable>
                                 </p:outputPanel>
@@ -510,15 +510,14 @@
                                     <p:fieldset legend="Calendario para el módulo">
                                         <p class="m-0">
                                             <div class="ui-fluid formgrid grid">
-                                                <div class="field col-12 md:col-12">
+                                                <div class="field col-12 md:col-8">
                                                     <p:outputLabel value="Docente" for="@next" styleClass="p-text-bold"/>
-                                                    <p:selectOneMenu id="docenteEditData" editable="false" value="#{GeneradorHorarioMB.docenteEdit.id_docente}">
-                                                        <f:selectItem itemLabel="#{GeneradorHorarioMB.docenteEdit.nombre_docente}" itemValue="#{GeneradorHorarioMB.docenteEdit.id_docente}" noSelectionOption="true"/>
-                                                        <f:selectItems value="#{GeneradorHorarioMB.listaDocente}" var="docenteAsignado" 
-                                                                       itemLabel="#{docenteAsignado.nombre_docente}" 
-                                                                       itemValue="#{docenteAsignado.id_docente}"></f:selectItems>
-                                                        <p:ajax event="change" update="@this"/>
-                                                    </p:selectOneMenu>
+                                                    <p:inputText id="docenteEditData" maxlength="150" value="#{GeneradorHorarioMB.docenteEdit.nombre_docente}" readonly="true"/>
+                                                </div>
+                                                <div class="field col-12 md:col-4">
+                                                    <p:outputLabel value="." for="@next" styleClass="p-text-bold" style="color: white"/>
+                                                    <p:commandButton style="margin-right: 6px;" value="Cambiar Docente" 
+                                                                     styleClass="ui-button-secondary" icon="pi pi-search" oncomplete="PF('dlgEditSeleccionDocente').show()"/>
                                                 </div>
                                                 <div class="field col-12 md:col-12">
                                                     <p:pickList id="pickEditList" value="#{GeneradorHorarioMB.tiempoHorario}" var="fechaPeriodo" itemLabel="#{horarioMB.formatoFecha(fechaPeriodo)}" itemValue="#{fechaPeriodo}" responsive="true">
@@ -541,6 +540,24 @@
                                         </p>
                                     </p:fieldset>
                                 </div>
+                            </p:dialog>
+                            <p:dialog header="Seleccione al docente" widgetVar="dlgEditSeleccionDocente" height="300" width="400" showEffect="fade" modal="true" responsive="true" position="center">
+                                <p:dataTable id="dtSeleccionDocenteEditNuevoHorario" var="docente" value="#{GeneradorHorarioMB.listaDocente}" editable="false" paginatorPosition="bottom"
+                                             style="margin-bottom:20px" reflow="true" rows="3" paginator="true"
+                                             emptyMessage="No se encontro al docente">
+                                    <p:column headerText="Acciones" style="width:6rem">
+                                        <p:commandButton
+                                            class="rounded-button"
+                                            icon="pi pi-check">
+                                            <p:ajax listener="#{GeneradorHorarioMB.llenaMaestriaPeriodo(maestrias)}" 
+                                                        update=":form_horario:planificacionHorario:docenteEditData ,:form_horario:planificacionHorario:pickEditList"
+                                                        oncomplete="PF('dlgEditSeleccionDocente').hide()"/>
+                                        </p:commandButton>
+                                    </p:column>
+                                    <p:column headerText="Nombre Docente" style="text-align: justify">
+                                        <h:outputText value="#{docente.nombre_docente}"/>
+                                    </p:column>
+                                </p:dataTable>
                             </p:dialog>
                         </p:tab>
                     </p:tabView>

@@ -10,20 +10,36 @@ package com.unidadPosgrado.modelo;
  * @author Alex
  */
 public class Docente {
-    
+
     private int id_docente;
     private String nombre_docente;
     private String apellido_docente;
     private String cedula_docente;
     private String telefono_docente;
     private String correo_docente;
+    private String especializacion;
+    private String nivel_educativo;
+    private String sexo;
     private boolean estado;
-    
-    public Docente(){
-        
+
+    public Docente() {
+
     }
 
-    public Docente(int id_docente, String nombre_docente, String apellido_docente, 
+    public Docente(int id_docente, String nombre_docente, String apellido_docente,
+            String cedula_docente, String telefono_docente, String correo_docente, boolean estado, String especializacion, String nivel_educativo) {
+        this.id_docente = id_docente;
+        this.nombre_docente = nombre_docente;
+        this.apellido_docente = apellido_docente;
+        this.cedula_docente = cedula_docente;
+        this.telefono_docente = telefono_docente;
+        this.correo_docente = correo_docente;
+        this.estado = estado;
+        this.especializacion = especializacion;
+        this.nivel_educativo = nivel_educativo;
+    }
+
+    public Docente(int id_docente, String nombre_docente, String apellido_docente,
             String cedula_docente, String telefono_docente, String correo_docente, boolean estado) {
         this.id_docente = id_docente;
         this.nombre_docente = nombre_docente;
@@ -33,8 +49,8 @@ public class Docente {
         this.correo_docente = correo_docente;
         this.estado = estado;
     }
-    
-    public Docente(int id_docente, String nombre_docente, String apellido_docente, 
+
+    public Docente(int id_docente, String nombre_docente, String apellido_docente,
             String cedula_docente, String telefono_docente, String correo_docente) {
         this.id_docente = id_docente;
         this.nombre_docente = nombre_docente;
@@ -99,5 +115,29 @@ public class Docente {
     public void setCorreo_docente(String correo_docente) {
         this.correo_docente = correo_docente;
     }
-    
+
+    public String getEspecializacion() {
+        return especializacion;
+    }
+
+    public void setEspecializacion(String especializacion) {
+        this.especializacion = especializacion;
+    }
+
+    public String getNivel_educativo() {
+        return nivel_educativo;
+    }
+
+    public void setNivel_educativo(String nivel_educativo) {
+        this.nivel_educativo = nivel_educativo;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
 }

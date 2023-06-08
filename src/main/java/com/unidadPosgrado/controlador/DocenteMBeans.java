@@ -224,8 +224,10 @@ public class DocenteMBeans implements Serializable {
     public void addMaestria(Maestria maestria) {
         try {
             if (maestria.isVerifica() && verificaModulo(maestria.getIdMaestria())) {
+                showInfo("¡Has seleccionado " + maestria.getNombre() + "! Recuerda cerrar el apartado de selección una vez hayas terminado y haz clic en el botón 'Guardar' para finalizar el proceso.");
                 seleccionMaestria.add(maestria);
             } else {
+                showInfo("Has deseleccionado " + maestria.getNombre() + ". No olvides cerrar la sección de selección cuando hayas terminado y haz clic en el botón 'Guardar' para finalizar el proceso.");
                 seleccionMaestria.remove(maestria);
             }
         } catch (Exception e) {
@@ -239,7 +241,10 @@ public class DocenteMBeans implements Serializable {
             if (maestria.isVerifica() && verificaModulo(maestria.getIdMaestria()) && verificaListaRegistro(maestria.getIdMaestria())) {
                 editListMaestria.add(maestria);
                 editListMaestriaConfirmada.add(maestria);
+                showInfo("¡Has seleccionado " + maestria.getNombre() + "! Recuerda cerrar el apartado de selección una vez hayas terminado y haz clic en el botón 'Guardar' para finalizar el proceso.");
             } else {
+                showInfo("Has deseleccionado " + maestria.getNombre() + ". No olvides cerrar la sección de selección cuando hayas terminado y haz clic en el botón 'Guardar' para finalizar el proceso.");
+
                 editListMaestria.remove(maestria);
             }
         } catch (Exception e) {

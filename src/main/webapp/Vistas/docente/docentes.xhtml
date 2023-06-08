@@ -201,7 +201,7 @@
                         </f:facet>
                         <p:column headerText="Acciones" style="width:6rem">
                             <p:selectBooleanCheckbox value="#{maestria.verifica}">
-                                <p:ajax listener="#{docenteMB.addMaestria(maestria)}" update=":form_docentes:dtMaestriacheck"/>
+                                <p:ajax listener="#{docenteMB.addMaestria(maestria)}" update=":form_docentes:dtMaestriacheck,:form_docentes:msgs"/>
                             </p:selectBooleanCheckbox>
                         </p:column>
                         <p:column headerText="Nombre Maestría" style="text-align: justify">
@@ -313,7 +313,7 @@
                         </f:facet>
                         <p:column headerText="Acciones" style="width:6rem">
                             <p:selectBooleanCheckbox value="#{maestriaEdit.verifica}">
-                                <p:ajax listener="#{docenteMB.addEditMaestria(maestriaEdit)}" update=":form_docentes:dtEditMaestriacheck"/>
+                                <p:ajax listener="#{docenteMB.addEditMaestria(maestriaEdit)}" update=":form_docentes:dtEditMaestriacheck,:form_docentes:msgs"/>
                             </p:selectBooleanCheckbox>
                         </p:column>
                         <p:column headerText="Nombre Maestría" style="text-align: justify">

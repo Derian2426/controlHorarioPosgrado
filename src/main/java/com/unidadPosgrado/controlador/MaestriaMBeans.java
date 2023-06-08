@@ -398,7 +398,7 @@ public class MaestriaMBeans implements Serializable {
                     showWarn("No se puede eliminar el módulo " + modulo.getNombreMateria() + " porque ya existen planificaciones de horarios.");
                     break;
                 case -1:
-                    showWarn("Transacción Fallida");
+                    showWarn("La transacción ha fallado. Por favor, verifica los datos e intenta nuevamente.");
                     break;
                 default:
                     showInfo(modulo.getNombreMateria() + " se elimino con exito.");
@@ -523,7 +523,7 @@ public class MaestriaMBeans implements Serializable {
                 PrimeFaces.current().executeScript("PF('listadoModuloMaestria').hide()");
                 llenarLista();
             } else {
-                showWarn("Transacción fallida.");
+                showWarn("La transacción ha fallado. Por favor, verifica los datos e intenta nuevamente.");
             }
         } catch (Exception e) {
             showWarn("Error" + e.getMessage());
@@ -541,7 +541,7 @@ public class MaestriaMBeans implements Serializable {
             if (!verificaHorasEdit()) {
                 showWarn("Ingrese las horas en los módulos.");
             } else if (maestriaDAO.editarIntegracionModulo(integracionMaestria, listaModulosEdit) > 0) {
-                showInfo("Integración de Módulos modificada con éxito.");
+                showInfo("La integración de módulos ha sido modificada exitosamente.");
                 integracionMaestria = new Maestria();
                 listaModulosEdit = new ArrayList<>();
                 listaMaestria = new ArrayList<>();
@@ -553,7 +553,7 @@ public class MaestriaMBeans implements Serializable {
                 PrimeFaces.current().executeScript("PF('editListadoModuloMaestria').hide()");
                 llenarLista();
             } else {
-                showWarn("Transacción fallida.");
+                showWarn("La transacción ha fallado. Por favor, verifica los datos e intenta nuevamente.");
             }
         } catch (Exception e) {
             showWarn("Error" + e.getMessage());

@@ -25,11 +25,11 @@ public class Conexion implements Serializable {
     private String mensaje;
 
     //Credenciales para la conexion Local
-//    private String url = "jdbc:postgresql://localhost:5432/Unidad_Posgrado";
+//    private String url = "jdbc:postgresql://localhost:5432/LocalPostGrado";
 //    private String usuario = "postgres";
 //    private String clave = "0929415636";
 //    String classForName = "org.postgresql.Driver";
-    //Credenciales para la conexion servidorUteq
+//    Credenciales para la conexion servidorUteq
     private String url = "jdbc:postgresql://190.15.134.7:7070/UnidadPosgradoUteq";
     private String usuario = "appweb";
     private String clave = "@Aplicaciones@Web@2021";

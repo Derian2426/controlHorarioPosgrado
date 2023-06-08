@@ -116,7 +116,7 @@
                                     <p:outputLabel value="Cédula:"/>
                                     <p:inputText maxlength="15" value="#{docenteMB.docente.cedula_docente}">
                                         <p:keyFilter mask="num"/>
-                                        <p:ajax event="keyup" listener="#{docenteMB.verificarPersona}" update=":form_docentes:msgs,:form_docentes:nuevoDocente"/>
+                                        <p:ajax event="change" listener="#{docenteMB.verificarPersona}" update=":form_docentes:msgs,:form_docentes:nuevoDocente"/>
                                     </p:inputText>
                                 </div>
                                 <div class="p-field p-col-12 p-md-6">

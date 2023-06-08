@@ -20,7 +20,7 @@ import org.primefaces.event.RowEditEvent;
  *
  * @author HP
  */
-public class ModuloMBeans implements Serializable{
+public class ModuloMBeans implements Serializable {
 
     private Modulo modulo;
     private Modulo moduloBusqueda;
@@ -125,6 +125,12 @@ public class ModuloMBeans implements Serializable{
         } catch (Exception e) {
             showWarn(e.getMessage());
         }
+    }
+
+    public void cancelarRegistroModulo() {
+        modulo = new Modulo();
+        PrimeFaces.current().executeScript("PF('dlgModulo').hide()");
+        showWarn("¡El registro ha sido cancelado!");
     }
 
     public void onRowCancel(RowEditEvent<Modulo> event) {

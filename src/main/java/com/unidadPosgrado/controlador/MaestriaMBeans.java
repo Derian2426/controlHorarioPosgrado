@@ -26,7 +26,7 @@ import org.primefaces.model.TreeNode;
  *
  * @author HP
  */
-public class MaestriaMBeans implements Serializable{
+public class MaestriaMBeans implements Serializable {
 
     private Maestria maestria;
     private Modulo modulo;
@@ -137,6 +137,12 @@ public class MaestriaMBeans implements Serializable{
 
     public void setListaModulosEdit(List<Modulo> listaModulosEdit) {
         this.listaModulosEdit = listaModulosEdit;
+    }
+
+    public void cancelarRegistroMaestria() {
+        maestria = new Maestria();
+        PrimeFaces.current().executeScript("PF('dlgMaestria').hide()");
+        showWarn("¡El registro ha sido cancelado!");
     }
 
     public void registrarMaestria() {
@@ -347,9 +353,9 @@ public class MaestriaMBeans implements Serializable{
         integracionMaestria.setNombre(maestria.getNombre());
         integracionMaestria.setDescripcion(maestria.getDescripcion());
         listaModulosVerificacion = maestriaDAO.getListaModulo(maestria.getIdMaestria());
+        showInfo("¡Has seleccionado la " + maestria.getNombre() + "!");
         if (listaModulosVerificacion.size() > 0) {
-            showWarn("La maestria Seleccionada ya se encuetra con módulos Integrados, se agregaran solo "
-                    + "los módulos que no se encuentren en el registro.");
+            showWarn("La maestría seleccionada ya contiene módulos integrados. Solo se agregarán aquellos módulos que no estén registrados previamente.");
         }
     }
 
@@ -360,8 +366,7 @@ public class MaestriaMBeans implements Serializable{
             integracionMaestria.setNombre(maestria.getNombre());
             integracionMaestria.setDescripcion(maestria.getDescripcion());
         } else {
-            //Cambiar presentacion
-            showWarn("La maestria no tiene asignado docentes suficientes ");
+            showWarn("La maestría seleccionada no cuenta con el número suficiente de docentes asignados.");
         }
 
     }
@@ -410,7 +415,9 @@ public class MaestriaMBeans implements Serializable{
                 if (modulo.isVerifica() && verificaModulo(modulo.getIdMateria())) {
                     listaModulos.add(modulo);
                     integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() + modulo.getHora_materia());
+                    showInfo("¡Has seleccionado el módulo " + modulo.getNombreMateria() + "! Recuerda cerrar el apartado de selección una vez hayas terminado y haz clic en el botón 'Guardar' para finalizar el proceso.");
                 } else {
+                    showInfo("Has deseleccionado el módulo " + modulo.getNombreMateria() + ". No olvides cerrar la sección de selección cuando hayas terminado y haz clic en el botón 'Guardar' para finalizar el proceso.");
                     listaModulos.remove(modulo);
                     integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() - modulo.getHora_materia());
                 }
@@ -427,17 +434,20 @@ public class MaestriaMBeans implements Serializable{
 
     public void addModulosEdit(Modulo modulo) {
         try {
-            if (!verificaListaModulosIntegracion(modulo.getNombreMateria())) {
-                if (modulo.isVerifica()) {
+
+            if (modulo.isVerifica()) {
+                if (!verificaListaModulosIntegracion(modulo.getNombreMateria())) {
                     listaModulosEdit.add(modulo);
                     integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() + modulo.getHora_materia());
+                    showInfo("¡Has seleccionado el módulo " + modulo.getNombreMateria() + "! Recuerda cerrar el apartado de selección una vez hayas terminado y haz clic en el botón 'Modificar' para finalizar el proceso.");
                 } else {
-                    listaModulosEdit.remove(modulo);
-                    integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() - modulo.getHora_materia());
+                    showWarn(modulo.getNombreMateria().replace(".", ",") + " ya se encuentra registrada, seleccione otro módulo.");
+                    modulo.setVerifica(false);
                 }
             } else {
-                showWarn(modulo.getNombreMateria().replace(".", ",") + " ya se encuentra registrada, seleccione otro módulo.");
-                modulo.setVerifica(false);
+                showInfo("Has deseleccionado el módulo " + modulo.getNombreMateria() + ". No olvides cerrar la sección de selección cuando hayas terminado y haz clic en el botón 'Modificar' para finalizar el proceso.");
+                listaModulosEdit.remove(modulo);
+                integracionMaestria.setTiempoMaestria(integracionMaestria.getTiempoMaestria() - modulo.getHora_materia());
             }
 
         } catch (Exception e) {
@@ -488,7 +498,7 @@ public class MaestriaMBeans implements Serializable{
         modulo = new Modulo();
         modulo.setVerifica(false);
         maestriaBusqueda = new Maestria();
-        showWarn("El registro se Cancelo.");
+        showWarn("¡El registro ha sido cancelado!");
     }
 
     public void registarIntegracionModulo() {

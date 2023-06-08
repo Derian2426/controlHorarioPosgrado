@@ -93,7 +93,9 @@
                                                  update=":form_maestria:dtMaestrias,:form_maestria:msgs,nuevaMaestria,:form_maestria:dtSeleccionMaestria"/>
                             </div>
                             <div class="p-field p-col-12 p-md-6">
-                                <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgMaestria').hide()"/>
+                                <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2"
+                                                 update=":form_maestria:msgs,:form_maestria:nuevaMaestria"
+                                                 actionListener="#{maestriaMB.cancelarRegistroMaestria()}"/>
                             </div>
                         </div>
                     </p:outputPanel>
@@ -161,7 +163,9 @@
                                                  update=":form_maestria:msgs,nuevoModulo,:form_maestria:dtModulo,:form_maestria:dtSeleccionModulo"/>
                             </div>
                             <div class="p-field p-col-12 p-md-6">
-                                <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2" onclick="PF('dlgModulo').hide()"/>
+                                <p:commandButton value="Cancelar " icon="pi pi-times" styleClass="ui-button-primary" class="ui-button-danger p-mr-2 p-mb-2"
+                                                 update=":form_maestria:msgs,:form_maestria:nuevoModulo"
+                                                 actionListener="#{moduloMB.cancelarRegistroModulo()}"/>
                             </div>
                         </div>
                     </p:outputPanel>
